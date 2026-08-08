@@ -1,0 +1,159 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  role      Role     @default(EDITOR)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  blogs     Blog[]
+}
+
+model Service {
+  id               String        @id @default(uuid())
+  title            String
+  slug             String        @unique
+  shortDescription String
+  fullDescription  String
+  icon             String
+  image            String?
+  features         String[]
+  order            Int           @default(0)
+  isFeatured       Boolean       @default(false)
+  showOnHomepage   Boolean       @default(true)
+  status           PublishStatus @default(DRAFT)
+  seoTitle         String?
+  seoDescription   String?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+}
+
+model Product {
+  id               String        @id @default(uuid())
+  name             String
+  slug             String        @unique
+  shortDescription String
+  description      String
+  productImage     String
+  gallery          String[]
+  features         String[]
+  benefits         String[]
+  technology       String[]
+  status           ProductStatus @default(COMING_SOON)
+  demoUrl          String?
+  ctaText          String        @default("Learn More")
+  seoTitle         String?
+  seoDescription   String?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+}
+
+model Project {
+  id             String        @id @default(uuid())
+  title          String
+  slug           String        @unique
+  description    String
+  gallery        String[]
+  technology     String[]
+  category       String
+  status         PublishStatus @default(DRAFT)
+  seoTitle       String?
+  seoDescription String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+}
+
+model Category {
+  id    String @id @default(uuid())
+  name  String @unique
+  slug  String @unique
+  blogs Blog[]
+}
+
+model Tag {
+  id    String @id @default(uuid())
+  name  String @unique
+  slug  String @unique
+  blogs Blog[] @relation("BlogToTag")
+}
+
+model Blog {
+  id             String        @id @default(uuid())
+  title          String
+  slug           String        @unique
+  coverImage     String
+  content        String
+  categoryId     String
+  authorId       String
+  publishedDate  DateTime?
+  status         PublishStatus @default(DRAFT)
+  seoTitle       String?
+  seoDescription String?
+  ogImage        String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  author         User          @relation(fields: [authorId], references: [id])
+  category       Category      @relation(fields: [categoryId], references: [id])
+  tags           Tag[]         @relation("BlogToTag")
+}
+
+model Testimonial {
+  id        String   @id @default(uuid())
+  name      String
+  role      String
+  avatar    String?
+  feedback  String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+model ContactMessage {
+  id        String   @id @default(uuid())
+  name      String
+  email     String
+  subject   String?
+  message   String
+  status    String   @default("UNREAD")
+  createdAt DateTime @default(now())
+}
+
+model SEOSetting {
+  id              String   @id @default(uuid())
+  pagePath        String   @unique
+  metaTitle       String
+  metaDescription String
+  keywords        String[]
+  ogTitle         String?
+  ogDescription   String?
+  ogImage         String?
+  schemaMarkup    Json?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  EDITOR
+}
+
+enum ProductStatus {
+  COMING_SOON
+  UNDER_DEVELOPMENT
+  BETA
+  AVAILABLE
+}
+
+enum PublishStatus {
+  DRAFT
+  PUBLISHED
+  HIDDEN
+}
