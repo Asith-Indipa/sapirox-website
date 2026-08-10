@@ -2,12 +2,27 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Blog } from '@/services/api';
-import { ArrowRight, Calendar, Search, User } from 'lucide-react';
+import { Blog, getFullImageUrl } from '@/services/api';
+import { ArrowRight, Calendar, Search, User, Clock } from 'lucide-react';
 
 interface BlogClientProps {
   initialBlogs: Blog[];
 }
+
+// Safe date formatter to avoid 1/1/1970 bug
+const formatDate = (dateStr: string | null | undefined, fallbackStr?: string | null | undefined): string => {
+  const target = dateStr || fallbackStr;
+  if (!target) return 'Draft';
+  const date = new Date(target);
+  if (isNaN(date.getTime()) || date.getTime() === 0) {
+    return 'Draft';
+  }
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  });
+};
 
 export default function BlogClient({ initialBlogs }: BlogClientProps) {
   const [searchQuery, setSearchQuery] = useState('');
@@ -24,7 +39,7 @@ export default function BlogClient({ initialBlogs }: BlogClientProps) {
   return (
     <div className="relative min-h-[85vh] py-20 px-6 max-w-7xl mx-auto">
       {/* Glow effect */}
-      <div className="absolute top-[10%] right-[10%] w-[300px] h-[300px] rounded-full bg-indigo-600/10 blur-[100px] pointer-events-none" />
+      <div className="absolute top-[10%] left-[20%] w-[300px] h-[300px] rounded-full bg-indigo-600/10 blur-[100px] pointer-events-none" />
 
       {/* Header section */}
       <div className="max-w-3xl mb-16">
@@ -57,38 +72,60 @@ export default function BlogClient({ initialBlogs }: BlogClientProps) {
           filteredBlogs.map((blog) => (
             <article 
               key={blog.id} 
-              className="premium-glass rounded-2xl overflow-hidden border border-gray-800 flex flex-col justify-between group hover:border-indigo-500/30 transition-all duration-300"
+              className="premium-glass rounded-2xl overflow-hidden border border-gray-800 flex flex-col justify-between group hover:border-indigo-500/30 transition-all duration-300 relative"
             >
-              <div className="p-6">
+              {blog.featured && (
+                <span className="absolute top-4 right-4 z-10 text-[10px] font-extrabold text-indigo-300 uppercase tracking-widest bg-indigo-900/80 backdrop-blur-md px-3 py-1 rounded-full border border-indigo-500/30 shadow-lg">
+                  ★ Featured
+                </span>
+              )}
+              
+              <div className="relative w-full aspect-video overflow-hidden border-b border-gray-800/40 bg-gray-950">
+                <img 
+                  src={getFullImageUrl(blog.coverImage) || 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80'} 
+                  alt={blog.coverImageAlt || blog.title} 
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80';
+                  }}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+
+              <div className="p-6 flex-1 flex flex-col">
                 <div className="flex items-center gap-2 mb-4">
                   <span className="text-xs text-indigo-400 font-semibold uppercase tracking-wider">
                     {blog.category.name}
                   </span>
                 </div>
 
-                <h2 className="text-xl font-bold text-white mb-4 group-hover:text-indigo-300 transition-colors leading-snug">
+                <h2 className="text-xl font-bold text-white mb-4 group-hover:text-indigo-300 transition-colors leading-snug font-heading">
                   {blog.title}
                 </h2>
-                <p className="text-gray-450 text-xs leading-relaxed line-clamp-3 mb-6">
-                  {blog.content}
+                
+                <p className="text-gray-400 text-sm leading-relaxed line-clamp-3 mb-6 flex-1">
+                  {blog.excerpt || (blog.content ? blog.content.substring(0, 160) + '...' : '')}
                 </p>
               </div>
 
               <div className="p-6 bg-gray-900/40 border-t border-gray-850/40 flex flex-col gap-4">
-                <div className="flex items-center justify-between text-[11px] text-gray-450">
-                  <span className="flex items-center gap-1">
-                    <Calendar className="h-3.5 w-3.5" />
-                    {new Date(blog.publishedDate).toLocaleDateString()}
+                <div className="grid grid-cols-3 gap-2 items-center text-[10px] text-gray-400 font-medium">
+                  <span className="flex items-center gap-1 truncate">
+                    <Calendar className="h-3.5 w-3.5 text-indigo-500/80 shrink-0" />
+                    {formatDate(blog.publishedDate, blog.createdAt)}
                   </span>
-                  <span className="flex items-center gap-1">
-                    <User className="h-3.5 w-3.5" />
-                    {blog.author?.email.split('@')[0]}
+                  <span className="flex items-center gap-1 justify-center truncate">
+                    <Clock className="h-3.5 w-3.5 text-indigo-500/80 shrink-0" />
+                    {blog.readingTime || 5} min read
+                  </span>
+                  <span className="flex items-center gap-1 justify-end truncate">
+                    <User className="h-3.5 w-3.5 text-indigo-500/80 shrink-0" />
+                    {blog.author?.email ? blog.author.email.split('@')[0] : 'admin'}
                   </span>
                 </div>
 
                 <Link 
                   href={`/blog/${blog.slug}`}
-                  className="inline-flex items-center gap-1.5 text-xs font-bold text-white hover:text-indigo-400 transition-colors"
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-white hover:text-indigo-455 transition-colors mt-2"
                 >
                   Read Full Article <ArrowRight className="h-3.5 w-3.5" />
                 </Link>
@@ -111,18 +148,18 @@ export default function BlogClient({ initialBlogs }: BlogClientProps) {
                 <h3 className="text-lg font-bold text-white mt-3 mb-3 group-hover:text-indigo-300 transition-colors">
                   {item.title}
                 </h3>
-                <p className="text-gray-455 text-xs leading-relaxed">
+                <p className="text-gray-400 text-xs leading-relaxed">
                   Technical deep dive outlining optimized structural guidelines to scale applications and resolve common infrastructure bottlenecks.
                 </p>
               </div>
 
               <div className="p-6 bg-gray-900/40 border-t border-gray-855/40 flex flex-col gap-4">
-                <div className="flex items-center justify-between text-[11px] text-gray-450">
+                <div className="flex items-center justify-between text-[11px] text-gray-400">
                   <span className="flex items-center gap-1">
-                    <Calendar className="h-3.5 w-3.5" /> {item.date}
+                    <Calendar className="h-3.5 w-3.5 text-indigo-500/80" /> {item.date}
                   </span>
                   <span className="flex items-center gap-1">
-                    <User className="h-3.5 w-3.5" /> dev.team
+                    <User className="h-3.5 w-3.5 text-indigo-500/80" /> dev.team
                   </span>
                 </div>
 

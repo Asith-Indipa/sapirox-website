@@ -12,7 +12,8 @@ export async function generateMetadata(): Promise<Metadata> {
   
   try {
     const encodedPath = encodeURIComponent('/blog');
-    const res = await fetch(`http://localhost:5000/api/seo/${encodedPath}`, { 
+    const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+    const res = await fetch(`${apiBase}/seo/${encodedPath}`, { 
       cache: 'no-store',
       headers: { 'Accept': 'application/json' }
     });

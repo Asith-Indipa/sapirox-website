@@ -13,7 +13,8 @@ export async function generateMetadata(): Promise<Metadata> {
   
   try {
     const encodedPath = encodeURIComponent('/services');
-    const res = await fetch(`http://localhost:5000/api/seo/${encodedPath}`, { 
+    const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+    const res = await fetch(`${apiBase}/seo/${encodedPath}`, { 
       cache: 'no-store',
       headers: { 'Accept': 'application/json' }
     });
@@ -66,7 +67,7 @@ export default async function ServicesPage() {
   };
 
   return (
-    <div className="relative min-h-[85vh] py-20 px-6 max-w-7xl mx-auto">
+    <div className="relative min-h-[85vh] py-20 px-6 md:px-12 lg:px-20 max-w-[1536px] mx-auto w-full overflow-hidden">
       <ItemListSchema 
         items={services.map((s, idx) => ({
           name: s.title,

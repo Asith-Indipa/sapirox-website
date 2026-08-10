@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { ServiceSchema } from '@/components/seo';
 import { apiFetch, Service } from '@/services/api';
-import { Cpu, Layers, Globe, Shield, Code, Zap, Activity, CheckCircle, ArrowLeft, MessageSquare } from 'lucide-react';
+import { Cpu, Layers, Globe, Shield, Code, Zap, Activity, CheckCircle, ArrowLeft, MessageSquare, ExternalLink } from 'lucide-react';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -13,8 +13,8 @@ export const revalidate = 0;
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   try {
-    // API is fully accessible on localhost
-    const res = await fetch(`http://localhost:5000/api/services/${slug}`, { 
+    const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+    const res = await fetch(`${apiBase}/services/${slug}`, { 
       cache: 'no-store',
       headers: { 'Accept': 'application/json' }
     });
@@ -81,7 +81,7 @@ export default async function ServiceDetailPage({ params }: PageProps) {
   }
 
   return (
-    <div className="relative min-h-[85vh] py-20 px-6 max-w-5xl mx-auto">
+    <div className="relative min-h-[85vh] py-20 px-6 md:px-12 lg:px-20 max-w-[1536px] mx-auto w-full overflow-hidden">
       <ServiceSchema 
         title={service.title}
         description={service.shortDescription}
@@ -109,14 +109,42 @@ export default async function ServiceDetailPage({ params }: PageProps) {
         </div>
       </div>
 
+      {/* Service Cover Image */}
+      {service.image && service.image.trim() !== '' && (
+        <div className="relative w-full mb-12 max-w-4xl">
+          <img 
+            src={service.image} 
+            alt={service.title} 
+            className="w-full h-auto rounded-3xl border border-gray-800/80 shadow-2xl shadow-indigo-950/20 block"
+          />
+        </div>
+      )}
+
       {/* Detailed Description & Features section */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 mt-16">
         
         {/* Main Content */}
-        <div className="lg:col-span-2 space-y-6">
-          <h2 className="text-2xl font-bold text-white mb-4 border-b border-gray-800 pb-3">Service Overview</h2>
-          <div className="text-gray-300 leading-relaxed space-y-4 whitespace-pre-wrap text-sm md:text-base">
-            {service.fullDescription}
+        <div className="lg:col-span-2 space-y-8">
+          
+          {/* Technologies section */}
+          {service.technologies && service.technologies.length > 0 && (
+            <div className="p-6 rounded-2xl bg-indigo-500/[0.03] border border-indigo-500/10 backdrop-blur-md">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-indigo-400 mb-4">Technologies Powered By</h3>
+              <div className="flex flex-wrap gap-2.5">
+                {service.technologies.map((tech) => (
+                  <span key={tech} className="px-3.5 py-1.5 rounded-xl bg-gray-900 border border-gray-800 text-xs font-semibold text-gray-300 hover:text-white hover:border-indigo-500/40 transition-colors">
+                    {tech}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div>
+            <h2 className="text-2xl font-bold text-white mb-4 border-b border-gray-800 pb-3">Service Overview</h2>
+            <div className="text-gray-300 leading-relaxed space-y-4 whitespace-pre-wrap text-sm md:text-base">
+              {service.fullDescription}
+            </div>
           </div>
         </div>
 
@@ -143,6 +171,103 @@ export default async function ServiceDetailPage({ params }: PageProps) {
         </div>
 
       </div>
+
+      {/* Related Projects section */}
+      {service.projects && service.projects.length > 0 && (
+        <div className="mt-20 pt-12 border-t border-gray-900">
+          <h2 className="text-2xl md:text-3xl font-bold text-white mb-2 font-heading">
+            Our Case Studies
+          </h2>
+          <p className="text-gray-400 text-sm mb-8">
+            Real-world solutions built using this capability.
+          </p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+            {service.projects.map((project) => (
+              <div key={project.id} className="premium-glass rounded-2xl overflow-hidden border border-gray-800 group hover:border-indigo-500/30 transition-all duration-300 flex flex-col justify-between">
+                <div>
+                  {(project.coverImage || (project.gallery && project.gallery[0])) && (
+                    <Link href={`/portfolio/${project.slug}`} className="relative h-48 w-full overflow-hidden block">
+                      <img 
+                        src={project.coverImage || project.gallery[0]} 
+                        alt={project.title} 
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-550 block"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-950/20 to-transparent" />
+                    </Link>
+                  )}
+                  <div className="p-6">
+                    <span className="text-[10px] uppercase font-bold tracking-wider text-indigo-400 bg-indigo-500/10 px-2.5 py-1 rounded-md border border-indigo-500/20">
+                      {project.category}
+                    </span>
+                    <h3 className="text-xl font-bold text-white mt-3 mb-2 hover:text-indigo-400 transition-colors">
+                      <Link href={`/portfolio/${project.slug}`}>
+                        {project.title}
+                      </Link>
+                    </h3>
+                    <p className="text-gray-400 text-xs leading-relaxed line-clamp-3">{project.description}</p>
+                  </div>
+                </div>
+                
+                <div className="px-6 pb-6">
+                  <div className="flex flex-wrap gap-1.5 mb-4">
+                    {project.technology.map((tech, idx) => (
+                      <span key={idx} className="text-[10px] font-medium px-2 py-0.5 rounded bg-gray-900 border border-gray-800 text-gray-400">
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+
+                  <div className="flex items-center justify-between pt-4 border-t border-gray-800/40 gap-3">
+                    <Link 
+                      href={`/portfolio/${project.slug}`}
+                      className="text-xs font-bold text-indigo-400 hover:text-indigo-300 transition-colors inline-flex items-center gap-1"
+                    >
+                      Read Case Study &rarr;
+                    </Link>
+
+                    <div className="flex items-center gap-3">
+                      {project.liveUrl && (
+                        <a 
+                          href={project.liveUrl} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="text-gray-450 hover:text-indigo-400 transition-colors"
+                          title="Live Demo"
+                        >
+                          <ExternalLink className="h-4 w-4" />
+                        </a>
+                      )}
+                      {project.githubUrl && (
+                        <a 
+                          href={project.githubUrl} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="text-gray-450 hover:text-white transition-colors"
+                          title="GitHub Repository"
+                        >
+                          <svg 
+                            viewBox="0 0 24 24" 
+                            className="h-4 w-4" 
+                            stroke="currentColor" 
+                            strokeWidth="2.5" 
+                            fill="none" 
+                            strokeLinecap="round" 
+                            strokeLinejoin="round"
+                          >
+                            <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
+                            <path d="M9 18c-4.51 2-5-2-7-2" />
+                          </svg>
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

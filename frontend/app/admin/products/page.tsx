@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { getCurrentUser, User } from '@/services/auth';
-import { getProducts, createProduct, updateProduct, deleteProduct, Product } from '@/services/api';
+import { getProducts, createProduct, updateProduct, deleteProduct, uploadImage, Product } from '@/services/api';
 import { Plus, Edit2, Trash2, ArrowLeft, Loader2, Save, X } from 'lucide-react';
 
 export default function AdminProductsPage() {
@@ -19,20 +19,43 @@ export default function AdminProductsPage() {
   const [formData, setFormData] = useState<Partial<Product>>({
     name: '',
     slug: '',
+    category: 'Other',
     shortDescription: '',
     description: '',
     productImage: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80',
     gallery: [''],
     features: [''],
     benefits: [''],
+    targetUsers: [''],
     technology: [''],
-    status: 'ACTIVE',
+    integrations: [''],
+    screenshots: [{ imageUrl: '', title: '', description: '' }],
+    howItWorks: [{ title: '', description: '', order: 1 }],
+    status: 'AVAILABLE',
     demoUrl: '',
     ctaText: 'Request Access',
   });
 
   const [formLoading, setFormLoading] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingImage(true);
+    setFormError(null);
+    try {
+      const url = await uploadImage(file);
+      setFormData(prev => ({ ...prev, productImage: url }));
+    } catch (err: any) {
+      console.error('Upload failed:', err);
+      setFormError(err.message || 'Image upload failed. Please try again.');
+    } finally {
+      setUploadingImage(false);
+    }
+  };
 
   async function loadProductsData() {
     setLoading(true);
@@ -65,16 +88,23 @@ export default function AdminProductsPage() {
     setFormData({
       name: '',
       slug: '',
+      category: 'Other',
       shortDescription: '',
       description: '',
       productImage: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80',
       gallery: [''],
       features: [''],
       benefits: [''],
+      targetUsers: ['Small Businesses', 'Startups'],
       technology: ['React', 'TypeScript', 'Node.js'],
-      status: 'ACTIVE',
+      integrations: ['Supabase', 'Stripe'],
+      screenshots: [{ imageUrl: '', title: '', description: '' }],
+      howItWorks: [{ title: '', description: '', order: 1 }],
+      status: 'AVAILABLE',
       demoUrl: '',
       ctaText: 'Request Access',
+      seoTitle: '',
+      seoDescription: '',
     });
     setFormError(null);
     setModalOpen(true);
@@ -85,35 +115,88 @@ export default function AdminProductsPage() {
     setFormData({
       name: product.name,
       slug: product.slug,
+      category: product.category || 'Other',
       shortDescription: product.shortDescription,
       description: product.description,
       productImage: product.productImage,
-      gallery: product.gallery.length > 0 ? [...product.gallery] : [''],
-      features: product.features.length > 0 ? [...product.features] : [''],
-      benefits: product.benefits.length > 0 ? [...product.benefits] : [''],
-      technology: product.technology.length > 0 ? [...product.technology] : [''],
+      gallery: product.gallery && product.gallery.length > 0 ? [...product.gallery] : [''],
+      features: product.features && product.features.length > 0 ? [...product.features] : [''],
+      benefits: product.benefits && product.benefits.length > 0 ? [...product.benefits] : [''],
+      targetUsers: product.targetUsers && product.targetUsers.length > 0 ? [...product.targetUsers] : [''],
+      technology: product.technology && product.technology.length > 0 ? [...product.technology] : [''],
+      integrations: product.integrations && product.integrations.length > 0 ? [...product.integrations] : [''],
+      screenshots: product.screenshots && product.screenshots.length > 0 ? [...product.screenshots] : [{ imageUrl: '', title: '', description: '' }],
+      howItWorks: product.howItWorks && product.howItWorks.length > 0 ? [...product.howItWorks] : [{ title: '', description: '', order: 1 }],
       status: product.status,
       demoUrl: product.demoUrl || '',
       ctaText: product.ctaText || 'Request Access',
+      seoTitle: product.seoTitle || '',
+      seoDescription: product.seoDescription || '',
     });
     setFormError(null);
     setModalOpen(true);
   };
 
   // Dynamic Array Handlers helper
-  const handleArrayChange = (field: 'features' | 'benefits' | 'technology' | 'gallery', index: number, value: string) => {
-    const arr = [...(formData[field] || [])];
+  const handleArrayChange = (field: 'features' | 'benefits' | 'technology' | 'gallery' | 'targetUsers' | 'integrations', index: number, value: string) => {
+    const arr = [...(formData[field] || [])] as string[];
     arr[index] = value;
     setFormData({ ...formData, [field]: arr });
   };
 
-  const addArrayInput = (field: 'features' | 'benefits' | 'technology' | 'gallery') => {
+  const addArrayInput = (field: 'features' | 'benefits' | 'technology' | 'gallery' | 'targetUsers' | 'integrations') => {
     setFormData({ ...formData, [field]: [...(formData[field] || []), ''] });
   };
 
-  const removeArrayInput = (field: 'features' | 'benefits' | 'technology' | 'gallery', index: number) => {
+  const removeArrayInput = (field: 'features' | 'benefits' | 'technology' | 'gallery' | 'targetUsers' | 'integrations', index: number) => {
     const arr = (formData[field] || []).filter((_, i) => i !== index);
     setFormData({ ...formData, [field]: arr });
+  };
+
+  // Screenshots handlers
+  const handleScreenshotChange = (index: number, key: 'imageUrl' | 'title' | 'description', value: string) => {
+    const arr = [...(formData.screenshots || [])];
+    arr[index] = { ...arr[index], [key]: value };
+    setFormData({ ...formData, screenshots: arr });
+  };
+
+  const addScreenshotInput = () => {
+    setFormData({ ...formData, screenshots: [...(formData.screenshots || []), { imageUrl: '', title: '', description: '' }] });
+  };
+
+  const removeScreenshotInput = (index: number) => {
+    const arr = (formData.screenshots || []).filter((_, i) => i !== index);
+    setFormData({ ...formData, screenshots: arr });
+  };
+
+  const handleScreenshotUpload = async (index: number, file: File) => {
+    try {
+      const url = await uploadImage(file);
+      handleScreenshotChange(index, 'imageUrl', url);
+    } catch (err: any) {
+      console.error('Screenshot upload failed:', err);
+      alert('Screenshot upload failed: ' + (err.message || 'Error'));
+    }
+  };
+
+  // How It Works Steps handlers
+  const handleStepChange = (index: number, key: 'title' | 'description', value: string) => {
+    const arr = [...(formData.howItWorks || [])];
+    arr[index] = { ...arr[index], [key]: value };
+    setFormData({ ...formData, howItWorks: arr });
+  };
+
+  const addStepInput = () => {
+    const currentSteps = formData.howItWorks || [];
+    setFormData({ 
+      ...formData, 
+      howItWorks: [...currentSteps, { title: '', description: '', order: currentSteps.length + 1 }] 
+    });
+  };
+
+  const removeStepInput = (index: number) => {
+    const arr = (formData.howItWorks || []).filter((_, i) => i !== index).map((step, idx) => ({ ...step, order: idx + 1 }));
+    setFormData({ ...formData, howItWorks: arr });
   };
 
   const handleFormSubmit = async (e: React.FormEvent) => {
@@ -131,6 +214,10 @@ export default function AdminProductsPage() {
     const cleanedBenefits = (formData.benefits || []).filter(b => b.trim() !== '');
     const cleanedTech = (formData.technology || []).filter(t => t.trim() !== '');
     const cleanedGallery = (formData.gallery || []).filter(g => g.trim() !== '');
+    const cleanedTargetUsers = (formData.targetUsers || []).filter(u => u.trim() !== '');
+    const cleanedIntegrations = (formData.integrations || []).filter(i => i.trim() !== '');
+    const cleanedScreenshots = (formData.screenshots || []).filter(s => s.imageUrl.trim() !== '' || s.title.trim() !== '');
+    const cleanedHowItWorks = (formData.howItWorks || []).filter(step => step.title.trim() !== '');
 
     const payload = {
       ...formData,
@@ -138,6 +225,10 @@ export default function AdminProductsPage() {
       benefits: cleanedBenefits,
       technology: cleanedTech,
       gallery: cleanedGallery,
+      targetUsers: cleanedTargetUsers,
+      integrations: cleanedIntegrations,
+      screenshots: cleanedScreenshots,
+      howItWorks: cleanedHowItWorks,
     };
 
     try {
@@ -213,7 +304,7 @@ export default function AdminProductsPage() {
                       <td className="p-5 text-gray-450">{product.slug}</td>
                       <td className="p-5">
                         <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold border ${
-                          product.status === 'ACTIVE' 
+                          product.status === 'AVAILABLE' 
                             ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' 
                             : product.status === 'BETA'
                             ? 'bg-amber-500/10 text-amber-400 border-amber-500/20'
@@ -312,7 +403,24 @@ export default function AdminProductsPage() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-4 gap-6">
+                <div>
+                  <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Category</label>
+                  <select
+                    value={formData.category}
+                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                    className="w-full px-4 py-2.5 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors"
+                  >
+                    <option value="CRM">CRM</option>
+                    <option value="POS">POS</option>
+                    <option value="ERP">ERP</option>
+                    <option value="Analytics">Analytics</option>
+                    <option value="HR">HR</option>
+                    <option value="Inventory">Inventory</option>
+                    <option value="AI">AI</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
                 <div>
                   <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Publish Status</label>
                   <select
@@ -320,9 +428,10 @@ export default function AdminProductsPage() {
                     onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
                     className="w-full px-4 py-2.5 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors"
                   >
-                    <option value="ACTIVE">ACTIVE</option>
+                    <option value="AVAILABLE">AVAILABLE</option>
                     <option value="BETA">BETA</option>
-                    <option value="COMING_SOON">COMING SOON</option>
+                    <option value="COMING_SOON">COMING_SOON</option>
+                    <option value="UNDER_DEVELOPMENT">UNDER DEVELOPMENT</option>
                   </select>
                 </div>
                 <div>
@@ -348,12 +457,25 @@ export default function AdminProductsPage() {
 
               <div>
                 <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Main Product Display Image URL</label>
-                <input
-                  type="text"
-                  value={formData.productImage}
-                  onChange={(e) => setFormData({ ...formData, productImage: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors"
-                />
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={formData.productImage}
+                    onChange={(e) => setFormData({ ...formData, productImage: e.target.value })}
+                    className="w-full px-4 py-2.5 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors"
+                    placeholder="https://images.unsplash.com/... or upload local file"
+                  />
+                  <label className="cursor-pointer px-4 py-2.5 rounded-xl bg-indigo-650 hover:bg-indigo-500 text-white text-xs font-bold flex items-center justify-center shrink-0 transition-colors">
+                    {uploadingImage ? 'Uploading...' : 'Upload Local'}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleImageUpload}
+                      disabled={uploadingImage}
+                    />
+                  </label>
+                </div>
               </div>
 
               <div>
@@ -376,6 +498,29 @@ export default function AdminProductsPage() {
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   className="w-full px-4 py-2.5 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors resize-none"
                 />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 border-t border-gray-800 pt-6">
+                <div>
+                  <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">SEO Page Title (Optional)</label>
+                  <input
+                    type="text"
+                    value={formData.seoTitle || ''}
+                    onChange={(e) => setFormData({ ...formData, seoTitle: e.target.value })}
+                    className="w-full px-4 py-2.5 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors"
+                    placeholder="Defaults to: [Product Name] | Sapirox"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">SEO Page Description (Optional)</label>
+                  <input
+                    type="text"
+                    value={formData.seoDescription || ''}
+                    onChange={(e) => setFormData({ ...formData, seoDescription: e.target.value })}
+                    className="w-full px-4 py-2.5 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors"
+                    placeholder="Defaults to short description"
+                  />
+                </div>
               </div>
 
               {/* Dynamic inputs sections */}
@@ -424,6 +569,179 @@ export default function AdminProductsPage() {
                   </div>
                 </div>
 
+              </div>
+
+              {/* Key Business Benefits list */}
+              <div className="space-y-3 pt-4 border-t border-gray-800/40">
+                <div className="flex justify-between items-center">
+                  <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Key Business Benefits</label>
+                  <button type="button" onClick={() => addArrayInput('benefits')} className="text-xs text-indigo-400 font-bold">+ Add</button>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {formData.benefits?.map((benefit, idx) => (
+                    <div key={idx} className="flex gap-2">
+                      <input
+                        type="text"
+                        value={benefit}
+                        onChange={(e) => handleArrayChange('benefits', idx, e.target.value)}
+                        className="w-full px-4 py-2 rounded-xl bg-gray-900 border border-gray-800 text-white text-xs"
+                        placeholder="E.g. Reduce server costs by up to 30%"
+                      />
+                      <button type="button" onClick={() => removeArrayInput('benefits', idx)} className="p-2 text-rose-450 bg-gray-800 rounded-lg"><X className="h-3.5 w-3.5" /></button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Target Users & Integrations dynamic lists */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-gray-800/40">
+                {/* Target Users */}
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center">
+                    <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Target Users / Who It's For</label>
+                    <button type="button" onClick={() => addArrayInput('targetUsers')} className="text-xs text-indigo-400 font-bold">+ Add User Type</button>
+                  </div>
+                  <div className="space-y-2">
+                    {formData.targetUsers?.map((user, idx) => (
+                      <div key={idx} className="flex gap-2">
+                        <input
+                          type="text"
+                          value={user}
+                          onChange={(e) => handleArrayChange('targetUsers', idx, e.target.value)}
+                          className="w-full px-4 py-2 rounded-xl bg-gray-900 border border-gray-800 text-white text-xs"
+                          placeholder="E.g. Startups, SMBs"
+                        />
+                        <button type="button" onClick={() => removeArrayInput('targetUsers', idx)} className="p-2 text-rose-450 bg-gray-800 rounded-lg"><X className="h-3.5 w-3.5" /></button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Integrations */}
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center">
+                    <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Integrations</label>
+                    <button type="button" onClick={() => addArrayInput('integrations')} className="text-xs text-indigo-400 font-bold">+ Add Integration</button>
+                  </div>
+                  <div className="space-y-2">
+                    {formData.integrations?.map((integ, idx) => (
+                      <div key={idx} className="flex gap-2">
+                        <input
+                          type="text"
+                          value={integ}
+                          onChange={(e) => handleArrayChange('integrations', idx, e.target.value)}
+                          className="w-full px-4 py-2 rounded-xl bg-gray-900 border border-gray-800 text-white text-xs"
+                          placeholder="E.g. Supabase, Stripe, WhatsApp"
+                        />
+                        <button type="button" onClick={() => removeArrayInput('integrations', idx)} className="p-2 text-rose-450 bg-gray-800 rounded-lg"><X className="h-3.5 w-3.5" /></button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Product Screenshots list */}
+              <div className="space-y-4 pt-4 border-t border-gray-800/40">
+                <div className="flex justify-between items-center">
+                  <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Product Screenshots</label>
+                  <button type="button" onClick={addScreenshotInput} className="text-xs text-indigo-400 font-bold">+ Add Screenshot</button>
+                </div>
+                <div className="space-y-4">
+                  {formData.screenshots?.map((scr, idx) => (
+                    <div key={idx} className="p-4 rounded-2xl bg-gray-950/40 border border-gray-800/60 space-y-3">
+                      <div className="flex justify-between items-center">
+                        <span className="text-xs font-bold text-gray-500">Screenshot #{idx + 1}</span>
+                        <button type="button" onClick={() => removeScreenshotInput(idx)} className="text-xs text-rose-450 hover:underline">Remove</button>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">Screenshot Title</label>
+                          <input
+                            type="text"
+                            value={scr.title}
+                            onChange={(e) => handleScreenshotChange(idx, 'title', e.target.value)}
+                            className="w-full px-3 py-1.5 rounded-lg bg-gray-900 border border-gray-800 text-white text-xs"
+                            placeholder="E.g. Dashboard, Analytics"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">Short Description</label>
+                          <input
+                            type="text"
+                            value={scr.description}
+                            onChange={(e) => handleScreenshotChange(idx, 'description', e.target.value)}
+                            className="w-full px-3 py-1.5 rounded-lg bg-gray-900 border border-gray-800 text-white text-xs"
+                            placeholder="E.g. Monitor all operations in real-time"
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">Image URL / Local Upload</label>
+                        <div className="flex gap-2">
+                          <input
+                            type="text"
+                            value={scr.imageUrl}
+                            onChange={(e) => handleScreenshotChange(idx, 'imageUrl', e.target.value)}
+                            className="w-full px-3 py-1.5 rounded-lg bg-gray-900 border border-gray-800 text-white text-xs"
+                            placeholder="https://images.unsplash.com/... or upload local file"
+                          />
+                          <label className="cursor-pointer px-3 py-1.5 rounded-lg bg-gray-850 hover:bg-gray-750 text-white text-[11px] font-bold flex items-center justify-center shrink-0 border border-gray-800 transition-colors">
+                            Upload File
+                            <input
+                              type="file"
+                              accept="image/*"
+                              className="hidden"
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) handleScreenshotUpload(idx, file);
+                              }}
+                            />
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* How It Works Steps list */}
+              <div className="space-y-4 pt-4 border-t border-gray-800/40">
+                <div className="flex justify-between items-center">
+                  <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">How It Works (Steps)</label>
+                  <button type="button" onClick={addStepInput} className="text-xs text-indigo-400 font-bold">+ Add Step</button>
+                </div>
+                <div className="space-y-4">
+                  {formData.howItWorks?.map((step, idx) => (
+                    <div key={idx} className="p-4 rounded-2xl bg-gray-950/40 border border-gray-800/60 space-y-3">
+                      <div className="flex justify-between items-center">
+                        <span className="text-xs font-bold text-gray-500">Step #{step.order || idx + 1}</span>
+                        <button type="button" onClick={() => removeStepInput(idx)} className="text-xs text-rose-450 hover:underline">Remove</button>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">Step Title</label>
+                          <input
+                            type="text"
+                            value={step.title}
+                            onChange={(e) => handleStepChange(idx, 'title', e.target.value)}
+                            className="w-full px-3 py-1.5 rounded-lg bg-gray-900 border border-gray-800 text-white text-xs"
+                            placeholder="E.g. Step 01: Connect"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">Step Description</label>
+                          <input
+                            type="text"
+                            value={step.description}
+                            onChange={(e) => handleStepChange(idx, 'description', e.target.value)}
+                            className="w-full px-3 py-1.5 rounded-lg bg-gray-900 border border-gray-800 text-white text-xs"
+                            placeholder="E.g. Hook your database in seconds"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
 
               {/* Modal Actions */}

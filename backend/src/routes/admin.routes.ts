@@ -95,6 +95,82 @@ router.get('/messages', authorize('SUPER_ADMIN', 'ADMIN'), getAllMessages);
 router.patch('/messages/:id/status', authorize('SUPER_ADMIN', 'ADMIN'), updateMessageStatus);
 router.delete('/messages/:id', authorize('SUPER_ADMIN'), deleteMessage);
 
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
+import { supabase } from '../config/supabase';
+
+// Configure multer storage in memory
+const storage = multer.memoryStorage();
+
+const upload = multer({
+  storage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = /jpeg|jpg|png|webp|gif/;
+    const mimeType = allowedTypes.test(file.mimetype);
+    const extName = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+    if (mimeType && extName) {
+      return cb(null, true);
+    }
+    cb(new Error('Only images (JPEG, JPG, PNG, WEBP, GIF) are allowed.'));
+  }
+});
+
+// ── File Upload Endpoint ────────────────────────────────────────────────────────
+router.post('/upload', upload.single('image'), async (req, res) => {
+  try {
+    if (!req.file) {
+      res.status(400).json({ success: false, message: 'No file uploaded.' });
+      return;
+    }
+
+    const file = req.file;
+    const ext = path.extname(file.originalname);
+    const fileName = `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`;
+    const bucketName = 'sapirox-uploads';
+
+    // 1. Try uploading to Supabase first if credentials exist
+    if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      try {
+        const { data, error } = await supabase.storage
+          .from(bucketName)
+          .upload(fileName, file.buffer, {
+            contentType: file.mimetype,
+            cacheControl: '3600',
+            upsert: false
+          });
+
+        if (!error) {
+          const { data: publicUrlData } = supabase.storage
+            .from(bucketName)
+            .getPublicUrl(fileName);
+          res.status(200).json({ success: true, url: publicUrlData.publicUrl });
+          return;
+        }
+        console.warn('⚠️ Supabase upload failed, trying local upload fallback:', error);
+      } catch (supabaseErr) {
+        console.warn('⚠️ Supabase upload threw error, trying local upload fallback:', supabaseErr);
+      }
+    }
+
+    // 2. Local fallback storage
+    const uploadDir = path.join(__dirname, '../../uploads');
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+
+    const localFilePath = path.join(uploadDir, fileName);
+    fs.writeFileSync(localFilePath, file.buffer);
+
+    // Return the relative URL (e.g. /uploads/123456.jpg)
+    const relativeUrl = `/uploads/${fileName}`;
+    res.status(200).json({ success: true, url: relativeUrl });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: error.message || 'File upload failed.' });
+  }
+});
+
 // ── SEO Settings ───────────────────────────────────────────────────────────────
 router.post('/seo', authorize('SUPER_ADMIN', 'ADMIN'), upsertSeoSetting);
 

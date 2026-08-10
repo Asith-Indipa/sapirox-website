@@ -32,6 +32,8 @@ model Service {
   status           PublishStatus @default(DRAFT)
   seoTitle         String?
   seoDescription   String?
+  technologies     String[]
+  projects         Project[]
   createdAt        DateTime      @default(now())
   updatedAt        DateTime      @updatedAt
 }
@@ -40,35 +42,53 @@ model Product {
   id               String        @id @default(uuid())
   name             String
   slug             String        @unique
+  category         String        @default("Other")
   shortDescription String
   description      String
   productImage     String
-  gallery          String[]
+  screenshots      Json          @default("[]")
   features         String[]
   benefits         String[]
+  targetUsers      String[]
+  howItWorks       Json          @default("[]")
   technology       String[]
+  integrations     String[]
   status           ProductStatus @default(COMING_SOON)
   demoUrl          String?
   ctaText          String        @default("Learn More")
   seoTitle         String?
   seoDescription   String?
+  gallery          String[]
   createdAt        DateTime      @default(now())
   updatedAt        DateTime      @updatedAt
 }
 
 model Project {
-  id             String        @id @default(uuid())
-  title          String
-  slug           String        @unique
-  description    String
-  gallery        String[]
-  technology     String[]
-  category       String
-  status         PublishStatus @default(DRAFT)
-  seoTitle       String?
-  seoDescription String?
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
+  id                String        @id @default(uuid())
+  title             String
+  slug              String        @unique
+  description       String
+  coverImage        String?
+  gallery           String[]
+  technology        String[]
+  category          String
+  status            PublishStatus @default(DRAFT)
+  seoTitle          String?
+  seoDescription    String?
+  liveUrl           String?
+  githubUrl         String?
+  serviceId         String?
+  service           Service?      @relation(fields: [serviceId], references: [id], onDelete: SetNull)
+  projectType       ProjectType   @default(CLIENT_PROJECT)
+  projectOverview   String?
+  challenge         String?
+  solution          String?
+  keyFeatures       String[]
+  servicesDelivered String[]
+  projectGallery    Json          @default("[]")
+  projectOutcome    String[]
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
 }
 
 model Category {
@@ -90,14 +110,18 @@ model Blog {
   title          String
   slug           String        @unique
   coverImage     String
+  coverImageAlt  String?
+  excerpt        String        @default("")
   content        String
   categoryId     String
   authorId       String
   publishedDate  DateTime?
   status         PublishStatus @default(DRAFT)
+  featured       Boolean       @default(false)
   seoTitle       String?
   seoDescription String?
   ogImage        String?
+  readingTime    Int           @default(1)
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
   author         User          @relation(fields: [authorId], references: [id])
@@ -137,6 +161,14 @@ model SEOSetting {
   schemaMarkup    Json?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+}
+
+enum ProjectType {
+  CLIENT_PROJECT
+  IN_HOUSE_PRODUCT
+  INTERNAL_PROJECT
+  PROTOTYPE
+  OPEN_SOURCE
 }
 
 enum Role {

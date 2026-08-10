@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { getCurrentUser, User } from '@/services/auth';
-import { getBlogs, createBlog, updateBlog, deleteBlog, Blog } from '@/services/api';
+import { getAdminBlogs, createBlog, updateBlog, deleteBlog, uploadImage, Blog } from '@/services/api';
 import { Plus, Edit2, Trash2, ArrowLeft, Loader2, Save, X } from 'lucide-react';
 
 export default function AdminBlogsPage() {
@@ -21,19 +21,43 @@ export default function AdminBlogsPage() {
     slug: '',
     content: '',
     coverImage: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80',
+    coverImageAlt: '',
+    excerpt: '',
     categoryName: 'Technology',
     categorySlug: 'technology',
     tagsInput: 'IT, Startup, Software',
+    status: 'PUBLISHED' as 'DRAFT' | 'PUBLISHED',
+    featured: false,
+    seoTitle: '',
+    seoDescription: '',
   });
 
   const [formLoading, setFormLoading] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingImage(true);
+    setFormError(null);
+    try {
+      const url = await uploadImage(file);
+      setFormData(prev => ({ ...prev, coverImage: url }));
+    } catch (err: any) {
+      console.error('Upload failed:', err);
+      setFormError(err.message || 'Image upload failed. Please try again.');
+    } finally {
+      setUploadingImage(false);
+    }
+  };
 
   async function loadBlogsData() {
     setLoading(true);
     try {
-      // Fetch unlimited blogs for admin management list
-      const data = await getBlogs(100);
+      // Fetch all blogs (drafts and published) for admin management list
+      const data = await getAdminBlogs();
       setBlogs(data);
     } catch (error) {
       console.error('Failed to load blogs:', error);
@@ -63,9 +87,15 @@ export default function AdminBlogsPage() {
       slug: '',
       content: '',
       coverImage: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80',
+      coverImageAlt: '',
+      excerpt: '',
       categoryName: 'Technology',
       categorySlug: 'technology',
       tagsInput: 'IT, Startup, Software',
+      status: 'PUBLISHED',
+      featured: false,
+      seoTitle: '',
+      seoDescription: '',
     });
     setFormError(null);
     setModalOpen(true);
@@ -79,9 +109,15 @@ export default function AdminBlogsPage() {
       slug: blog.slug,
       content: blog.content,
       coverImage: blog.coverImage,
+      coverImageAlt: blog.coverImageAlt || '',
+      excerpt: blog.excerpt || '',
       categoryName: blog.category?.name || 'Technology',
       categorySlug: blog.category?.slug || 'technology',
       tagsInput: tagsString,
+      status: blog.status || 'PUBLISHED',
+      featured: blog.featured || false,
+      seoTitle: blog.seoTitle || '',
+      seoDescription: blog.seoDescription || '',
     });
     setFormError(null);
     setModalOpen(true);
@@ -89,8 +125,8 @@ export default function AdminBlogsPage() {
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.title || !formData.slug || !formData.content) {
-      setFormError('Please fill in all core fields.');
+    if (!formData.title || !formData.slug || !formData.content || !formData.excerpt) {
+      setFormError('Please fill in all core fields, including the Excerpt.');
       return;
     }
 
@@ -109,11 +145,17 @@ export default function AdminBlogsPage() {
       slug: formData.slug,
       content: formData.content,
       coverImage: formData.coverImage,
+      coverImageAlt: formData.coverImageAlt || undefined,
+      excerpt: formData.excerpt,
       category: {
         name: formData.categoryName,
         slug: formData.categorySlug,
       },
       tags: tagsArray,
+      status: formData.status,
+      featured: formData.featured,
+      seoTitle: formData.seoTitle || undefined,
+      seoDescription: formData.seoDescription || undefined,
     };
 
     try {
@@ -191,9 +233,19 @@ export default function AdminBlogsPage() {
                         <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
                           {blog.category?.name || 'Technology'}
                         </span>
+                        {blog.status === 'DRAFT' && (
+                          <span className="ml-2 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                            Draft
+                          </span>
+                        )}
+                        {blog.featured && (
+                          <span className="ml-2 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-450 border border-emerald-500/20">
+                            ★ Featured
+                          </span>
+                        )}
                       </td>
                       <td className="p-5 text-gray-400 text-xs">
-                        {new Date(blog.publishedDate).toLocaleDateString()}
+                        {blog.publishedDate ? new Date(blog.publishedDate).toLocaleDateString() : (blog.createdAt ? new Date(blog.createdAt).toLocaleDateString() : 'Draft')}
                       </td>
                       <td className="p-5 text-right space-x-2">
                         <button
@@ -300,14 +352,76 @@ export default function AdminBlogsPage() {
                 </div>
               </div>
 
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Publish Status *</label>
+                  <select
+                    value={formData.status}
+                    onChange={(e) => setFormData({ ...formData, status: e.target.value as 'DRAFT' | 'PUBLISHED' })}
+                    className="w-full px-4 py-2.5 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors"
+                  >
+                    <option value="PUBLISHED">Published (Visible publicly)</option>
+                    <option value="DRAFT">Draft (Hidden from public)</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Featured Article *</label>
+                  <select
+                    value={formData.featured ? 'true' : 'false'}
+                    onChange={(e) => setFormData({ ...formData, featured: e.target.value === 'true' })}
+                    className="w-full px-4 py-2.5 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors"
+                  >
+                    <option value="false">No (Standard Article)</option>
+                    <option value="true">Yes (Highlight on Blog Page)</option>
+                  </select>
+                </div>
+              </div>
+
               <div>
-                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Cover Image URL</label>
-                <input
-                  type="text"
-                  value={formData.coverImage}
-                  onChange={(e) => setFormData({ ...formData, coverImage: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors"
+                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Short Excerpt *</label>
+                <textarea
+                  required
+                  rows={2}
+                  value={formData.excerpt}
+                  onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
+                  className="w-full px-4 py-2.5 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors resize-none"
+                  placeholder="Brief summary of the article to show on cards..."
                 />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Cover Image URL</label>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={formData.coverImage}
+                      onChange={(e) => setFormData({ ...formData, coverImage: e.target.value })}
+                      className="w-full px-4 py-2.5 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors"
+                      placeholder="https://images.unsplash.com/... or upload local file"
+                    />
+                    <label className="cursor-pointer px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold flex items-center justify-center shrink-0 transition-colors">
+                      {uploadingImage ? 'Uploading...' : 'Upload Local'}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={handleImageUpload}
+                        disabled={uploadingImage}
+                      />
+                    </label>
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Cover Image Alt Text</label>
+                  <input
+                    type="text"
+                    value={formData.coverImageAlt}
+                    onChange={(e) => setFormData({ ...formData, coverImageAlt: e.target.value })}
+                    className="w-full px-4 py-2.5 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors"
+                    placeholder="Descriptive text for accessibility & SEO"
+                  />
+                </div>
               </div>
 
               <div>
@@ -320,6 +434,29 @@ export default function AdminBlogsPage() {
                   className="w-full px-4 py-2.5 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors resize-none font-mono"
                   placeholder="Write the full content of the article..."
                 />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4 border-t border-gray-800/40">
+                <div>
+                  <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">SEO Title</label>
+                  <input
+                    type="text"
+                    value={formData.seoTitle}
+                    onChange={(e) => setFormData({ ...formData, seoTitle: e.target.value })}
+                    className="w-full px-4 py-2.5 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors"
+                    placeholder="E.g. Custom SEO optimized title"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">SEO Description</label>
+                  <textarea
+                    rows={2}
+                    value={formData.seoDescription}
+                    onChange={(e) => setFormData({ ...formData, seoDescription: e.target.value })}
+                    className="w-full px-4 py-2.5 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors resize-none"
+                    placeholder="Meta description for search engines"
+                  />
+                </div>
               </div>
 
               {/* Modal Actions */}

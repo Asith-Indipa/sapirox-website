@@ -4,8 +4,10 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { getCurrentUser, removeAuthToken, User } from '@/services/auth';
-import { getServices, createService, updateService, deleteService, Service } from '@/services/api';
+import { getServices, createService, updateService, deleteService, uploadImage, Service } from '@/services/api';
 import { Plus, Edit2, Trash2, ArrowLeft, Loader2, Save, X, Star, Eye } from 'lucide-react';
+
+
 
 export default function AdminServicesPage() {
   const router = useRouter();
@@ -27,10 +29,30 @@ export default function AdminServicesPage() {
     isFeatured: false,
     showOnHomepage: true,
     status: 'PUBLISHED',
+    technologies: [''],
+    image: '',
   });
 
   const [formLoading, setFormLoading] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingImage(true);
+    setFormError(null);
+    try {
+      const url = await uploadImage(file);
+      setFormData(prev => ({ ...prev, image: url }));
+    } catch (err: any) {
+      console.error('Upload failed:', err);
+      setFormError(err.message || 'Image upload failed. Please try again.');
+    } finally {
+      setUploadingImage(false);
+    }
+  };
 
   useEffect(() => {
     async function checkAuth() {
@@ -70,6 +92,8 @@ export default function AdminServicesPage() {
       isFeatured: false,
       showOnHomepage: true,
       status: 'PUBLISHED',
+      technologies: [''],
+      image: '',
     });
     setFormError(null);
     setModalOpen(true);
@@ -88,6 +112,8 @@ export default function AdminServicesPage() {
       isFeatured: service.isFeatured ?? false,
       showOnHomepage: service.showOnHomepage ?? true,
       status: service.status || 'PUBLISHED',
+      technologies: service.technologies && service.technologies.length > 0 ? [...service.technologies] : [''],
+      image: service.image || '',
     });
     setFormError(null);
     setModalOpen(true);
@@ -108,6 +134,21 @@ export default function AdminServicesPage() {
     setFormData({ ...formData, features: updatedFeatures });
   };
 
+  const handleTechChange = (index: number, value: string) => {
+    const updatedTech = [...(formData.technologies || [])];
+    updatedTech[index] = value;
+    setFormData({ ...formData, technologies: updatedTech });
+  };
+
+  const addTechInput = () => {
+    setFormData({ ...formData, technologies: [...(formData.technologies || []), ''] });
+  };
+
+  const removeTechInput = (index: number) => {
+    const updatedTech = (formData.technologies || []).filter((_, i) => i !== index);
+    setFormData({ ...formData, technologies: updatedTech });
+  };
+
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.title || !formData.slug || !formData.shortDescription || !formData.fullDescription) {
@@ -118,14 +159,15 @@ export default function AdminServicesPage() {
     setFormLoading(true);
     setFormError(null);
 
-    // Clean features list
+    // Clean features and technologies list
     const cleanedFeatures = (formData.features || []).filter(f => f.trim() !== '');
+    const cleanedTech = (formData.technologies || []).filter(t => t.trim() !== '');
 
     try {
       if (editId) {
-        await updateService(editId, { ...formData, features: cleanedFeatures });
+        await updateService(editId, { ...formData, features: cleanedFeatures, technologies: cleanedTech });
       } else {
-        await createService({ ...formData, features: cleanedFeatures });
+        await createService({ ...formData, features: cleanedFeatures, technologies: cleanedTech });
       }
       setModalOpen(false);
       await loadServicesData();
@@ -387,6 +429,64 @@ export default function AdminServicesPage() {
                     }`} />
                   </button>
                 </label>
+              </div>
+
+              {/* Dynamic Technologies List input */}
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider">Technologies Used</label>
+                  <button
+                    type="button"
+                    onClick={addTechInput}
+                    className="text-xs font-bold text-indigo-400 hover:text-indigo-300 transition-colors"
+                  >
+                    + Add
+                  </button>
+                </div>
+                
+                <div className="space-y-2">
+                  {formData.technologies?.map((tech, idx) => (
+                    <div key={idx} className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        value={tech}
+                        onChange={(e) => handleTechChange(idx, e.target.value)}
+                        className="w-full px-4 py-2 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors"
+                        placeholder={`E.g. React`}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removeTechInput(idx)}
+                        className="p-2 rounded-lg bg-gray-800 hover:bg-rose-500/10 text-rose-450 hover:text-rose-450 transition-colors shrink-0"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Service Cover Image URL</label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={formData.image || ''}
+                    onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+                    className="w-full px-4 py-2.5 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors"
+                    placeholder="https://images.unsplash.com/... or upload local file"
+                  />
+                  <label className="cursor-pointer px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold flex items-center justify-center shrink-0 transition-colors">
+                    {uploadingImage ? 'Uploading...' : 'Upload Local'}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleImageUpload}
+                      disabled={uploadingImage}
+                    />
+                  </label>
+                </div>
               </div>
 
               <div>

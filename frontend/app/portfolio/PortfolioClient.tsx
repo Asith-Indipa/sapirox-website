@@ -67,16 +67,42 @@ export default function PortfolioClient({ initialProjects }: PortfolioClientProp
               className="premium-glass rounded-2xl overflow-hidden border border-gray-800 group hover:border-indigo-500/30 transition-all duration-300 flex flex-col justify-between"
             >
               <div>
-                {/* Thumbnail area placeholder */}
+                {/* Thumbnail area */}
                 <div className="h-44 w-full bg-gray-900/80 flex items-center justify-center relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-br from-indigo-950/20 to-purple-950/20" />
-                  <Code className="h-10 w-10 text-indigo-400/55 group-hover:scale-105 transition-transform duration-300" />
+                  {project.coverImage ? (
+                    <img 
+                      src={project.coverImage} 
+                      alt={project.title}
+                      className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-550"
+                    />
+                  ) : (
+                    <>
+                      <div className="absolute inset-0 bg-gradient-to-br from-indigo-950/20 to-purple-950/20" />
+                      <Code className="h-10 w-10 text-indigo-400/55 group-hover:scale-105 transition-transform duration-300" />
+                    </>
+                  )}
                 </div>
                 
                 <div className="p-6">
-                  <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">{project.category}</span>
-                  <h3 className="text-xl font-bold text-white mt-2 mb-3">{project.title}</h3>
-                  <p className="text-gray-450 text-xs leading-relaxed line-clamp-3 mb-6">{project.description}</p>
+                  <div className="flex items-center gap-2 mb-2 flex-wrap">
+                    <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">{project.category}</span>
+                    {project.projectType && (
+                      <>
+                        <span className="w-1.5 h-1.5 rounded-full bg-gray-700" />
+                        <span className="text-[10px] font-semibold text-gray-400">
+                          {project.projectType === 'CLIENT_PROJECT' && 'Client Project'}
+                          {project.projectType === 'IN_HOUSE_PRODUCT' && 'In-House Product'}
+                          {project.projectType === 'INTERNAL_PROJECT' && 'Internal Project'}
+                          {project.projectType === 'PROTOTYPE' && 'Prototype'}
+                          {project.projectType === 'OPEN_SOURCE' && 'Open Source'}
+                        </span>
+                      </>
+                    )}
+                  </div>
+                  <h3 className="text-xl font-bold text-white mb-3">{project.title}</h3>
+                  <p className="text-gray-450 text-xs leading-relaxed line-clamp-3 mb-6">
+                    {project.projectOverview || project.description}
+                  </p>
                 </div>
               </div>
 

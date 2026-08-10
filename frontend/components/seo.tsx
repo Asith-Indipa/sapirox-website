@@ -227,7 +227,8 @@ export function DynamicMetaTags({ path }: DynamicMetaTagsProps) {
     async function fetchAndApplySEO() {
       try {
         const encodedPath = encodeURIComponent(path);
-        const res = await fetch(`http://localhost:5000/api/seo/${encodedPath}`);
+        const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+        const res = await fetch(`${apiBase}/seo/${encodedPath}`);
         const json = await res.json();
         
         if (json.success && json.data) {

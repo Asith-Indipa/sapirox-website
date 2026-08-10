@@ -1,5 +1,14 @@
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
+export const getFullImageUrl = (url: string | null | undefined): string => {
+  if (!url) return '';
+  if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) {
+    return url;
+  }
+  const host = API_BASE_URL.replace('/api', '');
+  return `${host}${url.startsWith('/') ? '' : '/'}${url}`;
+};
+
 export interface ApiRequestInit extends Omit<RequestInit, 'body'> {
   body?: unknown;
 }
@@ -54,6 +63,8 @@ export interface Service {
   isFeatured?: boolean;
   showOnHomepage?: boolean;
   status?: 'DRAFT' | 'PUBLISHED' | 'HIDDEN';
+  technologies?: string[];
+  projects?: Project[];
 }
 
 export const getServices = async (): Promise<Service[]> => {
@@ -66,16 +77,23 @@ export interface Product {
   id: string;
   name: string;
   slug: string;
+  category: string;
   shortDescription: string;
   description: string;
   productImage: string;
-  gallery: string[];
+  screenshots: Array<{ imageUrl: string; title: string; description: string }>;
   features: string[];
   benefits: string[];
+  targetUsers: string[];
+  howItWorks: Array<{ title: string; description: string; order: number }>;
   technology: string[];
-  status: 'ACTIVE' | 'BETA' | 'COMING_SOON';
+  integrations: string[];
+  status: 'AVAILABLE' | 'BETA' | 'COMING_SOON' | 'UNDER_DEVELOPMENT';
   demoUrl?: string;
   ctaText?: string;
+  seoTitle?: string;
+  seoDescription?: string;
+  gallery: string[];
 }
 
 export const getProducts = async (): Promise<Product[]> => {
@@ -84,14 +102,33 @@ export const getProducts = async (): Promise<Product[]> => {
 };
 
 // ── Project Endpoints ────────────────────────────────────────────────────────
+export interface ProjectGalleryItem {
+  url: string;
+  title: string;
+  description: string;
+}
+
 export interface Project {
   id: string;
   title: string;
   slug: string;
   description: string;
+  coverImage?: string;
   gallery: string[];
   technology: string[];
   category: string;
+  serviceId?: string;
+  liveUrl?: string;
+  githubUrl?: string;
+  projectType: 'CLIENT_PROJECT' | 'IN_HOUSE_PRODUCT' | 'INTERNAL_PROJECT' | 'PROTOTYPE' | 'OPEN_SOURCE';
+  projectOverview?: string;
+  challenge?: string;
+  solution?: string;
+  keyFeatures: string[];
+  servicesDelivered: string[];
+  projectGallery: ProjectGalleryItem[];
+  projectOutcome?: string[];
+  status?: 'DRAFT' | 'PUBLISHED';
 }
 
 export const getProjects = async (): Promise<Project[]> => {
@@ -105,11 +142,19 @@ export interface Blog {
   title: string;
   slug: string;
   coverImage: string;
+  coverImageAlt?: string;
+  excerpt: string;
   content: string;
   publishedDate: string;
   category: { name: string; slug: string };
   tags: { name: string; slug: string }[];
   author: { email: string };
+  status: 'DRAFT' | 'PUBLISHED';
+  featured: boolean;
+  seoTitle?: string;
+  seoDescription?: string;
+  readingTime?: number;
+  createdAt?: string;
 }
 
 export const getBlogs = async (limit = 3): Promise<Blog[]> => {
@@ -230,6 +275,7 @@ export const deleteProject = async (id: string): Promise<void> => {
 };
 
 // ── Admin Blogs CRUD ──────────────────────────────────────────────────────────
+
 export const createBlog = async (data: unknown): Promise<Blog> => {
   const res = await apiFetch<{ success: boolean; data: Blog }>('/admin/blogs', {
     method: 'POST',
@@ -277,4 +323,14 @@ export const upsertSeoSetting = async (data: SEOSetting): Promise<SEOSetting> =>
     body: data,
   });
   return res.data;
+};
+
+export const uploadImage = async (file: File): Promise<string> => {
+  const formData = new FormData();
+  formData.append('image', file);
+  const res = await apiFetch<{ success: boolean; url: string }>('/admin/upload', {
+    method: 'POST',
+    body: formData,
+  });
+  return res.url;
 };

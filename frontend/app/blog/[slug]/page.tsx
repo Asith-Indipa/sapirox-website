@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { ArticleSchema } from '@/components/seo';
-import { apiFetch, Blog } from '@/services/api';
+import { apiFetch, Blog, getFullImageUrl } from '@/services/api';
 import { ArrowLeft, Calendar, User, Tag, Clock } from 'lucide-react';
 
 interface PageProps {
@@ -13,7 +13,8 @@ export const revalidate = 0;
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   try {
-    const res = await fetch(`http://localhost:5000/api/blogs/${slug}`, { 
+    const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+    const res = await fetch(`${apiBase}/blogs/${slug}`, { 
       cache: 'no-store',
       headers: { 'Accept': 'application/json' }
     });
@@ -22,12 +23,15 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       const json = await res.json();
       if (json.success && json.data) {
         const blog = json.data;
+        const pageTitle = blog.seoTitle || `${blog.title} | Sapirox`;
+        const pageDesc = blog.seoDescription || blog.excerpt || blog.content.substring(0, 160);
         return {
-          title: `${blog.title} | Sapirox`,
-          description: blog.content.substring(0, 160),
+          title: pageTitle,
+          description: pageDesc,
           openGraph: {
-            title: `${blog.title} | Sapirox Blog`,
-            description: blog.content.substring(0, 160),
+            title: pageTitle,
+            description: pageDesc,
+            images: blog.coverImage ? [getFullImageUrl(blog.coverImage)] : [],
           }
         };
       }
@@ -40,6 +44,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     title: "Article Details | Sapirox",
   };
 }
+
+const getSafeDateString = (dateVal: string | null | undefined, fallbackVal?: string | null | undefined): string => {
+  const target = dateVal || fallbackVal;
+  if (!target) return 'Draft';
+  const d = new Date(target);
+  if (isNaN(d.getTime()) || d.getTime() === 0) return 'Draft';
+  return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+};
 
 export default async function BlogDetailPage({ params }: PageProps) {
   const { slug } = await params;
@@ -70,10 +82,10 @@ export default async function BlogDetailPage({ params }: PageProps) {
     <article className="relative min-h-[85vh] py-20 px-6 max-w-3xl mx-auto">
       <ArticleSchema 
         title={blog.title}
-        description={blog.content.substring(0, 160)}
-        coverImage={blog.coverImage}
+        description={blog.seoDescription || blog.excerpt || blog.content.substring(0, 160)}
+        coverImage={getFullImageUrl(blog.coverImage)}
         slug={blog.slug}
-        datePublished={blog.publishedDate}
+        datePublished={blog.publishedDate || blog.createdAt || ''}
         category={blog.category?.name || 'Technology'}
       />
       
@@ -95,22 +107,39 @@ export default async function BlogDetailPage({ params }: PageProps) {
           {blog.title}
         </h1>
 
+        {blog.excerpt && (
+          <p className="text-lg md:text-xl text-gray-300 leading-relaxed mb-8 border-l-2 border-indigo-500 pl-4 font-medium italic">
+            {blog.excerpt}
+          </p>
+        )}
+
         {/* Metadata section */}
         <div className="flex flex-wrap items-center gap-6 text-xs text-gray-400 border-y border-gray-800/80 py-4">
           <div className="flex items-center gap-2">
-            <Calendar className="h-4 w-4" />
-            <span>{new Date(blog.publishedDate).toLocaleDateString()}</span>
+            <Calendar className="h-4 w-4 text-indigo-500/80" />
+            <span>{getSafeDateString(blog.publishedDate, blog.createdAt)}</span>
           </div>
           <div className="flex items-center gap-2">
-            <User className="h-4 w-4" />
-            <span>{blog.author?.email}</span>
+            <User className="h-4 w-4 text-indigo-500/80" />
+            <span>{blog.author?.email ? blog.author.email.split('@')[0] : 'admin'}</span>
           </div>
           <div className="flex items-center gap-2">
-            <Clock className="h-4 w-4" />
-            <span>5 min read</span>
+            <Clock className="h-4 w-4 text-indigo-500/80" />
+            <span>{blog.readingTime || 5} min read</span>
           </div>
         </div>
       </header>
+
+      {/* Blog Cover Image */}
+      {blog.coverImage && blog.coverImage.trim() !== '' && (
+        <div className="relative w-full mb-12 bg-gray-950 rounded-3xl overflow-hidden border border-gray-800/80 shadow-2xl shadow-indigo-950/20">
+          <img 
+            src={getFullImageUrl(blog.coverImage) || 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80'} 
+            alt={blog.coverImageAlt || blog.title} 
+            className="w-full h-auto block"
+          />
+        </div>
+      )}
 
       {/* Article Content markup */}
       <div className="text-gray-350 leading-relaxed text-sm md:text-base whitespace-pre-wrap space-y-6">

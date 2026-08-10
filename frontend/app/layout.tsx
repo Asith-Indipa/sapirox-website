@@ -28,7 +28,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${outfit.variable} ${geistSans.variable} h-full antialiased dark`}
     >
-      <body className="min-h-full flex flex-col bg-[#0B0F19] text-[#F8F9FA] selection:bg-indigo-500 selection:text-white">
+      <body className="min-h-full flex flex-col bg-[#0B0F19] text-[#F8F9FA] selection:bg-indigo-500 selection:text-white overflow-x-hidden">
         <Navbar />
         <main className="flex-1 flex flex-col">
           {children}

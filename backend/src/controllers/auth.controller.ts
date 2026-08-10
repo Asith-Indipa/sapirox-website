@@ -1,8 +1,18 @@
 import { Response } from 'express';
 import jwt from 'jsonwebtoken';
+import { createClient } from '@supabase/supabase-js';
 import { prisma } from '../config/prisma';
-import { supabase } from '../config/supabase';
 import { AuthRequest } from '../middlewares/auth';
+
+const supabaseUrl = process.env.SUPABASE_URL || '';
+const supabaseAnonKey = process.env.SUPABASE_ANON_KEY || '';
+
+const authClient = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    persistSession: false,
+    autoRefreshToken: false,
+  },
+});
 
 /**
  * POST /api/auth/login
@@ -17,8 +27,8 @@ export const login = async (req: AuthRequest, res: Response): Promise<void> => {
       return;
     }
 
-    // 1. Authenticate via Supabase Auth
-    const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+    // 1. Authenticate via Supabase Auth using isolated auth client
+    const { data: authData, error: authError } = await authClient.auth.signInWithPassword({
       email,
       password,
     });
@@ -121,8 +131,8 @@ export const getMe = async (req: AuthRequest, res: Response): Promise<void> => {
  */
 export const logout = async (_req: AuthRequest, res: Response): Promise<void> => {
   try {
-    // Sign out from Supabase (invalidates Supabase session, not JWT)
-    await supabase.auth.signOut();
+    // Sign out from Supabase (invalidates Supabase session, not JWT) using isolated auth client
+    await authClient.auth.signOut();
 
     res.status(200).json({
       success: true,

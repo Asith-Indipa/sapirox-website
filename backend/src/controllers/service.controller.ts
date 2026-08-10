@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { prisma } from '../config/prisma';
 import { AuthRequest } from '../middlewares/auth';
+import { deleteFileFromStorage } from '../utils/storage';
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // PUBLIC ROUTES
@@ -23,6 +24,12 @@ export const getPublicServiceBySlug = async (req: Request, res: Response): Promi
   try {
     const service = await prisma.service.findFirst({
       where: { slug: req.params.slug, status: 'PUBLISHED' },
+      include: {
+        projects: {
+          where: { status: 'PUBLISHED' },
+          orderBy: { createdAt: 'desc' }
+        }
+      }
     });
     if (!service) {
       res.status(404).json({ success: false, message: 'Service not found.' });
@@ -63,7 +70,7 @@ export const getServiceById = async (req: AuthRequest, res: Response): Promise<v
 
 export const createService = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const { title, slug, shortDescription, fullDescription, icon, image, features, order, isFeatured, showOnHomepage, status, seoTitle, seoDescription } = req.body;
+    const { title, slug, shortDescription, fullDescription, icon, image, features, order, isFeatured, showOnHomepage, status, seoTitle, seoDescription, technologies } = req.body;
 
     if (!title || !slug || !shortDescription || !fullDescription || !icon) {
       res.status(400).json({ success: false, message: 'Title, slug, shortDescription, fullDescription, and icon are required.' });
@@ -87,6 +94,7 @@ export const createService = async (req: AuthRequest, res: Response): Promise<vo
         status: status || 'DRAFT',
         seoTitle: seoTitle || null,
         seoDescription: seoDescription || null,
+        technologies: technologies || [],
       },
     });
     res.status(201).json({ success: true, message: 'Service created.', data: service });
@@ -112,6 +120,13 @@ export const updateService = async (req: AuthRequest, res: Response): Promise<vo
       }
     }
 
+    // Clean up replaced image asynchronously
+    if (req.body.image !== undefined && existing.image && existing.image !== req.body.image) {
+      deleteFileFromStorage(existing.image).catch(err => {
+        console.error('Error during service image update cleanup:', err);
+      });
+    }
+
     const service = await prisma.service.update({ where: { id }, data: req.body });
     res.status(200).json({ success: true, message: 'Service updated.', data: service });
   } catch (error) {
@@ -127,6 +142,14 @@ export const deleteService = async (req: AuthRequest, res: Response): Promise<vo
       res.status(404).json({ success: false, message: 'Service not found.' });
       return;
     }
+
+    // Clean up image from storage asynchronously
+    if (existing.image) {
+      deleteFileFromStorage(existing.image).catch(err => {
+        console.error('Error during service image cleanup:', err);
+      });
+    }
+
     await prisma.service.delete({ where: { id } });
     res.status(200).json({ success: true, message: 'Service deleted.' });
   } catch (error) {
