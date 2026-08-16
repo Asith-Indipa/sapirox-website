@@ -1,13 +1,67 @@
 'use client';
 
-import React, { useState } from 'react';
-import { submitContact } from '@/services/api';
-import { Mail, Globe, Send, MessageSquare } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { submitContact, getPageContentByName } from '@/services/api';
+import { 
+  Mail, Globe, Send, MessageSquare, Phone, Clock, 
+  MessageCircle 
+} from 'lucide-react';
+
+const DEFAULT_CONTACT_CONTENT = {
+  hero: {
+    sectionTitle: 'Connect With Us',
+    title: "Let's Engineer Your",
+    titleHighlight: 'Next System Architecture',
+    subtitle: 'Tell us about your target deliverables, database constraints or design preferences. Our lead software engineers will evaluate and reply with a system layout proposal.',
+  },
+  info: {
+    email: 'support@sapirox.com',
+    location: 'Colombo, Sri Lanka (Remote Worldwide Operations)',
+    phone: '',
+    whatsappNumber: '',
+    whatsappUrl: '',
+    hours: 'Mon – Fri | 9:00 AM – 6:00 PM',
+  },
+  socials: {
+    linkedin: '',
+    facebook: '',
+    github: '',
+  }
+};
+
+type ContactContent = typeof DEFAULT_CONTACT_CONTENT;
 
 export default function ContactClient() {
-  const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
+  const [content, setContent] = useState<ContactContent>(DEFAULT_CONTACT_CONTENT);
+  const [formData, setFormData] = useState({ 
+    name: '', 
+    email: '', 
+    company: '', 
+    projectType: 'Web Application', 
+    subject: '', 
+    message: '' 
+  });
+  const [agreed, setAgreed] = useState(false);
   const [formStatus, setFormStatus] = useState<{ type: 'success' | 'error' | null; message: string }>({ type: null, message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    async function loadContent() {
+      try {
+        const data = await getPageContentByName('contact');
+        if (data && data.content) {
+          setContent({
+            hero: { ...DEFAULT_CONTACT_CONTENT.hero, ...(data.content.hero as any) },
+            info: { ...DEFAULT_CONTACT_CONTENT.info, ...(data.content.info as any) },
+            socials: { ...DEFAULT_CONTACT_CONTENT.socials, ...(data.content.socials as any) },
+          });
+        }
+      } catch (err) {
+        // Fall back silently
+      }
+    }
+    loadContent();
+  }, []);
 
   const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -15,57 +69,191 @@ export default function ContactClient() {
       setFormStatus({ type: 'error', message: 'Please fill in all required fields.' });
       return;
     }
+    if (!agreed) {
+      setFormStatus({ type: 'error', message: 'You must agree to the privacy policy to submit this form.' });
+      return;
+    }
     setIsSubmitting(true);
     setFormStatus({ type: null, message: '' });
 
     try {
-      await submitContact(formData);
-      setFormStatus({ type: 'success', message: 'Thank you! Your message has been sent successfully.' });
-      setFormData({ name: '', email: '', subject: '', message: '' });
+      await submitContact({
+        name: formData.name,
+        email: formData.email,
+        company: formData.company || undefined,
+        projectType: formData.projectType,
+        subject: formData.subject || `Inquiry: ${formData.projectType}`,
+        message: formData.message,
+      });
+      setFormStatus({ type: 'success', message: 'Thank you! Your inquiry has been sent successfully. Our team will review it and get back to you shortly.' });
+      setFormData({ 
+        name: '', 
+        email: '', 
+        company: '', 
+        projectType: 'Web Application', 
+        subject: '', 
+        message: '' 
+      });
+      setAgreed(false);
     } catch (err: any) {
-      setFormStatus({ type: 'error', message: err.message || 'Failed to send message. Please try again.' });
+      setFormStatus({ type: 'error', message: err.message || 'Failed to submit inquiry. Please try again.' });
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="relative min-h-[80vh] py-20 px-6 max-w-7xl mx-auto flex flex-col justify-center">
+    <div className="relative min-h-[90vh] pt-32 pb-20 px-6 max-w-7xl mx-auto flex flex-col justify-center">
       
       {/* Background decorations */}
       <div className="absolute top-[15%] left-[10%] w-[300px] h-[300px] rounded-full bg-indigo-600/10 blur-[100px] pointer-events-none" />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
         
-        {/* Info panel */}
-        <div>
-          <span className="text-xs font-semibold uppercase tracking-wider text-indigo-400 bg-indigo-500/10 px-4 py-1.5 rounded-full border border-indigo-500/20">
-            Connect With Us
-          </span>
-          <h1 className="text-4xl md:text-6xl font-extrabold text-white mt-6 mb-6 font-heading tracking-tight leading-tight">
-            Let's Engineer Your <br />
-            <span className="premium-gradient-text">Next System Architecture</span>
-          </h1>
-          <p className="text-gray-400 text-lg leading-relaxed mb-8">
-            Tell us about your target deliverables, database constraints or design preferences. Our lead software engineers will evaluate and reply with a system layout proposal.
-          </p>
+        {/* Info panel - 5 Columns */}
+        <div className="lg:col-span-5 space-y-8">
+          <div>
+            <span className="text-xs font-semibold uppercase tracking-wider text-indigo-400 bg-indigo-500/10 px-4 py-1.5 rounded-full border border-indigo-500/20">
+              {content.hero.sectionTitle}
+            </span>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mt-6 mb-6 font-heading tracking-tight leading-tight">
+              {content.hero.title} <br />
+              <span className="premium-gradient-text">{content.hero.titleHighlight}</span>
+            </h1>
+            <p className="text-gray-400 text-base leading-relaxed mb-4">
+              {content.hero.subtitle}
+            </p>
+          </div>
 
-          <div className="space-y-4">
-            <div className="flex items-center gap-3 text-sm text-gray-300 p-4 rounded-xl bg-gray-900/60 border border-gray-800/80 w-fit">
-              <Mail className="h-5 w-5 text-indigo-400" />
-              <span>support@sapirox.com</span>
+          {/* Consolidated Contact Details Card */}
+          <div className="premium-glass p-8 rounded-3xl border border-gray-800/80 shadow-xl space-y-6">
+            <h3 className="text-lg font-bold text-white tracking-wide border-b border-gray-800/50 pb-3">Get in Touch</h3>
+            
+            <div className="space-y-4">
+              {/* Email */}
+              {content.info.email && (
+                <div className="flex items-center gap-4 py-1 border-b border-gray-850/30 last:border-0 pb-3">
+                  <div className="p-2.5 rounded-xl bg-indigo-500/10 text-indigo-400">
+                    <Mail className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">Email</h4>
+                    <a href={`mailto:${content.info.email}`} className="text-sm font-semibold text-white hover:text-indigo-400 transition-colors">
+                      {content.info.email}
+                    </a>
+                  </div>
+                </div>
+              )}
+
+              {/* WhatsApp */}
+              {(content.info.whatsappNumber || content.info.whatsappUrl) && (
+                <div className="flex items-center justify-between py-1 border-b border-gray-850/30 last:border-0 pb-3 gap-4">
+                  <div className="flex items-center gap-4">
+                    <div className="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-400">
+                      <MessageCircle className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">WhatsApp</h4>
+                      <span className="text-sm font-semibold text-white">Direct Chat Line</span>
+                    </div>
+                  </div>
+                  <a 
+                    href={content.info.whatsappUrl || (content.info.whatsappNumber ? `https://wa.me/${content.info.whatsappNumber.replace(/[^\d]/g, '')}` : '#')}
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-all duration-300 shadow-md shadow-emerald-600/10 hover:scale-105"
+                  >
+                    Chat
+                  </a>
+                </div>
+              )}
+
+              {/* Phone */}
+              {content.info.phone && (
+                <div className="flex items-center justify-between py-1 border-b border-gray-850/30 last:border-0 pb-3 gap-4">
+                  <div className="flex items-center gap-4">
+                    <div className="p-2.5 rounded-xl bg-indigo-500/10 text-indigo-400">
+                      <Phone className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">Phone Number</h4>
+                      <span className="text-sm font-semibold text-white">{content.info.phone}</span>
+                    </div>
+                  </div>
+                  <a 
+                    href={`tel:${content.info.phone}`} 
+                    className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition-all duration-300 shadow-md shadow-indigo-600/10 hover:scale-105"
+                  >
+                    Call
+                  </a>
+                </div>
+              )}
+
+              {/* Business Hours */}
+              {content.info.hours && (
+                <div className="flex items-center gap-4 py-1 border-b border-gray-850/30 last:border-0 pb-3">
+                  <div className="p-2.5 rounded-xl bg-indigo-500/10 text-indigo-400">
+                    <Clock className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">Business Hours</h4>
+                    <span className="text-sm font-semibold text-white">{content.info.hours}</span>
+                  </div>
+                </div>
+              )}
+
+              {/* Location */}
+              {content.info.location && (
+                <div className="flex items-center gap-4 py-1 border-b border-gray-850/30 last:border-0 pb-3">
+                  <div className="p-2.5 rounded-xl bg-indigo-500/10 text-indigo-400">
+                    <Globe className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">Location</h4>
+                    <span className="text-sm text-gray-300">{content.info.location}</span>
+                  </div>
+                </div>
+              )}
             </div>
-            <div className="flex items-center gap-3 text-sm text-gray-300 p-4 rounded-xl bg-gray-900/60 border border-gray-800/80 w-fit">
-              <Globe className="h-5 w-5 text-indigo-400" />
-              <span>Colombo, Sri Lanka (Remote Worldwide Operations)</span>
-            </div>
+
+            {/* Social Links inside the unified card */}
+            {(content.socials.linkedin || content.socials.facebook || content.socials.github) && (
+              <div className="pt-5 border-t border-gray-800/80">
+                <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-3">Connect Socially</h4>
+                <div className="flex items-center gap-3">
+                  {content.socials.linkedin && (
+                    <a href={content.socials.linkedin} target="_blank" rel="noopener noreferrer" className="p-2.5 rounded-xl bg-gray-950 border border-gray-800 text-gray-400 hover:text-white hover:border-gray-700 hover:scale-105 transition-all">
+                      <svg className="h-4.5 w-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+                        <rect x="2" y="9" width="4" height="12" />
+                        <circle cx="4" cy="4" r="2" />
+                      </svg>
+                    </a>
+                  )}
+                  {content.socials.facebook && (
+                    <a href={content.socials.facebook} target="_blank" rel="noopener noreferrer" className="p-2.5 rounded-xl bg-gray-950 border border-gray-800 text-gray-400 hover:text-white hover:border-gray-700 hover:scale-105 transition-all">
+                      <svg className="h-4.5 w-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+                      </svg>
+                    </a>
+                  )}
+                  {content.socials.github && (
+                    <a href={content.socials.github} target="_blank" rel="noopener noreferrer" className="p-2.5 rounded-xl bg-gray-950 border border-gray-800 text-gray-400 hover:text-white hover:border-gray-700 hover:scale-105 transition-all">
+                      <svg className="h-4.5 w-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
+                      </svg>
+                    </a>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Form Panel */}
-        <div className="premium-glass p-8 rounded-3xl border border-gray-800">
-          <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-            <MessageSquare className="h-5 w-5 text-indigo-400" /> Outline Your Project Goals
+        {/* Form Panel - 7 Columns */}
+        <div className="lg:col-span-7 premium-glass p-8 md:p-10 rounded-3xl border border-gray-800/80 shadow-xl">
+          <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+            <MessageSquare className="h-6 w-6 text-indigo-400" /> Project Inquiry Form
           </h2>
           
           {formStatus.type && (
@@ -79,55 +267,109 @@ export default function ContactClient() {
           )}
 
           <form onSubmit={handleContactSubmit} className="space-y-6">
+            
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Name *</label>
+              <div className="space-y-2">
+                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider">Name *</label>
                 <input 
                   type="text" 
                   required
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-4 py-3 rounded-xl bg-gray-900 border border-gray-800 text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 text-sm transition-colors"
-                  placeholder="John Doe"
+                  className="w-full px-4 py-3 rounded-xl bg-gray-950 border border-gray-800 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm transition-all duration-300"
+                  placeholder="e.g. John Doe"
                 />
               </div>
-              <div>
-                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Email *</label>
+              <div className="space-y-2">
+                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider">Email *</label>
                 <input 
                   type="email" 
                   required
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full px-4 py-3 rounded-xl bg-gray-900 border border-gray-800 text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 text-sm transition-colors"
-                  placeholder="john@company.com"
+                  className="w-full px-4 py-3 rounded-xl bg-gray-950 border border-gray-800 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm transition-all duration-300"
+                  placeholder="e.g. john@company.com"
                 />
               </div>
             </div>
-            <div>
-              <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Subject</label>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider">Company (Optional)</label>
+                <input 
+                  type="text" 
+                  value={formData.company}
+                  onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                  className="w-full px-4 py-3 rounded-xl bg-gray-950 border border-gray-800 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm transition-all duration-300"
+                  placeholder="e.g. Sapirox Technologies"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider">Project Type *</label>
+                <div className="relative">
+                  <select
+                    value={formData.projectType}
+                    onChange={(e) => setFormData({ ...formData, projectType: e.target.value })}
+                    className="w-full px-4 py-3 rounded-xl bg-gray-950 border border-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm transition-all duration-300 appearance-none pr-10"
+                  >
+                    <option value="Web Application" className="bg-gray-950 text-white">Web Application</option>
+                    <option value="Mobile Application" className="bg-gray-950 text-white">Mobile Application</option>
+                    <option value="POS / Business System" className="bg-gray-950 text-white">POS / Business System</option>
+                    <option value="SaaS Product" className="bg-gray-950 text-white">SaaS Product</option>
+                    <option value="UI/UX Design" className="bg-gray-950 text-white">UI/UX Design</option>
+                    <option value="Custom Software" className="bg-gray-950 text-white">Custom Software</option>
+                    <option value="Other" className="bg-gray-950 text-white">Other</option>
+                  </select>
+                  <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-500">
+                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider">Subject</label>
               <input 
                 type="text" 
                 value={formData.subject}
                 onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                className="w-full px-4 py-3 rounded-xl bg-gray-900 border border-gray-800 text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 text-sm transition-colors"
-                placeholder="Enterprise web application project"
+                className="w-full px-4 py-3 rounded-xl bg-gray-950 border border-gray-800 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm transition-all duration-300"
+                placeholder="e.g. Enterprise web portal deployment"
               />
             </div>
-            <div>
-              <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Message *</label>
+
+            <div className="space-y-2">
+              <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider">Message *</label>
               <textarea 
                 required
                 rows={5}
                 value={formData.message}
                 onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                className="w-full px-4 py-3 rounded-xl bg-gray-900 border border-gray-800 text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 text-sm transition-colors resize-none"
-                placeholder="Briefly describe key user workflows or database schemas..."
+                className="w-full px-4 py-3 rounded-xl bg-gray-950 border border-gray-800 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm transition-all duration-300 resize-none"
+                placeholder="Briefly describe key user workflows, layouts, or data requirements..."
               />
             </div>
+
+            {/* Privacy Consent Checkbox */}
+            <div className="flex items-start gap-3 select-none bg-gray-950/40 p-4 rounded-xl border border-gray-800/40 hover:border-indigo-500/30 transition-all duration-300">
+              <input 
+                type="checkbox" 
+                id="privacy-consent"
+                checked={agreed}
+                onChange={(e) => setAgreed(e.target.checked)}
+                className="mt-1 h-4 w-4 rounded border-gray-800 text-indigo-600 bg-gray-950 focus:ring-indigo-500/30 cursor-pointer accent-indigo-600"
+              />
+              <label htmlFor="privacy-consent" className="text-xs text-gray-400 leading-relaxed cursor-pointer hover:text-gray-300 transition-colors">
+                I agree to the Privacy Policy and consent to Sapirox processing my information to respond to this inquiry.
+              </label>
+            </div>
+
             <button 
               type="submit" 
-              disabled={isSubmitting}
-              className="w-full py-4 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold flex items-center justify-center gap-2 hover:opacity-95 disabled:opacity-50 transition-opacity"
+              disabled={isSubmitting || !agreed}
+              className="w-full py-4 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold flex items-center justify-center gap-2 hover:opacity-95 disabled:opacity-30 transition-all duration-300 shadow-lg shadow-indigo-600/10"
             >
               {isSubmitting ? 'Submitting Message...' : 'Send Message'} <Send className="h-4 w-4" />
             </button>

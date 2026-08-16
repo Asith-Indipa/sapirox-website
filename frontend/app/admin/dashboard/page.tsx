@@ -16,7 +16,9 @@ import {
   CheckCircle,
   Clock,
   Briefcase,
-  Globe
+  Globe,
+  FileText,
+  Mail
 } from 'lucide-react';
 
 interface BackendStats {
@@ -131,6 +133,18 @@ export default function AdminDashboardPage() {
         </div>
         <div className="flex items-center gap-3">
           <Link
+            href="/admin/about"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-purple-500/10 border border-purple-500/25 text-purple-400 hover:bg-purple-500 hover:text-white transition-all duration-300 text-xs font-semibold"
+          >
+            <FileText className="h-4 w-4" /> About Page
+          </Link>
+          <Link
+            href="/admin/contact"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 hover:bg-emerald-500 hover:text-white transition-all duration-300 text-xs font-semibold"
+          >
+            <Mail className="h-4 w-4" /> Contact Page
+          </Link>
+          <Link
             href="/admin/seo"
             className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-500/10 border border-indigo-500/25 text-indigo-400 hover:bg-indigo-500 hover:text-white transition-all duration-300 text-xs font-semibold"
           >
@@ -152,13 +166,15 @@ export default function AdminDashboardPage() {
       )}
 
       {/* ── METRICS COUNTERS ────────────────────────────────────────────────────── */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-12">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-4 mb-12">
         {[
           { label: 'Services', count: stats.servicesCount, icon: <Layers className="h-5 w-5 text-indigo-400" />, path: '/admin/services' },
           { label: 'Products', count: stats.productsCount, icon: <Briefcase className="h-5 w-5 text-purple-400" />, path: '/admin/products' },
           { label: 'Portfolio', count: stats.projectsCount, icon: <FolderKanban className="h-5 w-5 text-pink-400" />, path: '/admin/portfolio' },
           { label: 'Articles', count: stats.blogsCount, icon: <BookOpen className="h-5 w-5 text-amber-400" />, path: '/admin/blogs' },
-          { label: 'Leads', count: stats.contactsCount, icon: <MessageSquare className="h-5 w-5 text-emerald-400" />, path: '/admin/dashboard' }
+          { label: 'Leads', count: stats.contactsCount, icon: <MessageSquare className="h-5 w-5 text-emerald-400" />, path: '/admin/dashboard' },
+          { label: 'About Page', count: 'CMS', icon: <FileText className="h-5 w-5 text-indigo-400" />, path: '/admin/about' },
+          { label: 'Contact Page', count: 'CMS', icon: <Mail className="h-5 w-5 text-purple-400" />, path: '/admin/contact' }
         ].map((item, idx) => (
           <Link 
             href={item.path}

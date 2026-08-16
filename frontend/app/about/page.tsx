@@ -1,13 +1,30 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import CustomSchema from '@/components/CustomSchema';
-import { Users, Shield, Zap, ArrowRight, Sparkles } from 'lucide-react';
+import { 
+  Users, 
+  Shield, 
+  Zap, 
+  ArrowRight, 
+  Sparkles, 
+  BookOpen, 
+  Target, 
+  Eye, 
+  Code, 
+  Cpu, 
+  Layers, 
+  CheckCircle,
+  MessageSquare,
+  Activity,
+  Server,
+  HeartHandshake
+} from 'lucide-react';
 
 export const revalidate = 0;
 
 export async function generateMetadata(): Promise<Metadata> {
-  const fallbackTitle = "About Sapirox | Elite Software Engineering Team";
-  const fallbackDesc = "Meet Sapirox's core team of architects and engineers. We design, build, and deploy premium enterprise solutions and scalable custom software.";
+  const fallbackTitle = "About Sapirox | Custom Software & Web Development Studio";
+  const fallbackDesc = "Learn about Sapirox, a founder-led software development studio. We build custom web applications, SaaS platforms, and scalable digital solutions.";
   
   try {
     const encodedPath = encodeURIComponent('/about');
@@ -24,7 +41,7 @@ export async function generateMetadata(): Promise<Metadata> {
         return {
           title: data.metaTitle || fallbackTitle,
           description: data.metaDescription || fallbackDesc,
-          keywords: data.keywords || "About Sapirox,Startup,Software Team,Core Engineers",
+          keywords: data.keywords || "About Sapirox,Startup,Software Team,Core Engineers,Web Development",
           openGraph: {
             title: data.ogTitle || data.metaTitle || fallbackTitle,
             description: data.ogDescription || data.metaDescription || fallbackDesc,
@@ -43,51 +60,82 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function AboutPage() {
-  const values = [
-    {
-      icon: <Users className="h-8 w-8 text-indigo-400" />,
-      title: "Direct Collaboration",
-      desc: "Work directly with the architects and core builders. We eliminate account managers and communication delays so your vision is translated directly to code."
-    },
-    {
-      icon: <Zap className="h-8 w-8 text-purple-400" />,
-      title: "Agile Execution",
-      desc: "We prioritize speed and performance. We skip corporate red tape, allowing us to build, deploy, and iterate custom software at lightning speeds."
-    },
-    {
-      icon: <Shield className="h-8 w-8 text-emerald-400" />,
-      title: "High Concurrency & Security",
-      desc: "Every line of code is written with scalability and protection in mind. We design systems that handle massive traffic spikes with ironclad database security."
-    }
-  ];
+// ── Default Fallback Content ────────────────────────────────────────────────
+const DEFAULTS = {
+  hero: {
+    title: 'We Build Custom',
+    titleHighlight: 'Software that Empowers',
+    subtitle: 'A founder-led software development studio. We bypass corporate layers and bureaucracy to build premium, secure, and scalable digital solutions directly for our partners.',
+  },
+  story: {
+    paragraph1: 'We noticed a persistent problem in the software industry: traditional agencies often introduce heavy overhead, project managers who act as filters, and rigid structures that dilute your actual product vision.',
+    paragraph2: 'Sapirox was founded to bridge that gap. We connect our clients directly with the builders, focusing purely on clean code, solid performance, and transparent collaboration. We build practical software that solves real business problems and scales with you.',
+  },
+  mission: 'To deliver high-performance, secure, and custom-tailored software solutions that empower modern businesses to operate efficiently, build competitive advantages, and scale gracefully.',
+  vision: 'To become the go-to software engineering partner for growing businesses and startups by continuously leveraging modern architectures and delivering exceptional product quality.',
+  trustPoints: [
+    { title: 'Custom Solutions', desc: 'No generic templates or cookie-cutter builders. Every application is built specifically to address your unique workflow and business goals.' },
+    { title: 'Transparent Communication', desc: 'You collaborate directly with the engineers writing your code, eliminating middlemen, misunderstandings, and unnecessary project delays.' },
+    { title: 'Scalable Architecture', desc: 'We design robust, high-performance systems prepared for future growth and high concurrency using clean coding principles.' },
+    { title: 'Long-term Support', desc: 'Our relationship doesn\'t end at deployment. We provide dedicated support, maintenance, and iterative updates to keep your systems running smoothly.' },
+  ],
+  workflowSteps: [
+    { number: '01', title: 'Discover', desc: 'We sit down to understand your business goals, target audience, and functional requirements.' },
+    { number: '02', title: 'Design', desc: 'Architecting the system design, secure database schema, and interactive UI/UX prototypes.' },
+    { number: '03', title: 'Develop', desc: 'Writing clean, modular, and optimized code using modern, maintainable software practices.' },
+    { number: '04', title: 'Test', desc: 'Conducting rigorous testing for security, responsiveness, bugs, and performance under load.' },
+    { number: '05', title: 'Deploy', desc: 'Configuring secure servers, cloud pipelines, and launching your platform smoothly to production.' },
+    { number: '06', title: 'Support', desc: 'Providing ongoing maintenance, monitoring, and updates to keep your systems running flawlessly.' },
+  ],
+  team: [
+    { name: 'Sahan Perera', role: 'Founder & Software Engineer', bio: 'Focuses on high-level system designs, cloud-native scalability, and database architecture.' },
+    { name: 'Dilshan Silva', role: 'Co-Founder & Systems Engineer', bio: 'Specializes in secure API development, backend optimization, serverless architecture, and DevOps pipelines.' },
+    { name: 'Nuwan Fernando', role: 'Frontend Developer & Designer', bio: 'Dedicated to designing modern interface aesthetics, interactive micro-animations, and fluid responsive layouts.' },
+  ],
+  technologies: ['Next.js', 'React', 'Node.js', 'TypeScript', 'Supabase', 'PostgreSQL', 'Prisma', 'Tailwind CSS', 'REST APIs', 'Git & GitHub'],
+  cta: {
+    title: 'Ready to bring your ideas to life?',
+    subtitle: 'Reach out to our engineering team directly to discuss your upcoming project requirements.',
+  }
+};
 
-  const team = [
-    {
-      name: "Sahan Perera",
-      role: "Founder & Chief Architect",
-      bio: "Focuses on high-level system designs, cloud-native scalability, and data pipeline structures.",
-      color: "from-indigo-600 to-indigo-400",
-      accent: "bg-indigo-500/10 text-indigo-400 border-indigo-500/20",
-      gradient: "from-indigo-500/20 to-purple-500/20"
-    },
-    {
-      name: "Dilshan Silva",
-      role: "Co-Founder & Lead Systems Engineer",
-      bio: "Specializes in secure API development, backend optimization, serverless architecture, and devops pipelines.",
-      color: "from-purple-600 to-purple-400",
-      accent: "bg-purple-500/10 text-purple-400 border-purple-500/20",
-      gradient: "from-purple-500/20 to-pink-500/20"
-    },
-    {
-      name: "Nuwan Fernando",
-      role: "UI/UX Architect & Frontend Developer",
-      bio: "Dedicated to designing modern interface aesthetics, interactive micro-animations, and fluid responsive layouts.",
-      color: "from-emerald-600 to-emerald-400",
-      accent: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
-      gradient: "from-emerald-500/20 to-indigo-500/20"
+// Team color presets
+const TEAM_COLORS = [
+  { color: 'from-indigo-600 to-indigo-400', accent: 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20', gradient: 'from-indigo-500/20 to-purple-500/20' },
+  { color: 'from-purple-600 to-purple-400', accent: 'bg-purple-500/10 text-purple-400 border-purple-500/20', gradient: 'from-purple-500/20 to-pink-500/20' },
+  { color: 'from-emerald-600 to-emerald-400', accent: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20', gradient: 'from-emerald-500/20 to-indigo-500/20' },
+  { color: 'from-pink-600 to-pink-400', accent: 'bg-pink-500/10 text-pink-400 border-pink-500/20', gradient: 'from-pink-500/20 to-rose-500/20' },
+  { color: 'from-amber-600 to-amber-400', accent: 'bg-amber-500/10 text-amber-400 border-amber-500/20', gradient: 'from-amber-500/20 to-yellow-500/20' },
+];
+
+// Trust point icons cycling
+const TRUST_ICONS = [
+  <Cpu key="cpu" className="h-6 w-6 text-indigo-400" />,
+  <MessageSquare key="msg" className="h-6 w-6 text-purple-400" />,
+  <Layers key="layers" className="h-6 w-6 text-emerald-400" />,
+  <HeartHandshake key="heart" className="h-6 w-6 text-pink-400" />,
+  <Shield key="shield" className="h-6 w-6 text-amber-400" />,
+];
+
+export default async function AboutPage() {
+  // Fetch dynamic content from backend
+  let content = DEFAULTS;
+
+  try {
+    const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+    const res = await fetch(`${apiBase}/page-content/about`, {
+      cache: 'no-store',
+      headers: { 'Accept': 'application/json' },
+    });
+    if (res.ok) {
+      const json = await res.json();
+      if (json.success && json.data && json.data.content) {
+        content = { ...DEFAULTS, ...json.data.content };
+      }
     }
-  ];
+  } catch (err) {
+    console.error("Failed to load About page content:", err);
+  }
 
   return (
     <div className="relative min-h-[85vh] py-20 px-6 max-w-7xl mx-auto">
@@ -98,87 +146,217 @@ export default function AboutPage() {
       <div className="absolute bottom-[20%] right-[5%] w-[350px] h-[350px] rounded-full bg-purple-600/10 blur-[120px] pointer-events-none" />
 
       {/* Hero Header section */}
-      <div className="max-w-3xl mb-20">
+      <div className="max-w-3xl mb-24">
         <span className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-indigo-400 bg-indigo-500/10 px-4 py-1.5 rounded-full border border-indigo-500/20">
-          <Sparkles className="h-3 w-3" /> Meet the Builders
+          <Sparkles className="h-3 w-3" /> About Sapirox
         </span>
         <h1 className="text-4xl md:text-6xl font-extrabold text-white mt-6 mb-6 font-heading tracking-tight leading-tight">
-          An Elite Core Team of <br />
-          <span className="premium-gradient-text">Software Architects</span>
+          {content.hero.title} <br />
+          <span className="premium-gradient-text">{content.hero.titleHighlight}</span>
         </h1>
         <p className="text-gray-400 text-lg leading-relaxed">
-          We are a highly agile, founder-led software engineering startup. We bypass corporate layers and bureaucracy to build premium, secure, and scalable digital solutions directly for our partners.
+          {content.hero.subtitle}
         </p>
       </div>
 
-      {/* Philosophy Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-24">
-        {values.map((val, idx) => (
-          <div 
-            key={idx}
-            className="premium-glass p-8 rounded-2xl border border-gray-800/40 relative overflow-hidden group hover:border-gray-700/60 transition-all duration-300"
-          >
-            <div className="mb-6 inline-block p-4 rounded-xl bg-gray-900/60 border border-gray-800/60">
-              {val.icon}
-            </div>
-            <h3 className="text-xl font-bold text-white mb-3 font-heading">{val.title}</h3>
-            <p className="text-gray-400 leading-relaxed text-sm">{val.desc}</p>
+      {/* Our Story Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-24">
+        <div className="lg:col-span-4">
+          <span className="text-xs font-semibold uppercase tracking-widest text-indigo-400">
+            OUR STORY
+          </span>
+          <h2 className="text-3xl font-bold text-white mt-2 font-heading">
+            Why We Started
+          </h2>
+        </div>
+        <div className="lg:col-span-8 premium-glass p-8 rounded-2xl border border-gray-800/40">
+          <p className="text-gray-300 leading-relaxed text-base mb-4">
+            {content.story.paragraph1}
+          </p>
+          <p className="text-gray-300 leading-relaxed text-base">
+            {content.story.paragraph2}
+          </p>
+        </div>
+      </div>
+
+      {/* Mission & Vision Section */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-24">
+        <div className="premium-glass p-8 rounded-2xl border border-gray-800/40 relative overflow-hidden group hover:border-gray-700/60 transition-all duration-300">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-500/5 rounded-bl-full pointer-events-none" />
+          <div className="mb-6 inline-block p-4 rounded-xl bg-gray-900/60 border border-gray-800/60">
+            <Target className="h-8 w-8 text-indigo-400" />
           </div>
-        ))}
+          <h3 className="text-2xl font-bold text-white mb-3 font-heading">Our Mission</h3>
+          <p className="text-gray-400 leading-relaxed text-base">
+            {content.mission}
+          </p>
+        </div>
+
+        <div className="premium-glass p-8 rounded-2xl border border-gray-800/40 relative overflow-hidden group hover:border-gray-700/60 transition-all duration-300">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-purple-500/5 rounded-bl-full pointer-events-none" />
+          <div className="mb-6 inline-block p-4 rounded-xl bg-gray-900/60 border border-gray-800/60">
+            <Eye className="h-8 w-8 text-purple-400" />
+          </div>
+          <h3 className="text-2xl font-bold text-white mb-3 font-heading">Our Vision</h3>
+          <p className="text-gray-400 leading-relaxed text-base">
+            {content.vision}
+          </p>
+        </div>
       </div>
 
-      {/* Section Divider Heading */}
-      <div className="text-center mb-16">
-        <span className="text-xs font-semibold uppercase tracking-widest text-purple-400">
-          SAPIROX FOUNDATION
-        </span>
-        <h2 className="text-3xl md:text-4xl font-bold text-white mt-3 font-heading">
-          Our Core Engineers
-        </h2>
-      </div>
+      {/* Trust / Why Sapirox Section */}
+      {content.trustPoints && content.trustPoints.length > 0 && (
+        <div className="mb-24">
+          <div className="text-center mb-16">
+            <span className="text-xs font-semibold uppercase tracking-widest text-emerald-400">
+              WHY SAPIROX?
+            </span>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mt-3 font-heading">
+              Built on Trust & Integrity
+            </h2>
+          </div>
 
-      {/* Team Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-24">
-        {team.map((member, idx) => (
-          <div 
-            key={idx}
-            className="premium-glass rounded-2xl border border-gray-800/40 overflow-hidden group hover:-translate-y-2 hover:border-gray-700/60 transition-all duration-300 flex flex-col justify-between"
-          >
-            {/* Top decorative gradient card-header */}
-            <div className={`h-1.5 w-full bg-gradient-to-r ${member.color}`} />
-            
-            <div className="p-8 flex-1 flex flex-col items-center text-center">
-              {/* Profile Avatar Badge */}
-              <div className={`h-24 w-24 rounded-2xl bg-gradient-to-br ${member.gradient} flex items-center justify-center border border-gray-800/60 mb-6 shadow-inner group-hover:scale-105 transition-transform duration-300`}>
-                <span className={`text-2xl font-black bg-gradient-to-r ${member.color} bg-clip-text text-transparent`}>
-                  {member.name.split(' ').map(n => n[0]).join('')}
-                </span>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {content.trustPoints.map((item: { title: string; desc: string }, idx: number) => (
+              <div 
+                key={idx}
+                className="premium-glass p-8 rounded-2xl border border-gray-800/40 hover:border-gray-700/60 transition-all duration-300 flex flex-col justify-between"
+              >
+                <div>
+                  <div className="mb-6 inline-block p-3 rounded-xl bg-gray-900/60 border border-gray-800/60">
+                    {TRUST_ICONS[idx % TRUST_ICONS.length]}
+                  </div>
+                  <h3 className="text-lg font-bold text-white mb-3 font-heading">{item.title}</h3>
+                  <p className="text-gray-400 leading-relaxed text-sm">{item.desc}</p>
+                </div>
               </div>
-
-              {/* Title & Role */}
-              <h3 className="text-xl font-bold text-white font-heading mb-1">{member.name}</h3>
-              <span className={`text-xs font-medium px-3 py-1 rounded-full border mb-6 ${member.accent}`}>
-                {member.role}
-              </span>
-
-              {/* Bio */}
-              <p className="text-gray-400 text-sm leading-relaxed mb-6">
-                {member.bio}
-              </p>
-            </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </div>
+      )}
+
+      {/* How We Work Section */}
+      {content.workflowSteps && content.workflowSteps.length > 0 && (
+        <div className="mb-24">
+          <div className="text-center mb-16">
+            <span className="text-xs font-semibold uppercase tracking-widest text-indigo-400">
+              OUR APPROACH
+            </span>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mt-3 font-heading">
+              How We Work
+            </h2>
+            <p className="text-gray-400 text-sm max-w-xl mx-auto mt-2">
+              A structured, collaborative approach to take your software project from concept to launch.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {content.workflowSteps.map((step: { number: string; title: string; desc: string }, idx: number) => (
+              <div 
+                key={idx}
+                className="premium-glass p-8 rounded-2xl border border-gray-800/40 relative overflow-hidden group hover:border-gray-700/60 transition-all duration-300"
+              >
+                <div className="absolute top-4 right-6 text-4xl font-black text-gray-800/20 group-hover:text-gray-700/30 transition-colors duration-300">
+                  {step.number}
+                </div>
+                <h3 className="text-xl font-bold text-white mb-3 font-heading">{step.title}</h3>
+                <p className="text-gray-400 leading-relaxed text-sm">{step.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Core Team Section */}
+      {content.team && content.team.length > 0 && (
+        <div className="mb-24">
+          <div className="text-center mb-16">
+            <span className="text-xs font-semibold uppercase tracking-widest text-purple-400">
+              THE BUILDERS
+            </span>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mt-3 font-heading">
+              Our Core Team
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {content.team.map((member: { name: string; role: string; bio: string; image?: string }, idx: number) => {
+              const colors = TEAM_COLORS[idx % TEAM_COLORS.length];
+              return (
+                <div 
+                  key={idx}
+                  className="premium-glass rounded-2xl overflow-hidden border border-gray-800 group hover:border-indigo-500/30 transition-all duration-300 flex flex-col justify-between"
+                >
+                  <div>
+                    {/* Thumbnail area */}
+                    <div className="h-52 w-full bg-gray-900/80 flex items-center justify-center relative overflow-hidden">
+                      {member.image ? (
+                        <img 
+                          src={member.image} 
+                          alt={member.name}
+                          className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-550"
+                        />
+                      ) : (
+                        <>
+                          <div className={`absolute inset-0 bg-gradient-to-br ${colors.gradient} opacity-40`} />
+                          <span className={`text-4xl font-black bg-gradient-to-r ${colors.color} bg-clip-text text-transparent z-10 group-hover:scale-105 transition-transform duration-300`}>
+                            {member.name.split(' ').map((n: string) => n[0]).join('')}
+                          </span>
+                        </>
+                      )}
+                    </div>
+                    
+                    <div className="p-6">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">{member.role}</span>
+                      </div>
+                      <h3 className="text-xl font-bold text-white mb-3">{member.name}</h3>
+                      <p className="text-gray-400 text-sm leading-relaxed">
+                        {member.bio}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Technologies Section */}
+      {content.technologies && content.technologies.length > 0 && (
+        <div className="mb-24">
+          <div className="text-center mb-12">
+            <span className="text-xs font-semibold uppercase tracking-widest text-indigo-400">
+              OUR EXPERTISE
+            </span>
+            <h2 className="text-2xl md:text-3xl font-bold text-white mt-3 font-heading">
+              Technologies We Use
+            </h2>
+          </div>
+
+          <div className="premium-glass p-8 rounded-2xl border border-gray-800/40 max-w-4xl mx-auto flex flex-wrap gap-3 justify-center">
+            {content.technologies.map((tech: string, idx: number) => (
+              <span 
+                key={idx}
+                className="px-4 py-2 text-sm font-medium bg-gray-900/60 text-gray-300 rounded-xl border border-gray-800/60 hover:border-gray-700 hover:text-white transition-all duration-300"
+              >
+                {tech}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Call to Action Banner */}
       <div className="premium-glass p-8 md:p-12 rounded-3xl border border-gray-800/40 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8">
         <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/5 to-purple-500/5 pointer-events-none" />
         <div className="max-w-xl z-10 text-center md:text-left">
           <h3 className="text-2xl md:text-3xl font-extrabold text-white font-heading mb-3">
-            Have a project in mind?
+            {content.cta.title}
           </h3>
           <p className="text-gray-400 text-sm md:text-base leading-relaxed">
-            Collaborate directly with our engineers to design, build, and deploy your next application suite.
+            {content.cta.subtitle}
           </p>
         </div>
         <div className="z-10 w-full md:w-auto">
@@ -186,7 +364,7 @@ export default function AboutPage() {
             href="/contact"
             className="inline-flex items-center justify-center gap-2 w-full md:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold hover:opacity-95 shadow-md shadow-indigo-600/10 hover:shadow-indigo-600/30 transition-all duration-300"
           >
-            Get Started <ArrowRight className="h-4 w-4" />
+            Get in Touch <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
       </div>

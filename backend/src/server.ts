@@ -8,9 +8,14 @@ const PORT = process.env.PORT || 5000;
 
 async function bootstrap() {
   try {
-    // Verify DB connection before starting
-    await prisma.$connect();
-    console.log('✅ Database connected successfully');
+    // Attempt DB connection but allow app to start regardless
+    prisma.$connect()
+      .then(() => {
+        console.log('✅ Database connected successfully');
+      })
+      .catch((error) => {
+        console.error('⚠️ Database connection failed on startup, using runtime retry:', error.message || error);
+      });
 
     app.listen(PORT, () => {
       console.log(`🚀 Sapirox Backend running on http://localhost:${PORT}`);
@@ -18,8 +23,7 @@ async function bootstrap() {
       console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
     });
   } catch (error) {
-    console.error('❌ Failed to connect to database:', error);
-    await prisma.$disconnect();
+    console.error('❌ Failed to bootstrap backend:', error);
     process.exit(1);
   }
 }

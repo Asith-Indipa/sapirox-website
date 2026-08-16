@@ -41,6 +41,7 @@ import {
   deleteTag,
   upsertSeoSetting,
   getDashboardStats,
+  upsertPageContent,
 } from '../controllers/general.controller';
 
 const router = Router();
@@ -173,5 +174,8 @@ router.post('/upload', upload.single('image'), async (req, res) => {
 
 // ── SEO Settings ───────────────────────────────────────────────────────────────
 router.post('/seo', authorize('SUPER_ADMIN', 'ADMIN'), upsertSeoSetting);
+
+// ── Page Content Management ────────────────────────────────────────────────────
+router.post('/page-content', authorize('SUPER_ADMIN', 'ADMIN'), upsertPageContent);
 
 export default router;

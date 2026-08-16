@@ -140,13 +140,15 @@ model Testimonial {
 }
 
 model ContactMessage {
-  id        String   @id @default(uuid())
-  name      String
-  email     String
-  subject   String?
-  message   String
-  status    String   @default("UNREAD")
-  createdAt DateTime @default(now())
+  id          String   @id @default(uuid())
+  name        String
+  email       String
+  company     String?
+  projectType String?
+  subject     String?
+  message     String
+  status      String   @default("UNREAD")
+  createdAt   DateTime @default(now())
 }
 
 model SEOSetting {
@@ -162,6 +164,15 @@ model SEOSetting {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 }
+
+model PageContent {
+  id        String   @id @default(uuid())
+  pageName  String   @unique
+  content   Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 
 enum ProjectType {
   CLIENT_PROJECT

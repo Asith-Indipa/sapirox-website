@@ -177,7 +177,7 @@ export const getTestimonials = async (): Promise<Testimonial[]> => {
 };
 
 // ── Contact Submission ─────────────────────────────────────────────────────────
-export const submitContact = async (data: { name: string; email: string; subject?: string; message: string }) => {
+export const submitContact = async (data: { name: string; email: string; subject?: string; message: string; company?: string; projectType?: string }) => {
   return apiFetch<{ success: boolean; message: string }>('/contact', {
     method: 'POST',
     body: data,
@@ -334,3 +334,24 @@ export const uploadImage = async (file: File): Promise<string> => {
   });
   return res.url;
 };
+
+// ── Page Content (Dynamic page sections) ─────────────────────────────────────
+export interface PageContent {
+  id?: string;
+  pageName: string;
+  content: Record<string, unknown>;
+}
+
+export const getPageContentByName = async (pageName: string): Promise<PageContent> => {
+  const res = await apiFetch<{ success: boolean; data: PageContent }>(`/page-content/${pageName}`);
+  return res.data;
+};
+
+export const upsertPageContent = async (pageName: string, content: Record<string, unknown>): Promise<PageContent> => {
+  const res = await apiFetch<{ success: boolean; data: PageContent }>('/admin/page-content', {
+    method: 'POST',
+    body: { pageName, content },
+  });
+  return res.data;
+};
+

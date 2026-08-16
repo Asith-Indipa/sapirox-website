@@ -3,7 +3,7 @@ import { getPublicServices, getPublicServiceBySlug } from '../controllers/servic
 import { getPublicProducts, getPublicProductBySlug } from '../controllers/product.controller';
 import { getPublicProjects, getPublicProjectBySlug } from '../controllers/project.controller';
 import { getPublicBlogs, getPublicBlogBySlug } from '../controllers/blog.controller';
-import { submitContactMessage, getPublicTestimonials, getCategories, getTags, getSeoByPath } from '../controllers/general.controller';
+import { submitContactMessage, getPublicTestimonials, getCategories, getTags, getSeoByPath, getPageContent } from '../controllers/general.controller';
 
 const router = Router();
 
@@ -32,6 +32,9 @@ router.get('/testimonials', getPublicTestimonials);
 
 // ── Contact ─────────────────────────────────────────────────────────────────────
 router.post('/contact', submitContactMessage);
+
+// ── Page Content ────────────────────────────────────────────────────────────────
+router.get('/page-content/:pageName', getPageContent);
 
 // ── SEO ─────────────────────────────────────────────────────────────────────────
 router.get('/seo/:path', getSeoByPath);

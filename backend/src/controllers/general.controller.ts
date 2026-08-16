@@ -10,13 +10,20 @@ import { resend } from '../config/resend';
 
 export const submitContactMessage = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { name, email, subject, message } = req.body;
+    const { name, email, subject, message, company, projectType } = req.body;
     if (!name || !email || !message) {
       res.status(400).json({ success: false, message: 'Name, email, and message are required.' });
       return;
     }
     const contactMessage = await prisma.contactMessage.create({
-      data: { name, email, subject: subject || null, message },
+      data: { 
+        name, 
+        email, 
+        subject: subject || null, 
+        message,
+        company: company || null,
+        projectType: projectType || null
+      },
     });
 
     // Send email alert via Resend SDK
@@ -31,6 +38,8 @@ export const submitContactMessage = async (req: Request, res: Response): Promise
               <h2 style="color: #4f46e5; border-bottom: 2px solid #f3f4f6; padding-bottom: 10px;">New Contact Lead Received</h2>
               <p><strong>Name:</strong> ${name}</p>
               <p><strong>Email:</strong> <a href="mailto:${email}">${email}</a></p>
+              <p><strong>Company:</strong> ${company || 'N/A'}</p>
+              <p><strong>Project Type:</strong> ${projectType || 'N/A'}</p>
               <p><strong>Subject:</strong> ${subject || 'N/A'}</p>
               <div style="background-color: #f9fafb; padding: 15px; border-left: 4px solid #4f46e5; border-radius: 4px; margin-top: 20px;">
                 <p style="margin: 0; font-style: italic;">"${message}"</p>
@@ -276,6 +285,47 @@ export const upsertSeoSetting = async (req: AuthRequest, res: Response): Promise
     res.status(200).json({ success: true, data: setting });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Failed to save SEO setting.' });
+  }
+};
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// PAGE CONTENT (Dynamic page sections like About, etc.)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+export const getPageContent = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { pageName } = req.params;
+    if (!pageName) {
+      res.status(400).json({ success: false, message: 'pageName parameter is required.' });
+      return;
+    }
+    const pageContent = await prisma.pageContent.findUnique({ where: { pageName } });
+    if (!pageContent) {
+      res.status(404).json({ success: false, message: 'Page content not found.' });
+      return;
+    }
+    res.status(200).json({ success: true, data: pageContent });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Failed to fetch page content.' });
+  }
+};
+
+export const upsertPageContent = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const { pageName, content } = req.body;
+    if (!pageName || !content) {
+      res.status(400).json({ success: false, message: 'pageName and content are required.' });
+      return;
+    }
+    const pageContent = await prisma.pageContent.upsert({
+      where: { pageName },
+      update: { content },
+      create: { pageName, content },
+    });
+    res.status(200).json({ success: true, message: 'Page content saved.', data: pageContent });
+  } catch (error) {
+    console.error('Failed to upsert page content:', error);
+    res.status(500).json({ success: false, message: 'Failed to save page content.' });
   }
 };
 
