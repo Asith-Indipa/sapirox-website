@@ -82,7 +82,7 @@ export const updateMessageStatus = async (req: AuthRequest, res: Response): Prom
   try {
     const { id } = req.params;
     const { status } = req.body;
-    if (!status || !['UNREAD', 'REPLIED', 'ARCHIVED', 'DELETED'].includes(status)) {
+    if (!status || !['UNREAD', 'READ', 'REPLIED', 'ARCHIVED', 'DELETED'].includes(status)) {
       res.status(400).json({ success: false, message: 'Valid status required.' });
       return;
     }

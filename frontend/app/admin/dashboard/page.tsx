@@ -18,7 +18,13 @@ import {
   Briefcase,
   Globe,
   FileText,
-  Mail
+  Mail,
+  Check,
+  MailOpen,
+  Trash2,
+  ChevronLeft,
+  ChevronRight,
+  AlertCircle
 } from 'lucide-react';
 
 interface BackendStats {
@@ -42,10 +48,12 @@ interface ContactMessage {
   id: string;
   name: string;
   email: string;
+  company?: string;
+  projectType?: string;
   subject?: string;
   message: string;
   createdAt: string;
-  isRead: boolean;
+  status: string;
 }
 
 export default function AdminDashboardPage() {
@@ -63,6 +71,7 @@ export default function AdminDashboardPage() {
   });
   const [contacts, setContacts] = useState<ContactMessage[]>([]);
   const [loadStatsError, setLoadStatsError] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
 
   async function loadDashboardDetails() {
     try {
@@ -87,6 +96,30 @@ export default function AdminDashboardPage() {
     }
   }
 
+  const handleUpdateStatus = async (id: string, newStatus: 'READ' | 'UNREAD') => {
+    try {
+      await apiFetch<{ success: boolean }>(`/admin/messages/${id}/status`, {
+        method: 'PATCH',
+        body: { status: newStatus },
+      });
+      await loadDashboardDetails();
+    } catch (err: any) {
+      alert('Failed to update status: ' + err.message);
+    }
+  };
+
+  const handleDeleteMessage = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this message?')) return;
+    try {
+      await apiFetch<{ success: boolean }>(`/admin/messages/${id}`, {
+        method: 'DELETE',
+      });
+      await loadDashboardDetails();
+    } catch (err: any) {
+      alert('Failed to delete message: ' + err.message);
+    }
+  };
+
   // Authenticate user on load
   useEffect(() => {
     async function checkAuth() {
@@ -102,6 +135,18 @@ export default function AdminDashboardPage() {
     checkAuth();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
+
+  // Adjust current page if it exceeds total pages after content reload
+  useEffect(() => {
+    const total = Math.ceil(contacts.length / 10) || 1;
+    if (currentPage > total) {
+      setCurrentPage(total);
+    }
+  }, [contacts, currentPage]);
+
+  const itemsPerPage = 10;
+  const totalPages = Math.ceil(contacts.length / itemsPerPage) || 1;
+  const paginatedContacts = contacts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   const handleLogout = () => {
     removeAuthToken();
@@ -132,18 +177,6 @@ export default function AdminDashboardPage() {
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <Link
-            href="/admin/about"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-purple-500/10 border border-purple-500/25 text-purple-400 hover:bg-purple-500 hover:text-white transition-all duration-300 text-xs font-semibold"
-          >
-            <FileText className="h-4 w-4" /> About Page
-          </Link>
-          <Link
-            href="/admin/contact"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 hover:bg-emerald-500 hover:text-white transition-all duration-300 text-xs font-semibold"
-          >
-            <Mail className="h-4 w-4" /> Contact Page
-          </Link>
           <Link
             href="/admin/seo"
             className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-500/10 border border-indigo-500/25 text-indigo-400 hover:bg-indigo-500 hover:text-white transition-all duration-300 text-xs font-semibold"
@@ -201,18 +234,75 @@ export default function AdminDashboardPage() {
           </h2>
 
           <div className="space-y-4">
-            {contacts.length > 0 ? (
-              contacts.map((msg) => (
-                <div key={msg.id} className="p-5 rounded-2xl bg-gray-900/60 border border-gray-800 flex flex-col justify-between gap-4">
-                  <div className="flex flex-col sm:flex-row justify-between items-start gap-2">
+            {paginatedContacts.length > 0 ? (
+              paginatedContacts.map((msg) => (
+                <div 
+                  key={msg.id} 
+                  className={`p-5 rounded-2xl bg-gray-900/60 border flex flex-col justify-between gap-4 transition-all duration-300 ${
+                    msg.status === 'UNREAD' 
+                      ? 'border-indigo-500/50 shadow-[0_0_20px_rgba(99,102,241,0.06)] bg-indigo-950/5' 
+                      : 'border-gray-800'
+                  }`}
+                >
+                  <div className="flex flex-col sm:flex-row justify-between items-start gap-3">
                     <div>
-                      <h4 className="text-sm font-bold text-white">{msg.name}</h4>
-                      <span className="text-xs text-indigo-400">{msg.email}</span>
+                      <div className="flex items-center gap-2">
+                        <h4 className="text-sm font-bold text-white">{msg.name}</h4>
+                        {msg.status === 'UNREAD' && (
+                          <span className="inline-flex items-center gap-1 text-[9px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20 font-bold uppercase tracking-wider animate-pulse">
+                            <span className="h-1 w-1 rounded-full bg-emerald-400"></span>
+                            New
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex flex-wrap items-center gap-2 mt-1">
+                        <span className="text-xs text-indigo-400">{msg.email}</span>
+                        {msg.company && (
+                          <span className="text-[10px] text-purple-400 bg-purple-500/10 px-2 py-0.5 rounded border border-purple-500/20 font-medium">
+                            🏢 {msg.company}
+                          </span>
+                        )}
+                        {msg.projectType && (
+                          <span className="text-[10px] text-pink-400 bg-pink-500/10 px-2 py-0.5 rounded border border-pink-500/20 font-medium">
+                            💼 {msg.projectType}
+                          </span>
+                        )}
+                      </div>
                     </div>
-                    <span className="text-[10px] text-gray-500 flex items-center gap-1">
-                      <Clock className="h-3.5 w-3.5" />
-                      {new Date(msg.createdAt).toLocaleString()}
-                    </span>
+                    <div className="flex flex-wrap items-center justify-between sm:justify-end gap-3 w-full sm:w-auto">
+                      <span className="text-[10px] text-gray-500 flex items-center gap-1">
+                        <Clock className="h-3.5 w-3.5" />
+                        {new Date(msg.createdAt).toLocaleString()}
+                      </span>
+                      <div className="flex items-center gap-2">
+                        {msg.status === 'UNREAD' ? (
+                          <button
+                            onClick={() => handleUpdateStatus(msg.id, 'READ')}
+                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-500/10 hover:bg-emerald-500 hover:text-white border border-emerald-500/20 text-emerald-400 text-xs font-semibold transition-all duration-200"
+                            title="Mark as Read"
+                          >
+                            <Check className="h-3.5 w-3.5" />
+                            <span className="hidden sm:inline">Mark Read</span>
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => handleUpdateStatus(msg.id, 'UNREAD')}
+                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 text-xs font-semibold transition-all duration-200"
+                            title="Mark as Unread"
+                          >
+                            <MailOpen className="h-3.5 w-3.5" />
+                            <span className="hidden sm:inline">Mark Unread</span>
+                          </button>
+                        )}
+                        <button
+                          onClick={() => handleDeleteMessage(msg.id)}
+                          className="inline-flex items-center p-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500 hover:text-white border border-rose-500/20 text-rose-400 transition-all duration-200"
+                          title="Delete Message"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
+                    </div>
                   </div>
 
                   <div className="border-t border-gray-800/50 pt-3 w-full max-w-full overflow-hidden">
@@ -229,6 +319,51 @@ export default function AdminDashboardPage() {
               <div className="text-center py-12 text-gray-500">
                 <CheckCircle className="h-10 w-10 text-gray-700 mx-auto mb-3" />
                 <span className="text-xs">No active leads or contact form submissions yet.</span>
+              </div>
+            )}
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div className="flex flex-col sm:flex-row items-center justify-between border-t border-gray-800/60 pt-6 mt-6 gap-4">
+                <span className="text-xs text-gray-400">
+                  Showing <span className="text-white font-medium">{(currentPage - 1) * itemsPerPage + 1}</span> to{' '}
+                  <span className="text-white font-medium">
+                    {Math.min(currentPage * itemsPerPage, contacts.length)}
+                  </span>{' '}
+                  of <span className="text-white font-medium">{contacts.length}</span> leads
+                </span>
+                
+                <div className="flex items-center gap-1.5">
+                  <button
+                    onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                    disabled={currentPage === 1}
+                    className="p-1.5 rounded-lg bg-gray-900 border border-gray-850 text-gray-400 hover:text-white hover:bg-gray-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                  </button>
+                  
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                    <button
+                      key={page}
+                      onClick={() => setCurrentPage(page)}
+                      className={`h-7 w-7 rounded-lg text-xs font-semibold transition-all ${
+                        currentPage === page
+                          ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/25'
+                          : 'bg-gray-900 border border-gray-850 text-gray-400 hover:text-white hover:bg-gray-800'
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  ))}
+                  
+                  <button
+                    onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                    disabled={currentPage === totalPages}
+                    className="p-1.5 rounded-lg bg-gray-900 border border-gray-850 text-gray-400 hover:text-white hover:bg-gray-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </button>
+                </div>
               </div>
             )}
           </div>
