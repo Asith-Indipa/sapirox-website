@@ -262,18 +262,18 @@ export default function AdminProductsPage() {
     <div className="relative min-h-[85vh] py-12 px-6 max-w-7xl mx-auto">
       
       {/* Header */}
-      <div className="flex justify-between items-center mb-8 border-b border-gray-800 pb-6">
+      <div className="flex justify-between items-center mb-8 border-b border-border/40 pb-6">
         <div>
-          <Link href="/admin/dashboard" className="inline-flex items-center gap-1.5 text-xs text-gray-400 hover:text-white mb-2 transition-colors">
+          <Link href="/admin/dashboard" className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground mb-2 transition-colors">
             <ArrowLeft className="h-3.5 w-3.5" /> Back to Dashboard
           </Link>
-          <h1 className="text-3xl font-extrabold text-white tracking-tight font-heading">
+          <h1 className="text-3xl font-extrabold text-foreground tracking-tight font-heading">
             Manage Products & Solutions
           </h1>
         </div>
         <button
           onClick={handleOpenCreateModal}
-          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm transition-all duration-300 shadow-md shadow-indigo-500/10"
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-white font-semibold text-sm transition-all duration-300 shadow-md shadow-primary/10 cursor-pointer"
         >
           <Plus className="h-4.5 w-4.5" /> Add Product
         </button>
@@ -281,14 +281,14 @@ export default function AdminProductsPage() {
 
       {loading ? (
         <div className="flex items-center justify-center py-20">
-          <Loader2 className="h-8 w-8 text-indigo-400 animate-spin" />
+          <Loader2 className="h-8 w-8 text-primary animate-spin" />
         </div>
       ) : (
-        <div className="premium-glass rounded-3xl overflow-hidden border border-gray-800/80">
+        <div className="premium-glass rounded-3xl overflow-hidden border border-border">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-gray-800/80 bg-gray-900/40 text-xs font-semibold uppercase tracking-wider text-gray-400">
+                <tr className="border-b border-border/40 bg-muted/40 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                   <th className="p-5">Name</th>
                   <th className="p-5">Slug</th>
                   <th className="p-5">Status</th>
@@ -296,19 +296,19 @@ export default function AdminProductsPage() {
                   <th className="p-5 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-800/40 text-sm text-gray-300">
+              <tbody className="divide-y divide-border/40 text-sm text-muted-foreground">
                 {products.length > 0 ? (
                   products.map((product) => (
-                    <tr key={product.id} className="hover:bg-gray-900/20 transition-colors">
-                      <td className="p-5 font-semibold text-white">{product.name}</td>
-                      <td className="p-5 text-gray-450">{product.slug}</td>
+                    <tr key={product.id} className="hover:bg-muted/30 transition-colors">
+                      <td className="p-5 font-semibold text-foreground">{product.name}</td>
+                      <td className="p-5 text-muted-foreground/80">{product.slug}</td>
                       <td className="p-5">
                         <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold border ${
                           product.status === 'AVAILABLE' 
-                            ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' 
+                            ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20' 
                             : product.status === 'BETA'
-                            ? 'bg-amber-500/10 text-amber-400 border-amber-500/20'
-                            : 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20'
+                            ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20'
+                            : 'bg-primary/10 text-primary border-primary/20'
                         }`}>
                           {product.status}
                         </span>
@@ -316,7 +316,7 @@ export default function AdminProductsPage() {
                       <td className="p-5">
                         <div className="flex flex-wrap gap-1.5">
                           {product.technology.map((tech, idx) => (
-                            <span key={idx} className="px-2 py-0.5 rounded-lg bg-gray-800 text-[11px] text-gray-400">
+                            <span key={idx} className="px-2 py-0.5 rounded-lg bg-muted text-[11px] text-muted-foreground">
                               {tech}
                             </span>
                           ))}
@@ -325,13 +325,13 @@ export default function AdminProductsPage() {
                       <td className="p-5 text-right space-x-2">
                         <button
                           onClick={() => handleOpenEditModal(product)}
-                          className="inline-flex items-center justify-center p-2 rounded-lg bg-gray-800 hover:bg-indigo-600 hover:text-white text-gray-400 transition-colors"
+                          className="inline-flex items-center justify-center p-2 rounded-lg bg-muted hover:bg-primary hover:text-primary-foreground text-muted-foreground transition-colors cursor-pointer"
                         >
                           <Edit2 className="h-4 w-4" />
                         </button>
                         <button
                           onClick={() => handleDelete(product.id)}
-                          className="inline-flex items-center justify-center p-2 rounded-lg bg-gray-800 hover:bg-rose-600 hover:text-white text-gray-400 transition-colors"
+                          className="inline-flex items-center justify-center p-2 rounded-lg bg-muted hover:bg-rose-600 hover:text-white text-muted-foreground transition-colors cursor-pointer"
                         >
                           <Trash2 className="h-4 w-4" />
                         </button>
@@ -340,7 +340,7 @@ export default function AdminProductsPage() {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={5} className="p-10 text-center text-gray-500">
+                    <td colSpan={5} className="p-10 text-center text-muted-foreground">
                       No products directory loaded. Click "Add Product" to launch your first database entry.
                     </td>
                   </tr>
@@ -354,16 +354,16 @@ export default function AdminProductsPage() {
       {/* ── CREATE / UPDATE MODAL FORM ────────────────────────────────────────── */}
       {modalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="relative w-full max-w-3xl premium-glass rounded-3xl border border-gray-800 overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+          <div className="relative w-full max-w-3xl premium-glass rounded-3xl border border-border overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200">
             
             {/* Modal Header */}
-            <div className="flex items-center justify-between p-6 border-b border-gray-800/80 bg-gray-900/40">
-              <h2 className="text-xl font-bold text-white">
+            <div className="flex items-center justify-between p-6 border-b border-border/40 bg-muted/40">
+              <h2 className="text-xl font-bold text-foreground">
                 {editId ? 'Edit Product Solution' : 'Create New Product Solution'}
               </h2>
               <button 
                 onClick={() => setModalOpen(false)}
-                className="text-gray-400 hover:text-white transition-colors"
+                className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -373,31 +373,31 @@ export default function AdminProductsPage() {
             <form onSubmit={handleFormSubmit} className="p-6 space-y-6 max-h-[75vh] overflow-y-auto">
               
               {formError && (
-                <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-450 text-xs">
+                <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 text-xs">
                   {formError}
                 </div>
               )}
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Product Name *</label>
+                  <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Product Name *</label>
                   <input
                     type="text"
                     required
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors"
+                    className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors"
                     placeholder="E.g. Sapirox Pulse ERP"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Slug URL *</label>
+                  <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Slug URL *</label>
                   <input
                     type="text"
                     required
                     value={formData.slug}
                     onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors"
+                    className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors"
                     placeholder="E.g. pulse-erp"
                   />
                 </div>
@@ -405,11 +405,11 @@ export default function AdminProductsPage() {
 
               <div className="grid grid-cols-1 sm:grid-cols-4 gap-6">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Category</label>
+                  <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Category</label>
                   <select
                     value={formData.category}
                     onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors"
+                    className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors"
                   >
                     <option value="CRM">CRM</option>
                     <option value="POS">POS</option>
@@ -422,11 +422,11 @@ export default function AdminProductsPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Publish Status</label>
+                  <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Publish Status</label>
                   <select
                     value={formData.status}
                     onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors"
+                    className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors"
                   >
                     <option value="AVAILABLE">AVAILABLE</option>
                     <option value="BETA">BETA</option>
@@ -435,37 +435,37 @@ export default function AdminProductsPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">CTA Action Button Text</label>
+                  <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">CTA Action Button Text</label>
                   <input
                     type="text"
                     value={formData.ctaText}
                     onChange={(e) => setFormData({ ...formData, ctaText: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors"
+                    className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Live Demo URL</label>
+                  <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Live Demo URL</label>
                   <input
                     type="text"
                     value={formData.demoUrl}
                     onChange={(e) => setFormData({ ...formData, demoUrl: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors"
+                    className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors"
                     placeholder="E.g. https://pulse.sapirox.com"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Main Product Display Image URL</label>
+                <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Main Product Display Image URL</label>
                 <div className="flex gap-2">
                   <input
                     type="text"
                     value={formData.productImage}
                     onChange={(e) => setFormData({ ...formData, productImage: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors"
+                    className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors"
                     placeholder="https://images.unsplash.com/... or upload local file"
                   />
-                  <label className="cursor-pointer px-4 py-2.5 rounded-xl bg-indigo-650 hover:bg-indigo-500 text-white text-xs font-bold flex items-center justify-center shrink-0 transition-colors">
+                  <label className="cursor-pointer px-4 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-white text-xs font-bold flex items-center justify-center shrink-0 transition-colors">
                     {uploadingImage ? 'Uploading...' : 'Upload Local'}
                     <input
                       type="file"
@@ -479,45 +479,45 @@ export default function AdminProductsPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Short Description *</label>
+                <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Short Description *</label>
                 <input
                   type="text"
                   required
                   value={formData.shortDescription}
                   onChange={(e) => setFormData({ ...formData, shortDescription: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors"
+                  className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Detailed Product Description *</label>
+                <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Detailed Product Description *</label>
                 <textarea
                   required
                   rows={4}
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors resize-none"
+                  className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors resize-none"
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 border-t border-gray-800 pt-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 border-t border-border/40 pt-6">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">SEO Page Title (Optional)</label>
+                  <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">SEO Page Title (Optional)</label>
                   <input
                     type="text"
                     value={formData.seoTitle || ''}
                     onChange={(e) => setFormData({ ...formData, seoTitle: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors"
+                    className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors"
                     placeholder="Defaults to: [Product Name] | Sapirox"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">SEO Page Description (Optional)</label>
+                  <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">SEO Page Description (Optional)</label>
                   <input
                     type="text"
                     value={formData.seoDescription || ''}
                     onChange={(e) => setFormData({ ...formData, seoDescription: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors"
+                    className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors"
                     placeholder="Defaults to short description"
                   />
                 </div>
@@ -529,8 +529,8 @@ export default function AdminProductsPage() {
                 {/* Tech stack list */}
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
-                    <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Technologies Used</label>
-                    <button type="button" onClick={() => addArrayInput('technology')} className="text-xs text-indigo-400 font-bold">+ Add</button>
+                    <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Technologies Used</label>
+                    <button type="button" onClick={() => addArrayInput('technology')} className="text-xs text-primary font-bold cursor-pointer">+ Add</button>
                   </div>
                   <div className="space-y-2">
                     {formData.technology?.map((tech, idx) => (
@@ -539,20 +539,20 @@ export default function AdminProductsPage() {
                           type="text"
                           value={tech}
                           onChange={(e) => handleArrayChange('technology', idx, e.target.value)}
-                          className="w-full px-4 py-2 rounded-xl bg-gray-900 border border-gray-800 text-white text-xs"
+                          className="w-full px-4 py-2 rounded-xl bg-background border border-border text-foreground text-xs"
                           placeholder="React, AWS"
                         />
-                        <button type="button" onClick={() => removeArrayInput('technology', idx)} className="p-2 text-rose-450 bg-gray-800 rounded-lg"><X className="h-3.5 w-3.5" /></button>
+                        <button type="button" onClick={() => removeArrayInput('technology', idx)} className="p-2 text-rose-500 bg-muted rounded-lg cursor-pointer"><X className="h-3.5 w-3.5" /></button>
                       </div>
                     ))}
                   </div>
                 </div>
 
-                {/* Core features list */}
+                {/* Features list */}
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
-                    <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Features</label>
-                    <button type="button" onClick={() => addArrayInput('features')} className="text-xs text-indigo-400 font-bold">+ Add</button>
+                    <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Features</label>
+                    <button type="button" onClick={() => addArrayInput('features')} className="text-xs text-primary font-bold cursor-pointer">+ Add</button>
                   </div>
                   <div className="space-y-2">
                     {formData.features?.map((feat, idx) => (
@@ -561,9 +561,9 @@ export default function AdminProductsPage() {
                           type="text"
                           value={feat}
                           onChange={(e) => handleArrayChange('features', idx, e.target.value)}
-                          className="w-full px-4 py-2 rounded-xl bg-gray-900 border border-gray-800 text-white text-xs"
+                          className="w-full px-4 py-2 rounded-xl bg-background border border-border text-foreground text-xs"
                         />
-                        <button type="button" onClick={() => removeArrayInput('features', idx)} className="p-2 text-rose-450 bg-gray-800 rounded-lg"><X className="h-3.5 w-3.5" /></button>
+                        <button type="button" onClick={() => removeArrayInput('features', idx)} className="p-2 text-rose-500 bg-muted rounded-lg cursor-pointer"><X className="h-3.5 w-3.5" /></button>
                       </div>
                     ))}
                   </div>
@@ -572,10 +572,10 @@ export default function AdminProductsPage() {
               </div>
 
               {/* Key Business Benefits list */}
-              <div className="space-y-3 pt-4 border-t border-gray-800/40">
+              <div className="space-y-3 pt-4 border-t border-border/40">
                 <div className="flex justify-between items-center">
-                  <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Key Business Benefits</label>
-                  <button type="button" onClick={() => addArrayInput('benefits')} className="text-xs text-indigo-400 font-bold">+ Add</button>
+                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Key Business Benefits</label>
+                  <button type="button" onClick={() => addArrayInput('benefits')} className="text-xs text-primary font-bold cursor-pointer">+ Add</button>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {formData.benefits?.map((benefit, idx) => (
@@ -584,22 +584,22 @@ export default function AdminProductsPage() {
                         type="text"
                         value={benefit}
                         onChange={(e) => handleArrayChange('benefits', idx, e.target.value)}
-                        className="w-full px-4 py-2 rounded-xl bg-gray-900 border border-gray-800 text-white text-xs"
+                        className="w-full px-4 py-2 rounded-xl bg-background border border-border text-foreground text-xs"
                         placeholder="E.g. Reduce server costs by up to 30%"
                       />
-                      <button type="button" onClick={() => removeArrayInput('benefits', idx)} className="p-2 text-rose-450 bg-gray-800 rounded-lg"><X className="h-3.5 w-3.5" /></button>
+                      <button type="button" onClick={() => removeArrayInput('benefits', idx)} className="p-2 text-rose-500 bg-muted rounded-lg cursor-pointer"><X className="h-3.5 w-3.5" /></button>
                     </div>
                   ))}
                 </div>
               </div>
 
               {/* Target Users & Integrations dynamic lists */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-gray-800/40">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-border/40">
                 {/* Target Users */}
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
-                    <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Target Users / Who It's For</label>
-                    <button type="button" onClick={() => addArrayInput('targetUsers')} className="text-xs text-indigo-400 font-bold">+ Add User Type</button>
+                    <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Target Users / Who It's For</label>
+                    <button type="button" onClick={() => addArrayInput('targetUsers')} className="text-xs text-primary font-bold cursor-pointer">+ Add User Type</button>
                   </div>
                   <div className="space-y-2">
                     {formData.targetUsers?.map((user, idx) => (
@@ -608,10 +608,10 @@ export default function AdminProductsPage() {
                           type="text"
                           value={user}
                           onChange={(e) => handleArrayChange('targetUsers', idx, e.target.value)}
-                          className="w-full px-4 py-2 rounded-xl bg-gray-900 border border-gray-800 text-white text-xs"
+                          className="w-full px-4 py-2 rounded-xl bg-background border border-border text-foreground text-xs"
                           placeholder="E.g. Startups, SMBs"
                         />
-                        <button type="button" onClick={() => removeArrayInput('targetUsers', idx)} className="p-2 text-rose-450 bg-gray-800 rounded-lg"><X className="h-3.5 w-3.5" /></button>
+                        <button type="button" onClick={() => removeArrayInput('targetUsers', idx)} className="p-2 text-rose-500 bg-muted rounded-lg cursor-pointer"><X className="h-3.5 w-3.5" /></button>
                       </div>
                     ))}
                   </div>
@@ -620,8 +620,8 @@ export default function AdminProductsPage() {
                 {/* Integrations */}
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
-                    <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Integrations</label>
-                    <button type="button" onClick={() => addArrayInput('integrations')} className="text-xs text-indigo-400 font-bold">+ Add Integration</button>
+                    <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Integrations</label>
+                    <button type="button" onClick={() => addArrayInput('integrations')} className="text-xs text-primary font-bold cursor-pointer">+ Add Integration</button>
                   </div>
                   <div className="space-y-2">
                     {formData.integrations?.map((integ, idx) => (
@@ -630,10 +630,10 @@ export default function AdminProductsPage() {
                           type="text"
                           value={integ}
                           onChange={(e) => handleArrayChange('integrations', idx, e.target.value)}
-                          className="w-full px-4 py-2 rounded-xl bg-gray-900 border border-gray-800 text-white text-xs"
+                          className="w-full px-4 py-2 rounded-xl bg-background border border-border text-foreground text-xs"
                           placeholder="E.g. Supabase, Stripe, WhatsApp"
                         />
-                        <button type="button" onClick={() => removeArrayInput('integrations', idx)} className="p-2 text-rose-450 bg-gray-800 rounded-lg"><X className="h-3.5 w-3.5" /></button>
+                        <button type="button" onClick={() => removeArrayInput('integrations', idx)} className="p-2 text-rose-500 bg-muted rounded-lg cursor-pointer"><X className="h-3.5 w-3.5" /></button>
                       </div>
                     ))}
                   </div>
@@ -641,51 +641,51 @@ export default function AdminProductsPage() {
               </div>
 
               {/* Product Screenshots list */}
-              <div className="space-y-4 pt-4 border-t border-gray-800/40">
+              <div className="space-y-4 pt-4 border-t border-border/40">
                 <div className="flex justify-between items-center">
-                  <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Product Screenshots</label>
-                  <button type="button" onClick={addScreenshotInput} className="text-xs text-indigo-400 font-bold">+ Add Screenshot</button>
+                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Product Screenshots</label>
+                  <button type="button" onClick={addScreenshotInput} className="text-xs text-primary font-bold cursor-pointer">+ Add Screenshot</button>
                 </div>
                 <div className="space-y-4">
                   {formData.screenshots?.map((scr, idx) => (
-                    <div key={idx} className="p-4 rounded-2xl bg-gray-950/40 border border-gray-800/60 space-y-3">
+                    <div key={idx} className="p-4 rounded-2xl bg-muted/40 border border-border/60 space-y-3">
                       <div className="flex justify-between items-center">
-                        <span className="text-xs font-bold text-gray-500">Screenshot #{idx + 1}</span>
-                        <button type="button" onClick={() => removeScreenshotInput(idx)} className="text-xs text-rose-450 hover:underline">Remove</button>
+                        <span className="text-xs font-bold text-muted-foreground">Screenshot #{idx + 1}</span>
+                        <button type="button" onClick={() => removeScreenshotInput(idx)} className="text-xs text-rose-500 hover:underline cursor-pointer">Remove</button>
                       </div>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                          <label className="block text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">Screenshot Title</label>
+                          <label className="block text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">Screenshot Title</label>
                           <input
                             type="text"
                             value={scr.title}
                             onChange={(e) => handleScreenshotChange(idx, 'title', e.target.value)}
-                            className="w-full px-3 py-1.5 rounded-lg bg-gray-900 border border-gray-800 text-white text-xs"
+                            className="w-full px-3 py-1.5 rounded-lg bg-background border border-border text-foreground text-xs"
                             placeholder="E.g. Dashboard, Analytics"
                           />
                         </div>
                         <div>
-                          <label className="block text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">Short Description</label>
+                          <label className="block text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">Short Description</label>
                           <input
                             type="text"
                             value={scr.description}
                             onChange={(e) => handleScreenshotChange(idx, 'description', e.target.value)}
-                            className="w-full px-3 py-1.5 rounded-lg bg-gray-900 border border-gray-800 text-white text-xs"
+                            className="w-full px-3 py-1.5 rounded-lg bg-background border border-border text-foreground text-xs"
                             placeholder="E.g. Monitor all operations in real-time"
                           />
                         </div>
                       </div>
                       <div>
-                        <label className="block text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">Image URL / Local Upload</label>
+                        <label className="block text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">Image URL / Local Upload</label>
                         <div className="flex gap-2">
                           <input
                             type="text"
                             value={scr.imageUrl}
                             onChange={(e) => handleScreenshotChange(idx, 'imageUrl', e.target.value)}
-                            className="w-full px-3 py-1.5 rounded-lg bg-gray-900 border border-gray-800 text-white text-xs"
+                            className="w-full px-3 py-1.5 rounded-lg bg-background border border-border text-foreground text-xs"
                             placeholder="https://images.unsplash.com/... or upload local file"
                           />
-                          <label className="cursor-pointer px-3 py-1.5 rounded-lg bg-gray-850 hover:bg-gray-750 text-white text-[11px] font-bold flex items-center justify-center shrink-0 border border-gray-800 transition-colors">
+                          <label className="cursor-pointer px-3 py-1.5 rounded-lg bg-muted hover:bg-muted/80 text-foreground text-[11px] font-bold flex items-center justify-center shrink-0 border border-border transition-colors">
                             Upload File
                             <input
                               type="file"
@@ -705,36 +705,36 @@ export default function AdminProductsPage() {
               </div>
 
               {/* How It Works Steps list */}
-              <div className="space-y-4 pt-4 border-t border-gray-800/40">
+              <div className="space-y-4 pt-4 border-t border-border/40">
                 <div className="flex justify-between items-center">
-                  <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">How It Works (Steps)</label>
-                  <button type="button" onClick={addStepInput} className="text-xs text-indigo-400 font-bold">+ Add Step</button>
+                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">How It Works (Steps)</label>
+                  <button type="button" onClick={addStepInput} className="text-xs text-primary font-bold cursor-pointer">+ Add Step</button>
                 </div>
                 <div className="space-y-4">
                   {formData.howItWorks?.map((step, idx) => (
-                    <div key={idx} className="p-4 rounded-2xl bg-gray-950/40 border border-gray-800/60 space-y-3">
+                    <div key={idx} className="p-4 rounded-2xl bg-muted/40 border border-border/60 space-y-3">
                       <div className="flex justify-between items-center">
-                        <span className="text-xs font-bold text-gray-500">Step #{step.order || idx + 1}</span>
-                        <button type="button" onClick={() => removeStepInput(idx)} className="text-xs text-rose-450 hover:underline">Remove</button>
+                        <span className="text-xs font-bold text-muted-foreground">Step #{step.order || idx + 1}</span>
+                        <button type="button" onClick={() => removeStepInput(idx)} className="text-xs text-rose-500 hover:underline cursor-pointer">Remove</button>
                       </div>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                          <label className="block text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">Step Title</label>
+                          <label className="block text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">Step Title</label>
                           <input
                             type="text"
                             value={step.title}
                             onChange={(e) => handleStepChange(idx, 'title', e.target.value)}
-                            className="w-full px-3 py-1.5 rounded-lg bg-gray-900 border border-gray-800 text-white text-xs"
+                            className="w-full px-3 py-1.5 rounded-lg bg-background border border-border text-foreground text-xs"
                             placeholder="E.g. Step 01: Connect"
                           />
                         </div>
                         <div>
-                          <label className="block text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">Step Description</label>
+                          <label className="block text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">Step Description</label>
                           <input
                             type="text"
                             value={step.description}
                             onChange={(e) => handleStepChange(idx, 'description', e.target.value)}
-                            className="w-full px-3 py-1.5 rounded-lg bg-gray-900 border border-gray-800 text-white text-xs"
+                            className="w-full px-3 py-1.5 rounded-lg bg-background border border-border text-foreground text-xs"
                             placeholder="E.g. Hook your database in seconds"
                           />
                         </div>
@@ -745,18 +745,18 @@ export default function AdminProductsPage() {
               </div>
 
               {/* Modal Actions */}
-              <div className="flex justify-end gap-3 pt-6 border-t border-gray-800/80">
+              <div className="flex justify-end gap-3 pt-6 border-t border-border/40">
                 <button
                   type="button"
                   onClick={() => setModalOpen(false)}
-                  className="px-4 py-2.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-300 font-semibold text-sm transition-colors"
+                  className="px-4 py-2.5 rounded-xl bg-muted hover:bg-muted/80 text-muted-foreground font-semibold text-sm transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={formLoading}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm transition-colors disabled:opacity-50"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-white font-semibold text-sm transition-colors disabled:opacity-50 cursor-pointer"
                 >
                   {formLoading ? 'Saving...' : (
                     <>

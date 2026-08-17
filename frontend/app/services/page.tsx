@@ -56,13 +56,13 @@ export default async function ServicesPage() {
 
   const renderIcon = (iconName: string) => {
     switch (iconName?.toLowerCase()) {
-      case 'cpu': return <Cpu className="h-8 w-8 text-indigo-400" />;
-      case 'layers': return <Layers className="h-8 w-8 text-purple-400" />;
-      case 'globe': return <Globe className="h-8 w-8 text-pink-400" />;
-      case 'shield': return <Shield className="h-8 w-8 text-emerald-400" />;
-      case 'code': return <Code className="h-8 w-8 text-blue-400" />;
-      case 'zap': return <Zap className="h-8 w-8 text-amber-400" />;
-      default: return <Activity className="h-8 w-8 text-indigo-400" />;
+      case 'cpu': return <Cpu className="h-8 w-8 text-primary animate-pulse" />;
+      case 'layers': return <Layers className="h-8 w-8 text-cyan-500 dark:text-cyan-400" />;
+      case 'globe': return <Globe className="h-8 w-8 text-blue-500 dark:text-blue-400" />;
+      case 'shield': return <Shield className="h-8 w-8 text-emerald-500 dark:text-emerald-400" />;
+      case 'code': return <Code className="h-8 w-8 text-indigo-500 dark:text-indigo-400" />;
+      case 'zap': return <Zap className="h-8 w-8 text-amber-500 dark:text-amber-400" />;
+      default: return <Activity className="h-8 w-8 text-primary" />;
     }
   };
 
@@ -78,19 +78,19 @@ export default async function ServicesPage() {
       <CustomSchema path="/services" />
       
       {/* Background decorations */}
-      <div className="absolute top-[10%] left-[5%] w-[300px] h-[300px] rounded-full bg-indigo-600/10 blur-[100px] pointer-events-none" />
-      <div className="absolute bottom-[10%] right-[5%] w-[350px] h-[350px] rounded-full bg-purple-600/10 blur-[120px] pointer-events-none" />
+      <div className="absolute top-[10%] left-[5%] w-[300px] h-[300px] rounded-full bg-primary/5 blur-[100px] pointer-events-none" />
+      <div className="absolute bottom-[10%] right-[5%] w-[350px] h-[350px] rounded-full bg-primary/5 blur-[120px] pointer-events-none" />
 
       {/* Header section */}
       <div className="max-w-3xl mb-16">
-        <span className="text-xs font-semibold uppercase tracking-wider text-indigo-400 bg-indigo-500/10 px-4 py-1.5 rounded-full border border-indigo-500/20">
+        <span className="text-xs font-semibold uppercase tracking-wider text-primary bg-primary/10 px-4 py-1.5 rounded-full border border-primary/20">
           Our Capabilities
         </span>
-        <h1 className="text-4xl md:text-6xl font-extrabold text-white mt-6 mb-6 font-heading tracking-tight leading-tight">
+        <h1 className="text-4xl md:text-6xl font-extrabold text-foreground mt-6 mb-6 font-heading tracking-tight leading-tight">
           Bespoke Tech Services <br />
           <span className="premium-gradient-text">Engineered for Scale</span>
         </h1>
-        <p className="text-gray-400 text-lg leading-relaxed">
+        <p className="text-muted-foreground text-lg leading-relaxed">
           We architect secure, high-concurrency systems, cloud-ready frameworks, and custom administration software targeted to improve business workflows.
         </p>
       </div>
@@ -100,21 +100,21 @@ export default async function ServicesPage() {
           services.map((service) => (
             <div 
               key={service.id} 
-              className="premium-glass p-8 rounded-2xl border border-gray-800 hover:border-indigo-500/30 hover:shadow-2xl hover:shadow-indigo-500/5 group transition-all duration-300 flex flex-col justify-between"
+              className="premium-glass p-8 rounded-2xl border border-border hover:border-primary/30 hover:shadow-2xl hover:shadow-primary/5 group transition-all duration-300 flex flex-col justify-between"
             >
               <div>
-                <div className="h-14 w-14 rounded-xl bg-indigo-500/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                <div className="h-14 w-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                   {renderIcon(service.icon)}
                 </div>
-                <h2 className="text-2xl font-bold text-white mb-4">{service.title}</h2>
-                <p className="text-gray-400 text-sm leading-relaxed mb-6 line-clamp-4">{service.shortDescription}</p>
+                <h2 className="text-2xl font-bold text-foreground mb-4">{service.title}</h2>
+                <p className="text-muted-foreground text-sm leading-relaxed mb-6 line-clamp-4">{service.shortDescription}</p>
               </div>
               
               <div>
                 <ul className="space-y-3 mb-8">
                   {service.features.map((feature, idx) => (
-                    <li key={idx} className="flex items-center gap-2.5 text-xs text-gray-300">
-                      <CheckCircle className="h-4 w-4 text-indigo-400 shrink-0" />
+                    <li key={idx} className="flex items-center gap-2.5 text-xs text-muted-foreground">
+                      <CheckCircle className="h-4 w-4 text-primary shrink-0" />
                       {feature}
                     </li>
                   ))}
@@ -122,7 +122,7 @@ export default async function ServicesPage() {
 
                 <Link 
                   href={`/services/${service.slug}`}
-                  className="inline-flex items-center gap-2 text-sm font-semibold text-indigo-400 hover:text-indigo-300 transition-colors group-hover:translate-x-1 duration-200"
+                  className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:opacity-85 transition-opacity group-hover:translate-x-1 duration-200"
                 >
                   View Service Details <ArrowRight className="h-4 w-4" />
                 </Link>
@@ -138,21 +138,21 @@ export default async function ServicesPage() {
           ].map((item, idx) => (
             <div 
               key={idx} 
-              className="premium-glass p-8 rounded-2xl border border-gray-800 hover:border-indigo-500/20 group transition-all duration-300 flex flex-col justify-between"
+              className="premium-glass p-8 rounded-2xl border border-border hover:border-primary/20 group transition-all duration-300 flex flex-col justify-between"
             >
               <div>
-                <div className="h-14 w-14 rounded-xl bg-indigo-500/10 flex items-center justify-center mb-6 group-hover:scale-105 transition-transform duration-300">
+                <div className="h-14 w-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:scale-105 transition-transform duration-300">
                   {renderIcon(item.icon)}
                 </div>
-                <h2 className="text-2xl font-bold text-white mb-4">{item.title}</h2>
-                <p className="text-gray-400 text-sm leading-relaxed mb-6">{item.desc}</p>
+                <h2 className="text-2xl font-bold text-foreground mb-4">{item.title}</h2>
+                <p className="text-muted-foreground text-sm leading-relaxed mb-6">{item.desc}</p>
               </div>
               
               <div>
                 <ul className="space-y-3 mb-8">
                   {item.feats.map((feat, fIdx) => (
-                    <li key={fIdx} className="flex items-center gap-2.5 text-xs text-gray-300">
-                      <CheckCircle className="h-4 w-4 text-indigo-400 shrink-0" />
+                    <li key={fIdx} className="flex items-center gap-2.5 text-xs text-muted-foreground">
+                      <CheckCircle className="h-4 w-4 text-primary shrink-0" />
                       {feat}
                     </li>
                   ))}
@@ -160,7 +160,7 @@ export default async function ServicesPage() {
 
                 <Link 
                   href="/contact"
-                  className="inline-flex items-center gap-2 text-sm font-semibold text-indigo-400 hover:text-indigo-300 transition-colors"
+                  className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:opacity-85 transition-opacity"
                 >
                   Discuss Requirement <ArrowRight className="h-4 w-4" />
                 </Link>

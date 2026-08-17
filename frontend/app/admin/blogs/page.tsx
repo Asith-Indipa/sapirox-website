@@ -189,18 +189,18 @@ export default function AdminBlogsPage() {
     <div className="relative min-h-[85vh] py-12 px-6 max-w-7xl mx-auto">
       
       {/* Header */}
-      <div className="flex justify-between items-center mb-8 border-b border-gray-800 pb-6">
+      <div className="flex justify-between items-center mb-8 border-b border-border/40 pb-6">
         <div>
-          <Link href="/admin/dashboard" className="inline-flex items-center gap-1.5 text-xs text-gray-400 hover:text-white mb-2 transition-colors">
+          <Link href="/admin/dashboard" className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground mb-2 transition-colors">
             <ArrowLeft className="h-3.5 w-3.5" /> Back to Dashboard
           </Link>
-          <h1 className="text-3xl font-extrabold text-white tracking-tight font-heading">
+          <h1 className="text-3xl font-extrabold text-foreground tracking-tight font-heading">
             Manage Insights & Blog Articles
           </h1>
         </div>
         <button
           onClick={handleOpenCreateModal}
-          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm transition-all duration-300 shadow-md shadow-indigo-500/10"
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-white font-semibold text-sm transition-all duration-300 shadow-md shadow-primary/10 cursor-pointer"
         >
           <Plus className="h-4.5 w-4.5" /> Add Article
         </button>
@@ -208,14 +208,14 @@ export default function AdminBlogsPage() {
 
       {loading ? (
         <div className="flex items-center justify-center py-20">
-          <Loader2 className="h-8 w-8 text-indigo-400 animate-spin" />
+          <Loader2 className="h-8 w-8 text-primary animate-spin" />
         </div>
       ) : (
-        <div className="premium-glass rounded-3xl overflow-hidden border border-gray-800/80">
+        <div className="premium-glass rounded-3xl overflow-hidden border border-border">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-gray-800/80 bg-gray-900/40 text-xs font-semibold uppercase tracking-wider text-gray-400">
+                <tr className="border-b border-border/40 bg-muted/40 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                   <th className="p-5">Article Title</th>
                   <th className="p-5">Slug</th>
                   <th className="p-5">Category</th>
@@ -223,40 +223,40 @@ export default function AdminBlogsPage() {
                   <th className="p-5 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-800/40 text-sm text-gray-300">
+              <tbody className="divide-y divide-border/40 text-sm text-muted-foreground">
                 {blogs.length > 0 ? (
                   blogs.map((blog) => (
-                    <tr key={blog.id} className="hover:bg-gray-900/20 transition-colors">
-                      <td className="p-5 font-semibold text-white">{blog.title}</td>
-                      <td className="p-5 text-gray-450">{blog.slug}</td>
+                    <tr key={blog.id} className="hover:bg-muted/30 transition-colors">
+                      <td className="p-5 font-semibold text-foreground">{blog.title}</td>
+                      <td className="p-5 text-muted-foreground/80">{blog.slug}</td>
                       <td className="p-5">
-                        <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+                        <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-primary/10 text-primary border border-primary/20">
                           {blog.category?.name || 'Technology'}
                         </span>
                         {blog.status === 'DRAFT' && (
-                          <span className="ml-2 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                          <span className="ml-2 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
                             Draft
                           </span>
                         )}
                         {blog.featured && (
-                          <span className="ml-2 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-450 border border-emerald-500/20">
+                          <span className="ml-2 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
                             ★ Featured
                           </span>
                         )}
                       </td>
-                      <td className="p-5 text-gray-400 text-xs">
+                      <td className="p-5 text-muted-foreground text-xs">
                         {blog.publishedDate ? new Date(blog.publishedDate).toLocaleDateString() : (blog.createdAt ? new Date(blog.createdAt).toLocaleDateString() : 'Draft')}
                       </td>
                       <td className="p-5 text-right space-x-2">
                         <button
                           onClick={() => handleOpenEditModal(blog)}
-                          className="inline-flex items-center justify-center p-2 rounded-lg bg-gray-800 hover:bg-indigo-600 hover:text-white text-gray-400 transition-colors"
+                          className="inline-flex items-center justify-center p-2 rounded-lg bg-muted hover:bg-primary hover:text-primary-foreground text-muted-foreground transition-colors cursor-pointer"
                         >
                           <Edit2 className="h-4 w-4" />
                         </button>
                         <button
                           onClick={() => handleDelete(blog.id)}
-                          className="inline-flex items-center justify-center p-2 rounded-lg bg-gray-800 hover:bg-rose-600 hover:text-white text-gray-400 transition-colors"
+                          className="inline-flex items-center justify-center p-2 rounded-lg bg-muted hover:bg-rose-600 hover:text-white text-muted-foreground transition-colors cursor-pointer"
                         >
                           <Trash2 className="h-4 w-4" />
                         </button>
@@ -265,7 +265,7 @@ export default function AdminBlogsPage() {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={5} className="p-10 text-center text-gray-500">
+                    <td colSpan={5} className="p-10 text-center text-muted-foreground/60">
                       No blog articles database entry loaded. Click "Add Article" to launch your first post.
                     </td>
                   </tr>
@@ -279,16 +279,16 @@ export default function AdminBlogsPage() {
       {/* ── CREATE / UPDATE MODAL FORM ────────────────────────────────────────── */}
       {modalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="relative w-full max-w-3xl premium-glass rounded-3xl border border-gray-800 overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+          <div className="relative w-full max-w-3xl premium-glass rounded-3xl border border-border overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200">
             
             {/* Modal Header */}
-            <div className="flex items-center justify-between p-6 border-b border-gray-800/80 bg-gray-900/40">
-              <h2 className="text-xl font-bold text-white">
+            <div className="flex items-center justify-between p-6 border-b border-border/40 bg-muted/40">
+              <h2 className="text-xl font-bold text-foreground">
                 {editId ? 'Edit Blog Article' : 'Create Blog Article'}
               </h2>
               <button 
                 onClick={() => setModalOpen(false)}
-                className="text-gray-400 hover:text-white transition-colors"
+                className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -298,31 +298,31 @@ export default function AdminBlogsPage() {
             <form onSubmit={handleFormSubmit} className="p-6 space-y-6 max-h-[75vh] overflow-y-auto">
               
               {formError && (
-                <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-450 text-xs">
+                <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-650 text-xs">
                   {formError}
                 </div>
               )}
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Article Title *</label>
+                  <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Article Title *</label>
                   <input
                     type="text"
                     required
                     value={formData.title}
                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors"
+                    className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors"
                     placeholder="E.g. The Future of AI in Enterprise Solutions"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Slug URL *</label>
+                  <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Slug URL *</label>
                   <input
                     type="text"
                     required
                     value={formData.slug}
                     onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors"
+                    className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors"
                     placeholder="E.g. future-of-ai-enterprise"
                   />
                 </div>
@@ -330,23 +330,23 @@ export default function AdminBlogsPage() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Category Name *</label>
+                  <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Category Name *</label>
                   <input
                     type="text"
                     required
                     value={formData.categoryName}
                     onChange={(e) => setFormData({ ...formData, categoryName: e.target.value, categorySlug: e.target.value.toLowerCase().replace(/\s+/g, '-') })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors"
+                    className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors"
                     placeholder="Technology, Insights, Business"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Tags (Comma Separated)</label>
+                  <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Tags (Comma Separated)</label>
                   <input
                     type="text"
                     value={formData.tagsInput}
                     onChange={(e) => setFormData({ ...formData, tagsInput: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors"
+                    className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors"
                     placeholder="AI, Cloud, Development"
                   />
                 </div>
@@ -354,22 +354,22 @@ export default function AdminBlogsPage() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Publish Status *</label>
+                  <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Publish Status *</label>
                   <select
                     value={formData.status}
                     onChange={(e) => setFormData({ ...formData, status: e.target.value as 'DRAFT' | 'PUBLISHED' })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors"
+                    className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors"
                   >
                     <option value="PUBLISHED">Published (Visible publicly)</option>
                     <option value="DRAFT">Draft (Hidden from public)</option>
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Featured Article *</label>
+                  <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Featured Article *</label>
                   <select
                     value={formData.featured ? 'true' : 'false'}
                     onChange={(e) => setFormData({ ...formData, featured: e.target.value === 'true' })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors"
+                    className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors"
                   >
                     <option value="false">No (Standard Article)</option>
                     <option value="true">Yes (Highlight on Blog Page)</option>
@@ -378,29 +378,29 @@ export default function AdminBlogsPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Short Excerpt *</label>
+                <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Short Excerpt *</label>
                 <textarea
                   required
                   rows={2}
                   value={formData.excerpt}
                   onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors resize-none"
+                  className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors resize-none text-muted-foreground"
                   placeholder="Brief summary of the article to show on cards..."
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Cover Image URL</label>
+                  <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Cover Image URL</label>
                   <div className="flex gap-2">
                     <input
                       type="text"
                       value={formData.coverImage}
                       onChange={(e) => setFormData({ ...formData, coverImage: e.target.value })}
-                      className="w-full px-4 py-2.5 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors"
+                      className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors"
                       placeholder="https://images.unsplash.com/... or upload local file"
                     />
-                    <label className="cursor-pointer px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold flex items-center justify-center shrink-0 transition-colors">
+                    <label className="cursor-pointer px-4 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-white text-xs font-bold flex items-center justify-center shrink-0 transition-colors">
                       {uploadingImage ? 'Uploading...' : 'Upload Local'}
                       <input
                         type="file"
@@ -413,65 +413,65 @@ export default function AdminBlogsPage() {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Cover Image Alt Text</label>
+                  <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Cover Image Alt Text</label>
                   <input
                     type="text"
                     value={formData.coverImageAlt}
                     onChange={(e) => setFormData({ ...formData, coverImageAlt: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors"
+                    className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors"
                     placeholder="Descriptive text for accessibility & SEO"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Content Markdown / Text *</label>
+                <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Content Markdown / Text *</label>
                 <textarea
                   required
                   rows={8}
                   value={formData.content}
                   onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors resize-none font-mono"
+                  className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors resize-none font-mono"
                   placeholder="Write the full content of the article..."
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4 border-t border-gray-800/40">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4 border-t border-border/40">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">SEO Title</label>
+                  <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">SEO Title</label>
                   <input
                     type="text"
                     value={formData.seoTitle}
                     onChange={(e) => setFormData({ ...formData, seoTitle: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors"
+                    className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors"
                     placeholder="E.g. Custom SEO optimized title"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">SEO Description</label>
+                  <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">SEO Description</label>
                   <textarea
                     rows={2}
                     value={formData.seoDescription}
                     onChange={(e) => setFormData({ ...formData, seoDescription: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors resize-none"
+                    className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors resize-none"
                     placeholder="Meta description for search engines"
                   />
                 </div>
               </div>
 
               {/* Modal Actions */}
-              <div className="flex justify-end gap-3 pt-6 border-t border-gray-800/80">
+              <div className="flex justify-end gap-3 pt-6 border-t border-border/40">
                 <button
                   type="button"
                   onClick={() => setModalOpen(false)}
-                  className="px-4 py-2.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-300 font-semibold text-sm transition-colors"
+                  className="px-4 py-2.5 rounded-xl bg-muted hover:bg-muted/80 text-muted-foreground font-semibold text-sm transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={formLoading}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm transition-colors disabled:opacity-50"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-white font-semibold text-sm transition-colors disabled:opacity-50 cursor-pointer"
                 >
                   {formLoading ? 'Saving...' : (
                     <>

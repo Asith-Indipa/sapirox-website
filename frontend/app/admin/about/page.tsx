@@ -148,25 +148,25 @@ export default function AdminAboutPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0B0F19] flex items-center justify-center">
-        <Loader2 className="h-8 w-8 text-indigo-400 animate-spin" />
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="h-8 w-8 text-primary animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#0B0F19] text-gray-100 py-12 px-6">
+    <div className="min-h-screen text-foreground py-12 px-6">
       <div className="max-w-4xl mx-auto space-y-8">
 
         {/* Navigation */}
         <div className="flex items-center justify-between">
-          <Link href="/admin/dashboard" className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors">
+          <Link href="/admin/dashboard" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
             <ArrowLeft className="h-4 w-4" /> Back to Dashboard
           </Link>
           <button
             onClick={handleSave}
             disabled={saving}
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-sm font-semibold hover:opacity-95 disabled:opacity-50 transition-opacity"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary/90 disabled:opacity-50 transition-colors cursor-pointer"
           >
             <Save className="h-4 w-4" />
             {saving ? 'Saving...' : 'Save Changes'}
@@ -174,11 +174,11 @@ export default function AdminAboutPage() {
         </div>
 
         {/* Title */}
-        <div className="premium-glass p-8 rounded-3xl border border-gray-800">
-          <h1 className="text-3xl font-extrabold text-white mb-2 tracking-tight font-heading">
+        <div className="premium-glass p-8 rounded-3xl border border-border">
+          <h1 className="text-3xl font-extrabold text-foreground mb-2 tracking-tight font-heading">
             About Page Content Manager
           </h1>
-          <p className="text-gray-400 text-sm leading-relaxed">
+          <p className="text-muted-foreground text-sm leading-relaxed">
             Edit the sections, text, team members, technologies, and workflow steps displayed on the public About page.
           </p>
         </div>
@@ -187,8 +187,8 @@ export default function AdminAboutPage() {
         {message && (
           <div className={`p-4 rounded-xl border flex items-center gap-3 text-sm ${
             message.type === 'success'
-              ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
-              : 'bg-rose-500/10 text-rose-400 border-rose-500/20'
+              ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
+              : 'bg-rose-500/10 text-rose-600 dark:text-rose-450 border-rose-500/20'
           }`}>
             {message.type === 'success' ? <CheckCircle2 className="h-5 w-5 shrink-0" /> : <AlertCircle className="h-5 w-5 shrink-0" />}
             <span>{message.text}</span>
@@ -196,80 +196,80 @@ export default function AdminAboutPage() {
         )}
 
         {/* ═══ HERO SECTION ═══ */}
-        <div className="premium-glass p-8 rounded-3xl border border-gray-800 space-y-6">
-          <h2 className="text-xl font-bold text-white border-b border-gray-800 pb-3">🏠 Hero Section</h2>
+        <div className="premium-glass p-8 rounded-3xl border border-border space-y-6">
+          <h2 className="text-xl font-bold text-foreground border-b border-border/40 pb-3">🏠 Hero Section</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <label className="block text-xs font-bold uppercase tracking-wider text-gray-400">Title Line 1</label>
+              <label className="block text-xs font-bold uppercase tracking-wider text-muted-foreground">Title Line 1</label>
               <input type="text" value={content.hero.title} onChange={(e) => setContent({ ...content, hero: { ...content.hero, title: e.target.value } })}
-                className="w-full px-4 py-3 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors" />
+                className="w-full px-4 py-3 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors" />
             </div>
             <div className="space-y-2">
-              <label className="block text-xs font-bold uppercase tracking-wider text-gray-400">Title Highlight (Gradient Text)</label>
+              <label className="block text-xs font-bold uppercase tracking-wider text-muted-foreground">Title Highlight (Gradient Text)</label>
               <input type="text" value={content.hero.titleHighlight} onChange={(e) => setContent({ ...content, hero: { ...content.hero, titleHighlight: e.target.value } })}
-                className="w-full px-4 py-3 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors" />
+                className="w-full px-4 py-3 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors" />
             </div>
           </div>
           <div className="space-y-2">
-            <label className="block text-xs font-bold uppercase tracking-wider text-gray-400">Subtitle</label>
+            <label className="block text-xs font-bold uppercase tracking-wider text-muted-foreground">Subtitle</label>
             <textarea rows={3} value={content.hero.subtitle} onChange={(e) => setContent({ ...content, hero: { ...content.hero, subtitle: e.target.value } })}
-              className="w-full px-4 py-3 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors resize-none" />
+              className="w-full px-4 py-3 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors resize-none" />
           </div>
         </div>
 
         {/* ═══ OUR STORY ═══ */}
-        <div className="premium-glass p-8 rounded-3xl border border-gray-800 space-y-6">
-          <h2 className="text-xl font-bold text-white border-b border-gray-800 pb-3">📖 Our Story</h2>
+        <div className="premium-glass p-8 rounded-3xl border border-border space-y-6">
+          <h2 className="text-xl font-bold text-foreground border-b border-border/40 pb-3">📖 Our Story</h2>
           <div className="space-y-2">
-            <label className="block text-xs font-bold uppercase tracking-wider text-gray-400">Paragraph 1</label>
+            <label className="block text-xs font-bold uppercase tracking-wider text-muted-foreground">Paragraph 1</label>
             <textarea rows={4} value={content.story.paragraph1} onChange={(e) => setContent({ ...content, story: { ...content.story, paragraph1: e.target.value } })}
-              className="w-full px-4 py-3 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors resize-none" />
+              className="w-full px-4 py-3 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors resize-none" />
           </div>
           <div className="space-y-2">
-            <label className="block text-xs font-bold uppercase tracking-wider text-gray-400">Paragraph 2</label>
+            <label className="block text-xs font-bold uppercase tracking-wider text-muted-foreground">Paragraph 2</label>
             <textarea rows={4} value={content.story.paragraph2} onChange={(e) => setContent({ ...content, story: { ...content.story, paragraph2: e.target.value } })}
-              className="w-full px-4 py-3 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors resize-none" />
+              className="w-full px-4 py-3 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors resize-none" />
           </div>
         </div>
 
         {/* ═══ MISSION & VISION ═══ */}
-        <div className="premium-glass p-8 rounded-3xl border border-gray-800 space-y-6">
-          <h2 className="text-xl font-bold text-white border-b border-gray-800 pb-3">🎯 Mission & Vision</h2>
+        <div className="premium-glass p-8 rounded-3xl border border-border space-y-6">
+          <h2 className="text-xl font-bold text-foreground border-b border-border/40 pb-3">🎯 Mission & Vision</h2>
           <div className="space-y-2">
-            <label className="block text-xs font-bold uppercase tracking-wider text-gray-400">Mission</label>
+            <label className="block text-xs font-bold uppercase tracking-wider text-muted-foreground">Mission</label>
             <textarea rows={3} value={content.mission} onChange={(e) => setContent({ ...content, mission: e.target.value })}
-              className="w-full px-4 py-3 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors resize-none" />
+              className="w-full px-4 py-3 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors resize-none" />
           </div>
           <div className="space-y-2">
-            <label className="block text-xs font-bold uppercase tracking-wider text-gray-400">Vision</label>
+            <label className="block text-xs font-bold uppercase tracking-wider text-muted-foreground">Vision</label>
             <textarea rows={3} value={content.vision} onChange={(e) => setContent({ ...content, vision: e.target.value })}
-              className="w-full px-4 py-3 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors resize-none" />
+              className="w-full px-4 py-3 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors resize-none" />
           </div>
         </div>
 
         {/* ═══ WHY SAPIROX (TRUST POINTS) ═══ */}
-        <div className="premium-glass p-8 rounded-3xl border border-gray-800 space-y-6">
-          <div className="flex justify-between items-center border-b border-gray-800 pb-3">
-            <h2 className="text-xl font-bold text-white">✅ Why Sapirox (Trust Points)</h2>
-            <button type="button" onClick={addTrustPoint} className="text-xs font-bold text-indigo-400 hover:text-indigo-300 transition-colors inline-flex items-center gap-1">
+        <div className="premium-glass p-8 rounded-3xl border border-border space-y-6">
+          <div className="flex justify-between items-center border-b border-border/40 pb-3">
+            <h2 className="text-xl font-bold text-foreground">✅ Why Sapirox (Trust Points)</h2>
+            <button type="button" onClick={addTrustPoint} className="text-xs font-bold text-primary hover:opacity-85 transition-opacity inline-flex items-center gap-1 cursor-pointer">
               <Plus className="h-3.5 w-3.5" /> Add Point
             </button>
           </div>
           {content.trustPoints.map((point, idx) => (
-            <div key={idx} className="p-5 rounded-2xl bg-gray-900/40 border border-gray-800/60 space-y-4 relative">
-              <button type="button" onClick={() => removeTrustPoint(idx)} className="absolute top-3 right-3 p-1.5 rounded-lg bg-gray-800 hover:bg-rose-500/10 text-gray-500 hover:text-rose-400 transition-colors">
+            <div key={idx} className="p-5 rounded-2xl bg-muted/30 border border-border/60 space-y-4 relative">
+              <button type="button" onClick={() => removeTrustPoint(idx)} className="absolute top-3 right-3 p-1.5 rounded-lg bg-muted hover:bg-rose-500/10 text-muted-foreground hover:text-rose-500 transition-colors cursor-pointer">
                 <X className="h-3.5 w-3.5" />
               </button>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="space-y-1">
-                  <label className="block text-[11px] font-bold uppercase tracking-wider text-gray-500">Title</label>
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-muted-foreground/60">Title</label>
                   <input type="text" value={point.title} onChange={(e) => updateTrustPoint(idx, 'title', e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors" />
+                    className="w-full px-3 py-2 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors" />
                 </div>
                 <div className="sm:col-span-2 space-y-1">
-                  <label className="block text-[11px] font-bold uppercase tracking-wider text-gray-500">Description</label>
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-muted-foreground/60">Description</label>
                   <input type="text" value={point.desc} onChange={(e) => updateTrustPoint(idx, 'desc', e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors" />
+                    className="w-full px-3 py-2 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors" />
                 </div>
               </div>
             </div>
@@ -277,33 +277,33 @@ export default function AdminAboutPage() {
         </div>
 
         {/* ═══ HOW WE WORK (WORKFLOW) ═══ */}
-        <div className="premium-glass p-8 rounded-3xl border border-gray-800 space-y-6">
-          <div className="flex justify-between items-center border-b border-gray-800 pb-3">
-            <h2 className="text-xl font-bold text-white">⚙️ How We Work (Workflow Steps)</h2>
-            <button type="button" onClick={addWorkflowStep} className="text-xs font-bold text-indigo-400 hover:text-indigo-300 transition-colors inline-flex items-center gap-1">
+        <div className="premium-glass p-8 rounded-3xl border border-border space-y-6">
+          <div className="flex justify-between items-center border-b border-border/40 pb-3">
+            <h2 className="text-xl font-bold text-foreground">⚙️ How We Work (Workflow Steps)</h2>
+            <button type="button" onClick={addWorkflowStep} className="text-xs font-bold text-primary hover:opacity-85 transition-opacity inline-flex items-center gap-1 cursor-pointer">
               <Plus className="h-3.5 w-3.5" /> Add Step
             </button>
           </div>
           {content.workflowSteps.map((step, idx) => (
-            <div key={idx} className="p-5 rounded-2xl bg-gray-900/40 border border-gray-800/60 space-y-4 relative">
-              <button type="button" onClick={() => removeWorkflowStep(idx)} className="absolute top-3 right-3 p-1.5 rounded-lg bg-gray-800 hover:bg-rose-500/10 text-gray-500 hover:text-rose-400 transition-colors">
+            <div key={idx} className="p-5 rounded-2xl bg-muted/30 border border-border/60 space-y-4 relative">
+              <button type="button" onClick={() => removeWorkflowStep(idx)} className="absolute top-3 right-3 p-1.5 rounded-lg bg-muted hover:bg-rose-500/10 text-muted-foreground hover:text-rose-500 transition-colors cursor-pointer">
                 <X className="h-3.5 w-3.5" />
               </button>
               <div className="grid grid-cols-1 sm:grid-cols-6 gap-4">
                 <div className="col-span-1 sm:col-span-1 space-y-1">
-                  <label className="block text-[11px] font-bold uppercase tracking-wider text-gray-500">No.</label>
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-muted-foreground/60">No.</label>
                   <input type="text" value={step.number} onChange={(e) => updateWorkflowStep(idx, 'number', e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors" />
+                    className="w-full px-3 py-2 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors" />
                 </div>
                 <div className="col-span-1 sm:col-span-2 space-y-1">
-                  <label className="block text-[11px] font-bold uppercase tracking-wider text-gray-500">Title</label>
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-muted-foreground/60">Title</label>
                   <input type="text" value={step.title} onChange={(e) => updateWorkflowStep(idx, 'title', e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors" />
+                    className="w-full px-3 py-2 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors" />
                 </div>
                 <div className="col-span-1 sm:col-span-3 space-y-1">
-                  <label className="block text-[11px] font-bold uppercase tracking-wider text-gray-500">Description</label>
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-muted-foreground/60">Description</label>
                   <input type="text" value={step.desc} onChange={(e) => updateWorkflowStep(idx, 'desc', e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors" />
+                    className="w-full px-3 py-2 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors" />
                 </div>
               </div>
             </div>
@@ -311,35 +311,35 @@ export default function AdminAboutPage() {
         </div>
 
         {/* ═══ CORE TEAM ═══ */}
-        <div className="premium-glass p-8 rounded-3xl border border-gray-800 space-y-6">
-          <div className="flex justify-between items-center border-b border-gray-800 pb-3">
-            <h2 className="text-xl font-bold text-white">👥 Core Team</h2>
-            <button type="button" onClick={addTeamMember} className="text-xs font-bold text-indigo-400 hover:text-indigo-300 transition-colors inline-flex items-center gap-1">
+        <div className="premium-glass p-8 rounded-3xl border border-border space-y-6">
+          <div className="flex justify-between items-center border-b border-border/40 pb-3">
+            <h2 className="text-xl font-bold text-foreground">👥 Core Team</h2>
+            <button type="button" onClick={addTeamMember} className="text-xs font-bold text-primary hover:opacity-85 transition-opacity inline-flex items-center gap-1 cursor-pointer">
               <Plus className="h-3.5 w-3.5" /> Add Member
             </button>
           </div>
           {content.team.map((member: { name: string; role: string; bio: string; image?: string }, idx) => (
-            <div key={idx} className="p-5 rounded-2xl bg-gray-900/40 border border-gray-800/60 space-y-4 relative">
-              <button type="button" onClick={() => removeTeamMember(idx)} className="absolute top-3 right-3 p-1.5 rounded-lg bg-gray-800 hover:bg-rose-500/10 text-gray-500 hover:text-rose-400 transition-colors">
+            <div key={idx} className="p-5 rounded-2xl bg-muted/30 border border-border/60 space-y-4 relative">
+              <button type="button" onClick={() => removeTeamMember(idx)} className="absolute top-3 right-3 p-1.5 rounded-lg bg-muted hover:bg-rose-500/10 text-muted-foreground hover:text-rose-500 transition-colors cursor-pointer">
                 <X className="h-3.5 w-3.5" />
               </button>
               
               <div className="flex flex-col md:flex-row gap-6">
                 {/* Team member avatar preview & uploader */}
                 <div className="flex flex-col items-center gap-2 shrink-0">
-                  <div className="h-24 w-24 rounded-full bg-gray-950 border border-gray-800 flex items-center justify-center overflow-hidden relative group">
+                  <div className="h-24 w-24 rounded-full bg-background border border-border flex items-center justify-center overflow-hidden relative group">
                     {member.image ? (
                       <img src={member.image} alt={member.name} className="h-full w-full object-cover" />
                     ) : (
-                      <ImageIcon className="h-8 w-8 text-gray-600" />
+                      <ImageIcon className="h-8 w-8 text-muted-foreground/40" />
                     )}
                     {uploadingIndex === idx && (
                       <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-                        <Loader2 className="h-5 w-5 text-indigo-400 animate-spin" />
+                        <Loader2 className="h-5 w-5 text-primary animate-spin" />
                       </div>
                     )}
                   </div>
-                  <label className="cursor-pointer px-3 py-1.5 rounded-xl bg-gray-800 hover:bg-indigo-650 text-white text-[11px] font-bold flex items-center gap-1 border border-gray-700 transition-colors">
+                  <label className="cursor-pointer px-3 py-1.5 rounded-xl bg-muted hover:bg-muted/80 text-foreground text-[11px] font-bold flex items-center gap-1 border border-border/60 transition-colors">
                     <Upload className="h-3 w-3" />
                     {uploadingIndex === idx ? '...' : 'Upload'}
                     <input
@@ -359,28 +359,28 @@ export default function AdminAboutPage() {
                 <div className="flex-1 space-y-4">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-1">
-                      <label className="block text-[11px] font-bold uppercase tracking-wider text-gray-500">Name</label>
+                      <label className="block text-[11px] font-bold uppercase tracking-wider text-muted-foreground/60">Name</label>
                       <input type="text" value={member.name} onChange={(e) => updateTeamMember(idx, 'name', e.target.value)}
-                        className="w-full px-3 py-2 rounded-lg bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors" />
+                        className="w-full px-3 py-2 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors" />
                     </div>
                     <div className="space-y-1">
-                      <label className="block text-[11px] font-bold uppercase tracking-wider text-gray-500">Role / Title</label>
+                      <label className="block text-[11px] font-bold uppercase tracking-wider text-muted-foreground/60">Role / Title</label>
                       <input type="text" value={member.role} onChange={(e) => updateTeamMember(idx, 'role', e.target.value)}
-                        className="w-full px-3 py-2 rounded-lg bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors" />
+                        className="w-full px-3 py-2 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors" />
                     </div>
                   </div>
                   <div className="grid grid-cols-1 gap-4">
                     <div className="space-y-1">
-                      <label className="block text-[11px] font-bold uppercase tracking-wider text-gray-500">Photo URL (Optional)</label>
+                      <label className="block text-[11px] font-bold uppercase tracking-wider text-muted-foreground/60">Photo URL (Optional)</label>
                       <input type="text" value={member.image || ''} onChange={(e) => updateTeamMember(idx, 'image', e.target.value)}
                         placeholder="https://images.unsplash.com/... or upload photo"
-                        className="w-full px-3 py-2 rounded-lg bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors" />
+                        className="w-full px-3 py-2 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors" />
                     </div>
                   </div>
                   <div className="space-y-1">
-                    <label className="block text-[11px] font-bold uppercase tracking-wider text-gray-500">Bio / Description</label>
+                    <label className="block text-[11px] font-bold uppercase tracking-wider text-muted-foreground/60">Bio / Description</label>
                     <textarea rows={2} value={member.bio} onChange={(e) => updateTeamMember(idx, 'bio', e.target.value)}
-                      className="w-full px-3 py-2 rounded-lg bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors resize-none" />
+                      className="w-full px-3 py-2 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors resize-none" />
                   </div>
                 </div>
               </div>
@@ -389,10 +389,10 @@ export default function AdminAboutPage() {
         </div>
 
         {/* ═══ TECHNOLOGIES ═══ */}
-        <div className="premium-glass p-8 rounded-3xl border border-gray-800 space-y-6">
-          <div className="flex justify-between items-center border-b border-gray-800 pb-3">
-            <h2 className="text-xl font-bold text-white">💻 Technologies</h2>
-            <button type="button" onClick={addTech} className="text-xs font-bold text-indigo-400 hover:text-indigo-300 transition-colors inline-flex items-center gap-1">
+        <div className="premium-glass p-8 rounded-3xl border border-border space-y-6">
+          <div className="flex justify-between items-center border-b border-border/40 pb-3">
+            <h2 className="text-xl font-bold text-foreground">💻 Technologies</h2>
+            <button type="button" onClick={addTech} className="text-xs font-bold text-primary hover:opacity-85 transition-opacity inline-flex items-center gap-1 cursor-pointer">
               <Plus className="h-3.5 w-3.5" /> Add Technology
             </button>
           </div>
@@ -400,8 +400,8 @@ export default function AdminAboutPage() {
             {content.technologies.map((tech, idx) => (
               <div key={idx} className="flex items-center gap-2">
                 <input type="text" value={tech} onChange={(e) => updateTech(idx, e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors" />
-                <button type="button" onClick={() => removeTech(idx)} className="p-1.5 rounded-lg bg-gray-800 hover:bg-rose-500/10 text-gray-500 hover:text-rose-400 transition-colors shrink-0">
+                  className="w-full px-3 py-2 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors" />
+                <button type="button" onClick={() => removeTech(idx)} className="p-1.5 rounded-lg bg-muted hover:bg-rose-500/10 text-muted-foreground hover:text-rose-500 transition-colors shrink-0 cursor-pointer">
                   <X className="h-3.5 w-3.5" />
                 </button>
               </div>
@@ -410,17 +410,17 @@ export default function AdminAboutPage() {
         </div>
 
         {/* ═══ CTA SECTION ═══ */}
-        <div className="premium-glass p-8 rounded-3xl border border-gray-800 space-y-6">
-          <h2 className="text-xl font-bold text-white border-b border-gray-800 pb-3">📣 Call to Action</h2>
+        <div className="premium-glass p-8 rounded-3xl border border-border space-y-6">
+          <h2 className="text-xl font-bold text-foreground border-b border-border/40 pb-3">📣 Call to Action</h2>
           <div className="space-y-2">
-            <label className="block text-xs font-bold uppercase tracking-wider text-gray-400">CTA Title</label>
+            <label className="block text-xs font-bold uppercase tracking-wider text-muted-foreground">CTA Title</label>
             <input type="text" value={content.cta.title} onChange={(e) => setContent({ ...content, cta: { ...content.cta, title: e.target.value } })}
-              className="w-full px-4 py-3 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors" />
+              className="w-full px-4 py-3 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors" />
           </div>
           <div className="space-y-2">
-            <label className="block text-xs font-bold uppercase tracking-wider text-gray-400">CTA Subtitle</label>
+            <label className="block text-xs font-bold uppercase tracking-wider text-muted-foreground">CTA Subtitle</label>
             <input type="text" value={content.cta.subtitle} onChange={(e) => setContent({ ...content, cta: { ...content.cta, subtitle: e.target.value } })}
-              className="w-full px-4 py-3 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors" />
+              className="w-full px-4 py-3 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors" />
           </div>
         </div>
 
@@ -429,7 +429,7 @@ export default function AdminAboutPage() {
           <button
             onClick={handleSave}
             disabled={saving}
-            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-sm font-semibold hover:opacity-95 disabled:opacity-50 transition-opacity"
+            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary/90 disabled:opacity-50 transition-colors cursor-pointer"
           >
             <Save className="h-4 w-4" />
             {saving ? 'Saving Changes...' : 'Save All Changes'}

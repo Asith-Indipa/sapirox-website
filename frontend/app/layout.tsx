@@ -3,6 +3,7 @@ import { Outfit, Geist } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import FloatingWhatsApp from "@/components/FloatingWhatsApp";
+import Script from "next/script";
 import "./globals.css";
 
 const outfit = Outfit({
@@ -27,9 +28,27 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${outfit.variable} ${geistSans.variable} h-full antialiased dark`}
+      className={`${outfit.variable} ${geistSans.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col bg-[#0B0F19] text-[#F8F9FA] selection:bg-indigo-500 selection:text-white overflow-x-hidden">
+      <head>
+        <Script
+          id="theme-initializer"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                if (localStorage.theme === 'light' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+                  document.documentElement.classList.remove('dark')
+                } else {
+                  document.documentElement.classList.add('dark')
+                }
+              } catch (_) {}
+            `,
+          }}
+        />
+      </head>
+      <body className="min-h-full flex flex-col bg-background text-foreground selection:bg-primary/20 selection:text-primary overflow-x-hidden transition-colors duration-300">
         <Navbar />
         <main className="flex-1 flex flex-col">
           {children}

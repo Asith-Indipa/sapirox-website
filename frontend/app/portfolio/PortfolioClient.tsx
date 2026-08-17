@@ -24,18 +24,18 @@ export default function PortfolioClient({ initialProjects }: PortfolioClientProp
     <div className="relative min-h-[70vh] py-20 px-6 max-w-7xl mx-auto flex flex-col justify-center">
       
       {/* Background decorations */}
-      <div className="absolute top-[10%] left-[5%] w-[300px] h-[300px] rounded-full bg-indigo-600/10 blur-[100px] pointer-events-none" />
+      <div className="absolute top-[10%] left-[5%] w-[300px] h-[300px] rounded-full bg-primary/5 blur-[100px] pointer-events-none" />
 
       {/* Header section */}
       <div className="max-w-3xl mb-16">
-        <span className="text-xs font-semibold uppercase tracking-wider text-indigo-400 bg-indigo-500/10 px-4 py-1.5 rounded-full border border-indigo-500/20">
+        <span className="text-xs font-semibold uppercase tracking-wider text-primary bg-primary/10 px-4 py-1.5 rounded-full border border-primary/20">
           Case Studies
         </span>
-        <h1 className="text-4xl md:text-6xl font-extrabold text-white mt-6 mb-6 font-heading tracking-tight leading-tight">
+        <h1 className="text-4xl md:text-6xl font-extrabold text-foreground mt-6 mb-6 font-heading tracking-tight leading-tight">
           Proven Deployments & <br />
           <span className="premium-gradient-text">Software Architectures</span>
         </h1>
-        <p className="text-gray-400 text-lg leading-relaxed">
+        <p className="text-muted-foreground text-lg leading-relaxed">
           Browse through systems we have successfully built and deployed for our corporate partners and global startup networks.
         </p>
       </div>
@@ -49,8 +49,8 @@ export default function PortfolioClient({ initialProjects }: PortfolioClientProp
               onClick={() => setSelectedCategory(cat)}
               className={`px-5 py-2 rounded-xl text-xs md:text-sm font-semibold border transition-all duration-350 ${
                 selectedCategory === cat
-                  ? 'bg-indigo-600 border-indigo-500 text-white shadow-lg shadow-indigo-600/20'
-                  : 'bg-gray-900 border-gray-800 text-gray-400 hover:text-white hover:border-gray-700'
+                  ? 'bg-primary border-primary text-white shadow-lg shadow-primary/20 cursor-pointer'
+                  : 'bg-muted border-border text-muted-foreground hover:text-foreground hover:border-border cursor-pointer'
               }`}
             >
               {cat}
@@ -64,11 +64,11 @@ export default function PortfolioClient({ initialProjects }: PortfolioClientProp
           filteredProjects.map((project) => (
             <div 
               key={project.id} 
-              className="premium-glass rounded-2xl overflow-hidden border border-gray-800 group hover:border-indigo-500/30 transition-all duration-300 flex flex-col justify-between"
+              className="premium-glass rounded-2xl overflow-hidden border border-border group hover:border-primary/30 transition-all duration-300 flex flex-col justify-between"
             >
               <div>
                 {/* Thumbnail area */}
-                <div className="h-44 w-full bg-gray-900/80 flex items-center justify-center relative overflow-hidden">
+                <div className="h-44 w-full bg-muted flex items-center justify-center relative overflow-hidden">
                   {project.coverImage ? (
                     <img 
                       src={project.coverImage} 
@@ -77,19 +77,19 @@ export default function PortfolioClient({ initialProjects }: PortfolioClientProp
                     />
                   ) : (
                     <>
-                      <div className="absolute inset-0 bg-gradient-to-br from-indigo-950/20 to-purple-950/20" />
-                      <Code className="h-10 w-10 text-indigo-400/55 group-hover:scale-105 transition-transform duration-300" />
+                      <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-indigo-500/15" />
+                      <Code className="h-10 w-10 text-primary/45 group-hover:scale-105 transition-transform duration-300" />
                     </>
                   )}
                 </div>
                 
                 <div className="p-6">
                   <div className="flex items-center gap-2 mb-2 flex-wrap">
-                    <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">{project.category}</span>
+                    <span className="text-[10px] font-bold text-primary uppercase tracking-widest">{project.category}</span>
                     {project.projectType && (
                       <>
-                        <span className="w-1.5 h-1.5 rounded-full bg-gray-700" />
-                        <span className="text-[10px] font-semibold text-gray-400">
+                        <span className="w-1.5 h-1.5 rounded-full bg-border" />
+                        <span className="text-[10px] font-semibold text-muted-foreground">
                           {project.projectType === 'CLIENT_PROJECT' && 'Client Project'}
                           {project.projectType === 'IN_HOUSE_PRODUCT' && 'In-House Product'}
                           {project.projectType === 'INTERNAL_PROJECT' && 'Internal Project'}
@@ -99,8 +99,8 @@ export default function PortfolioClient({ initialProjects }: PortfolioClientProp
                       </>
                     )}
                   </div>
-                  <h3 className="text-xl font-bold text-white mb-3">{project.title}</h3>
-                  <p className="text-gray-450 text-xs leading-relaxed line-clamp-3 mb-6">
+                  <h3 className="text-xl font-bold text-foreground mb-3">{project.title}</h3>
+                  <p className="text-muted-foreground text-xs leading-relaxed line-clamp-3 mb-6">
                     {project.projectOverview || project.description}
                   </p>
                 </div>
@@ -109,7 +109,7 @@ export default function PortfolioClient({ initialProjects }: PortfolioClientProp
               <div className="px-6 pb-6 mt-auto">
                 <div className="flex flex-wrap gap-1.5 mb-6">
                   {project.technology.map((tech, idx) => (
-                    <span key={idx} className="text-[10px] px-2.5 py-0.5 rounded bg-gray-800/85 text-gray-300 border border-gray-750/30">
+                    <span key={idx} className="text-[10px] px-2.5 py-0.5 rounded bg-muted text-muted-foreground border border-border/40 dark:border-muted-foreground/25 dark:bg-muted/30">
                       {tech}
                     </span>
                   ))}
@@ -117,7 +117,7 @@ export default function PortfolioClient({ initialProjects }: PortfolioClientProp
 
                 <Link 
                   href={`/portfolio/${project.slug}`}
-                  className="inline-flex items-center gap-2 text-xs font-bold text-indigo-400 hover:text-indigo-300 transition-colors group-hover:translate-x-1 duration-200"
+                  className="inline-flex items-center gap-2 text-xs font-bold text-primary hover:opacity-85 transition-opacity group-hover:translate-x-1 duration-200"
                 >
                   Read Case Study <ArrowRight className="h-3.5 w-3.5" />
                 </Link>
@@ -133,30 +133,30 @@ export default function PortfolioClient({ initialProjects }: PortfolioClientProp
           ].map((proj, idx) => (
             <div 
               key={idx} 
-              className="premium-glass rounded-2xl overflow-hidden border border-gray-800 group hover:border-indigo-500/20 transition-all duration-300 flex flex-col justify-between"
+              className="premium-glass rounded-2xl overflow-hidden border border-border group hover:border-primary/20 transition-all duration-300 flex flex-col justify-between"
             >
               <div>
-                <div className="h-44 w-full bg-gray-900/60 flex items-center justify-center relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-indigo-950/20 to-purple-950/20" />
-                  <FolderKanban className="h-10 w-10 text-indigo-500/40" />
+                <div className="h-44 w-full bg-muted flex items-center justify-center relative">
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-indigo-500/15" />
+                  <FolderKanban className="h-10 w-10 text-primary/45" />
                 </div>
                 <div className="p-6">
-                  <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">{proj.cat}</span>
-                  <h3 className="text-xl font-bold text-white mt-2 mb-3">{proj.title}</h3>
-                  <p className="text-gray-450 text-xs leading-relaxed mb-6">{proj.desc}</p>
+                  <span className="text-[10px] font-bold text-primary uppercase tracking-widest">{proj.cat}</span>
+                  <h3 className="text-xl font-bold text-foreground mt-2 mb-3">{proj.title}</h3>
+                  <p className="text-muted-foreground text-xs leading-relaxed mb-6">{proj.desc}</p>
                 </div>
               </div>
 
               <div className="px-6 pb-6 mt-auto">
                 <div className="flex flex-wrap gap-1.5 mb-6">
                   {proj.tech.map((tech, tIdx) => (
-                    <span key={tIdx} className="text-[10px] px-2.5 py-0.5 rounded bg-gray-800 text-gray-300">
+                    <span key={tIdx} className="text-[10px] px-2.5 py-0.5 rounded bg-muted text-muted-foreground border border-border/40 dark:border-muted-foreground/25 dark:bg-muted/30">
                       {tech}
                     </span>
                   ))}
                 </div>
 
-                <Link href="/contact" className="inline-flex items-center gap-2 text-xs font-bold text-indigo-400 hover:text-indigo-300 transition-colors">
+                <Link href="/contact" className="inline-flex items-center gap-2 text-xs font-bold text-primary hover:opacity-85 transition-opacity">
                   Discuss Project <ArrowRight className="h-3.5 w-3.5" />
                 </Link>
               </div>

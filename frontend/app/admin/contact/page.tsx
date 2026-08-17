@@ -85,25 +85,25 @@ export default function AdminContactPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0B0F19] flex items-center justify-center">
-        <Loader2 className="h-8 w-8 text-indigo-400 animate-spin" />
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="h-8 w-8 text-primary animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#0B0F19] text-gray-100 py-12 px-6">
+    <div className="min-h-screen text-foreground py-12 px-6">
       <div className="max-w-4xl mx-auto space-y-8">
 
         {/* Navigation */}
         <div className="flex items-center justify-between">
-          <Link href="/admin/dashboard" className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors">
+          <Link href="/admin/dashboard" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
             <ArrowLeft className="h-4 w-4" /> Back to Dashboard
           </Link>
           <button
             onClick={handleSave}
             disabled={saving}
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-sm font-semibold hover:opacity-95 disabled:opacity-50 transition-opacity"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary/90 disabled:opacity-50 transition-colors cursor-pointer"
           >
             <Save className="h-4 w-4" />
             {saving ? 'Saving...' : 'Save Changes'}
@@ -111,11 +111,11 @@ export default function AdminContactPage() {
         </div>
 
         {/* Title */}
-        <div className="premium-glass p-8 rounded-3xl border border-gray-800">
-          <h1 className="text-3xl font-extrabold text-white mb-2 tracking-tight font-heading">
+        <div className="premium-glass p-8 rounded-3xl border border-border">
+          <h1 className="text-3xl font-extrabold text-foreground mb-2 tracking-tight font-heading">
             Contact Page Content Manager
           </h1>
-          <p className="text-gray-400 text-sm leading-relaxed">
+          <p className="text-muted-foreground text-sm leading-relaxed">
             Customize headers, introduction text, WhatsApp channels, physical addresses, business hours, and social media platforms.
           </p>
         </div>
@@ -124,8 +124,8 @@ export default function AdminContactPage() {
         {message && (
           <div className={`p-4 rounded-xl border flex items-center gap-3 text-sm ${
             message.type === 'success'
-              ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
-              : 'bg-rose-500/10 text-rose-400 border-rose-500/20'
+              ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
+              : 'bg-rose-500/10 text-rose-600 dark:text-rose-450 border-rose-500/20'
           }`}>
             {message.type === 'success' ? <CheckCircle2 className="h-5 w-5 shrink-0" /> : <AlertCircle className="h-5 w-5 shrink-0" />}
             <span>{message.text}</span>
@@ -133,80 +133,80 @@ export default function AdminContactPage() {
         )}
 
         {/* ═══ HERO SECTION ═══ */}
-        <div className="premium-glass p-8 rounded-3xl border border-gray-800 space-y-6">
-          <h2 className="text-xl font-bold text-white border-b border-gray-800 pb-3 flex items-center gap-2">
-            <Globe className="h-5 w-5 text-indigo-400" /> Hero & Introduction
+        <div className="premium-glass p-8 rounded-3xl border border-border space-y-6">
+          <h2 className="text-xl font-bold text-foreground border-b border-border/40 pb-3 flex items-center gap-2">
+            <Globe className="h-5 w-5 text-primary" /> Hero & Introduction
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             <div className="space-y-2">
-              <label className="block text-xs font-bold uppercase tracking-wider text-gray-400">Section Tag Title</label>
+              <label className="block text-xs font-bold uppercase tracking-wider text-muted-foreground">Section Tag Title</label>
               <input 
                 type="text" 
                 value={content.hero.sectionTitle} 
                 onChange={(e) => setContent({ ...content, hero: { ...content.hero, sectionTitle: e.target.value } })}
-                className="w-full px-4 py-3 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors" 
+                className="w-full px-4 py-3 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors" 
               />
             </div>
             <div className="space-y-2">
-              <label className="block text-xs font-bold uppercase tracking-wider text-gray-400">Title Part 1</label>
+              <label className="block text-xs font-bold uppercase tracking-wider text-muted-foreground">Title Part 1</label>
               <input 
                 type="text" 
                 value={content.hero.title} 
                 onChange={(e) => setContent({ ...content, hero: { ...content.hero, title: e.target.value } })}
-                className="w-full px-4 py-3 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors" 
+                className="w-full px-4 py-3 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors" 
               />
             </div>
             <div className="space-y-2">
-              <label className="block text-xs font-bold uppercase tracking-wider text-gray-400">Title Highlight</label>
+              <label className="block text-xs font-bold uppercase tracking-wider text-muted-foreground">Title Highlight</label>
               <input 
                 type="text" 
                 value={content.hero.titleHighlight} 
                 onChange={(e) => setContent({ ...content, hero: { ...content.hero, titleHighlight: e.target.value } })}
-                className="w-full px-4 py-3 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors" 
+                className="w-full px-4 py-3 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors" 
               />
             </div>
           </div>
           <div className="space-y-2">
-            <label className="block text-xs font-bold uppercase tracking-wider text-gray-400">Intro Subtitle Description</label>
+            <label className="block text-xs font-bold uppercase tracking-wider text-muted-foreground">Intro Subtitle Description</label>
             <textarea 
               rows={3} 
               value={content.hero.subtitle} 
               onChange={(e) => setContent({ ...content, hero: { ...content.hero, subtitle: e.target.value } })}
-              className="w-full px-4 py-3 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors resize-none" 
+              className="w-full px-4 py-3 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors resize-none text-muted-foreground" 
             />
           </div>
         </div>
 
         {/* ═══ CONTACT DETAILS ═══ */}
-        <div className="premium-glass p-8 rounded-3xl border border-gray-800 space-y-6">
-          <h2 className="text-xl font-bold text-white border-b border-gray-800 pb-3 flex items-center gap-2">
-            <Mail className="h-5 w-5 text-indigo-400" /> Channels & Contact Info
+        <div className="premium-glass p-8 rounded-3xl border border-border space-y-6">
+          <h2 className="text-xl font-bold text-foreground border-b border-border/40 pb-3 flex items-center gap-2">
+            <Mail className="h-5 w-5 text-primary" /> Channels & Contact Info
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 flex items-center gap-1">
+              <label className="block text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1">
                 <Mail className="h-3 w-3" /> Email Address
               </label>
               <input 
                 type="email" 
                 value={content.info.email} 
                 onChange={(e) => setContent({ ...content, info: { ...content.info, email: e.target.value } })}
-                className="w-full px-4 py-3 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors" 
+                className="w-full px-4 py-3 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors" 
               />
             </div>
             <div className="space-y-2">
-              <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 flex items-center gap-1">
+              <label className="block text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1">
                 <Globe className="h-3 w-3" /> Office Location Address
               </label>
               <input 
                 type="text" 
                 value={content.info.location} 
                 onChange={(e) => setContent({ ...content, info: { ...content.info, location: e.target.value } })}
-                className="w-full px-4 py-3 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors" 
+                className="w-full px-4 py-3 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors" 
               />
             </div>
             <div className="space-y-2">
-              <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 flex items-center gap-1">
+              <label className="block text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1">
                 <Phone className="h-3 w-3" /> Direct Phone Number
               </label>
               <input 
@@ -214,11 +214,11 @@ export default function AdminContactPage() {
                 value={content.info.phone} 
                 onChange={(e) => setContent({ ...content, info: { ...content.info, phone: e.target.value } })}
                 placeholder="e.g. +94 77 123 4567"
-                className="w-full px-4 py-3 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors" 
+                className="w-full px-4 py-3 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors" 
               />
             </div>
             <div className="space-y-2">
-              <label className="block text-xs font-bold uppercase tracking-wider text-gray-400 flex items-center gap-1">
+              <label className="block text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1">
                 <Clock className="h-3 w-3" /> Business Operations Hours
               </label>
               <input 
@@ -226,32 +226,32 @@ export default function AdminContactPage() {
                 value={content.info.hours} 
                 onChange={(e) => setContent({ ...content, info: { ...content.info, hours: e.target.value } })}
                 placeholder="Mon – Fri | 9:00 AM – 6:00 PM"
-                className="w-full px-4 py-3 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors" 
+                className="w-full px-4 py-3 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors" 
               />
             </div>
           </div>
 
-          <div className="border-t border-gray-800 pt-6 space-y-4">
-            <h3 className="text-sm font-bold text-gray-300">WhatsApp Setup</h3>
+          <div className="border-t border-border/40 pt-6 space-y-4">
+            <h3 className="text-sm font-bold text-foreground">WhatsApp Setup</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="block text-xs font-semibold text-gray-450 uppercase tracking-wider">WhatsApp Number</label>
+                <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider">WhatsApp Number</label>
                 <input 
                   type="text" 
                   value={content.info.whatsappNumber} 
                   onChange={(e) => setContent({ ...content, info: { ...content.info, whatsappNumber: e.target.value } })}
                   placeholder="e.g. +94 77 123 4567"
-                  className="w-full px-4 py-3 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors" 
+                  className="w-full px-4 py-3 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors" 
                 />
               </div>
               <div className="space-y-2">
-                <label className="block text-xs font-semibold text-gray-455 uppercase tracking-wider">Direct WhatsApp Chat URL</label>
+                <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider">Direct WhatsApp Chat URL</label>
                 <input 
                   type="text" 
                   value={content.info.whatsappUrl} 
                   onChange={(e) => setContent({ ...content, info: { ...content.info, whatsappUrl: e.target.value } })}
                   placeholder="e.g. https://wa.me/94771234567"
-                  className="w-full px-4 py-3 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors" 
+                  className="w-full px-4 py-3 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors" 
                 />
               </div>
             </div>
@@ -259,39 +259,39 @@ export default function AdminContactPage() {
         </div>
 
         {/* ═══ SOCIAL LINKS ═══ */}
-        <div className="premium-glass p-8 rounded-3xl border border-gray-800 space-y-6">
-          <h2 className="text-xl font-bold text-white border-b border-gray-800 pb-3 flex items-center gap-2">
-            <Share2 className="h-5 w-5 text-indigo-400" /> Social Links
+        <div className="premium-glass p-8 rounded-3xl border border-border space-y-6">
+          <h2 className="text-xl font-bold text-foreground border-b border-border/40 pb-3 flex items-center gap-2">
+            <Share2 className="h-5 w-5 text-primary" /> Social Links
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             <div className="space-y-2">
-              <label className="block text-xs font-bold uppercase tracking-wider text-gray-400">LinkedIn</label>
+              <label className="block text-xs font-bold uppercase tracking-wider text-muted-foreground">LinkedIn</label>
               <input 
                 type="text" 
                 value={content.socials.linkedin} 
                 onChange={(e) => setContent({ ...content, socials: { ...content.socials, linkedin: e.target.value } })}
                 placeholder="https://linkedin.com/..."
-                className="w-full px-4 py-3 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors" 
+                className="w-full px-4 py-3 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors" 
               />
             </div>
             <div className="space-y-2">
-              <label className="block text-xs font-bold uppercase tracking-wider text-gray-400">Facebook</label>
+              <label className="block text-xs font-bold uppercase tracking-wider text-muted-foreground">Facebook</label>
               <input 
                 type="text" 
                 value={content.socials.facebook} 
                 onChange={(e) => setContent({ ...content, socials: { ...content.socials, facebook: e.target.value } })}
                 placeholder="https://facebook.com/..."
-                className="w-full px-4 py-3 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors" 
+                className="w-full px-4 py-3 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors" 
               />
             </div>
             <div className="space-y-2">
-              <label className="block text-xs font-bold uppercase tracking-wider text-gray-400">GitHub</label>
+              <label className="block text-xs font-bold uppercase tracking-wider text-muted-foreground">GitHub</label>
               <input 
                 type="text" 
                 value={content.socials.github} 
                 onChange={(e) => setContent({ ...content, socials: { ...content.socials, github: e.target.value } })}
                 placeholder="https://github.com/..."
-                className="w-full px-4 py-3 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors" 
+                className="w-full px-4 py-3 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors" 
               />
             </div>
           </div>
@@ -302,7 +302,7 @@ export default function AdminContactPage() {
           <button
             onClick={handleSave}
             disabled={saving}
-            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-sm font-semibold hover:opacity-95 disabled:opacity-50 transition-opacity"
+            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary/90 disabled:opacity-50 transition-colors cursor-pointer"
           >
             <Save className="h-4 w-4" />
             {saving ? 'Saving Changes...' : 'Save All Changes'}

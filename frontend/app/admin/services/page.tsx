@@ -194,18 +194,18 @@ export default function AdminServicesPage() {
     <div className="relative min-h-[85vh] py-12 px-6 max-w-7xl mx-auto">
       
       {/* Header */}
-      <div className="flex justify-between items-center mb-8 border-b border-gray-800 pb-6">
+      <div className="flex justify-between items-center mb-8 border-b border-border/40 pb-6">
         <div>
-          <Link href="/admin/dashboard" className="inline-flex items-center gap-1.5 text-xs text-gray-400 hover:text-white mb-2 transition-colors">
+          <Link href="/admin/dashboard" className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground mb-2 transition-colors">
             <ArrowLeft className="h-3.5 w-3.5" /> Back to Dashboard
           </Link>
-          <h1 className="text-3xl font-extrabold text-white tracking-tight font-heading">
+          <h1 className="text-3xl font-extrabold text-foreground tracking-tight font-heading">
             Manage Capabilities & Services
           </h1>
         </div>
         <button
           onClick={handleOpenCreateModal}
-          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm transition-all duration-300 shadow-md shadow-indigo-500/10"
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-white font-semibold text-sm transition-all duration-300 shadow-md shadow-primary/10 cursor-pointer"
         >
           <Plus className="h-4.5 w-4.5" /> Add Service
         </button>
@@ -213,14 +213,14 @@ export default function AdminServicesPage() {
 
       {loading ? (
         <div className="flex items-center justify-center py-20">
-          <Loader2 className="h-8 w-8 text-indigo-400 animate-spin" />
+          <Loader2 className="h-8 w-8 text-primary animate-spin" />
         </div>
       ) : (
-        <div className="premium-glass rounded-3xl overflow-hidden border border-gray-800/80">
+        <div className="premium-glass rounded-3xl overflow-hidden border border-border">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-gray-800/80 bg-gray-900/40 text-xs font-semibold uppercase tracking-wider text-gray-400">
+                <tr className="border-b border-border/40 bg-muted/40 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                   <th className="p-5">Order</th>
                   <th className="p-5">Title</th>
                   <th className="p-5">Slug</th>
@@ -231,12 +231,12 @@ export default function AdminServicesPage() {
                   <th className="p-5 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-800/40 text-sm text-gray-300">
+              <tbody className="divide-y divide-border/40 text-sm text-muted-foreground">
                 {services.length > 0 ? (
                   services.map((service) => (
-                    <tr key={service.id} className="hover:bg-gray-900/20 transition-colors">
-                      <td className="p-5 font-semibold text-white">{service.order}</td>
-                      <td className="p-5 font-semibold text-white">
+                    <tr key={service.id} className="hover:bg-muted/30 transition-colors">
+                      <td className="p-5 font-semibold text-foreground">{service.order}</td>
+                      <td className="p-5 font-semibold text-foreground">
                         <span className="flex items-center gap-2">
                           {service.title}
                           {service.isFeatured && (
@@ -244,17 +244,17 @@ export default function AdminServicesPage() {
                           )}
                         </span>
                       </td>
-                      <td className="p-5 text-gray-450">{service.slug}</td>
-                      <td className="p-5 text-indigo-400 font-mono">{service.icon}</td>
+                      <td className="p-5 text-muted-foreground/80">{service.slug}</td>
+                      <td className="p-5 text-primary font-mono">{service.icon}</td>
                       <td className="p-5">
-                        <span className="px-2.5 py-0.5 rounded-full bg-gray-800 text-xs border border-gray-700/35">
+                        <span className="px-2.5 py-0.5 rounded-full bg-muted text-xs border border-border/40">
                           {service.features.length} features
                         </span>
                       </td>
                       <td className="p-5">
                         <div className="flex items-center gap-1.5">
-                          <Eye className={`h-3.5 w-3.5 ${service.showOnHomepage ? 'text-emerald-400' : 'text-gray-600'}`} />
-                          <span className={`text-xs ${service.showOnHomepage ? 'text-emerald-400' : 'text-gray-500'}`}>
+                          <Eye className={`h-3.5 w-3.5 ${service.showOnHomepage ? 'text-emerald-500' : 'text-muted-foreground/40'}`} />
+                          <span className={`text-xs ${service.showOnHomepage ? 'text-emerald-600 dark:text-emerald-400' : 'text-muted-foreground'}`}>
                             {service.showOnHomepage ? 'Homepage' : 'Hidden'}
                           </span>
                         </div>
@@ -262,8 +262,8 @@ export default function AdminServicesPage() {
                       <td className="p-5">
                         <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold border ${
                           service.status === 'PUBLISHED' 
-                            ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' 
-                            : 'bg-amber-500/10 text-amber-400 border-amber-500/20'
+                            ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20' 
+                            : 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20'
                         }`}>
                           {service.status || 'DRAFT'}
                         </span>
@@ -271,13 +271,13 @@ export default function AdminServicesPage() {
                       <td className="p-5 text-right space-x-2">
                         <button
                           onClick={() => handleOpenEditModal(service)}
-                          className="inline-flex items-center justify-center p-2 rounded-lg bg-gray-800 hover:bg-indigo-600 hover:text-white text-gray-400 transition-colors"
+                          className="inline-flex items-center justify-center p-2 rounded-lg bg-muted hover:bg-primary hover:text-primary-foreground text-muted-foreground transition-colors cursor-pointer"
                         >
                           <Edit2 className="h-4 w-4" />
                         </button>
                         <button
                           onClick={() => handleDelete(service.id)}
-                          className="inline-flex items-center justify-center p-2 rounded-lg bg-gray-800 hover:bg-rose-600 hover:text-white text-gray-400 transition-colors"
+                          className="inline-flex items-center justify-center p-2 rounded-lg bg-muted hover:bg-rose-600 hover:text-white text-muted-foreground transition-colors cursor-pointer"
                         >
                           <Trash2 className="h-4 w-4" />
                         </button>
@@ -286,7 +286,7 @@ export default function AdminServicesPage() {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={8} className="p-10 text-center text-gray-500">
+                    <td colSpan={8} className="p-10 text-center text-muted-foreground">
                       No services directory loaded. Click "Add Service" to launch your first database entry.
                     </td>
                   </tr>
@@ -300,16 +300,16 @@ export default function AdminServicesPage() {
       {/* ── CREATE / UPDATE MODAL FORM ────────────────────────────────────────── */}
       {modalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="relative w-full max-w-2xl premium-glass rounded-3xl border border-gray-800 overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+          <div className="relative w-full max-w-2xl premium-glass rounded-3xl border border-border overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200">
             
             {/* Modal Header */}
-            <div className="flex items-center justify-between p-6 border-b border-gray-800/80 bg-gray-900/40">
-              <h2 className="text-xl font-bold text-white">
+            <div className="flex items-center justify-between p-6 border-b border-border/40 bg-muted/40">
+              <h2 className="text-xl font-bold text-foreground">
                 {editId ? 'Edit Service Capability' : 'Create New Service Capability'}
               </h2>
               <button 
                 onClick={() => setModalOpen(false)}
-                className="text-gray-400 hover:text-white transition-colors"
+                className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -319,31 +319,31 @@ export default function AdminServicesPage() {
             <form onSubmit={handleFormSubmit} className="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
               
               {formError && (
-                <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-450 text-xs">
+                <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 text-xs">
                   {formError}
                 </div>
               )}
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Service Title *</label>
+                  <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Service Title *</label>
                   <input
                     type="text"
                     required
                     value={formData.title}
                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors"
+                    className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors"
                     placeholder="E.g. Web Application Development"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Slug URL *</label>
+                  <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Slug URL *</label>
                   <input
                     type="text"
                     required
                     value={formData.slug}
                     onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors"
+                    className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors"
                     placeholder="E.g. web-app-development"
                   />
                 </div>
@@ -351,31 +351,31 @@ export default function AdminServicesPage() {
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Lucide Icon Name</label>
+                  <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Lucide Icon Name</label>
                   <input
                     type="text"
                     value={formData.icon}
                     onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors"
+                    className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors"
                     placeholder="cpu, layers, globe, code, shield"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Order Position</label>
+                  <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Order Position</label>
                   <input
                     type="number"
                     value={formData.order}
                     onChange={(e) => setFormData({ ...formData, order: parseInt(e.target.value) || 0 })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors"
+                    className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors"
                     placeholder="0"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Publish Status</label>
+                  <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Publish Status</label>
                   <select
                     value={formData.status}
                     onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors"
+                    className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors"
                   >
                     <option value="PUBLISHED">PUBLISHED</option>
                     <option value="DRAFT">DRAFT</option>
@@ -385,21 +385,21 @@ export default function AdminServicesPage() {
               </div>
 
               {/* ── Homepage Visibility Toggles ─────────────────────────────────── */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 p-5 rounded-2xl bg-gray-900/40 border border-gray-800/60">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 p-5 rounded-2xl bg-muted/40 border border-border/60">
                 <label className="flex items-center justify-between gap-4 cursor-pointer group">
                   <div>
-                    <span className="block text-sm font-semibold text-white">Show on Homepage</span>
-                    <span className="block text-xs text-gray-500 mt-0.5">Display this service in the homepage capabilities section</span>
+                    <span className="block text-sm font-semibold text-foreground">Show on Homepage</span>
+                    <span className="block text-xs text-muted-foreground mt-0.5">Display this service in the homepage capabilities section</span>
                   </div>
                   <button
                     type="button"
                     role="switch"
                     aria-checked={formData.showOnHomepage}
                     onClick={() => setFormData({ ...formData, showOnHomepage: !formData.showOnHomepage })}
-                    className={`relative inline-flex h-7 w-12 shrink-0 items-center rounded-full border-2 transition-colors duration-200 focus:outline-none ${
+                    className={`relative inline-flex h-7 w-12 shrink-0 items-center rounded-full border-2 transition-colors duration-200 focus:outline-none cursor-pointer ${
                       formData.showOnHomepage
-                        ? 'bg-indigo-600 border-indigo-600'
-                        : 'bg-gray-700 border-gray-600'
+                        ? 'bg-primary border-primary'
+                        : 'bg-muted border-border'
                     }`}
                   >
                     <span className={`inline-block h-5 w-5 rounded-full bg-white shadow-md transform transition-transform duration-200 ${
@@ -410,18 +410,18 @@ export default function AdminServicesPage() {
 
                 <label className="flex items-center justify-between gap-4 cursor-pointer group">
                   <div>
-                    <span className="block text-sm font-semibold text-white">Featured</span>
-                    <span className="block text-xs text-gray-500 mt-0.5">Highlight with a star badge in the UI</span>
+                    <span className="block text-sm font-semibold text-foreground">Featured</span>
+                    <span className="block text-xs text-muted-foreground mt-0.5">Highlight with a star badge in the UI</span>
                   </div>
                   <button
                     type="button"
                     role="switch"
                     aria-checked={formData.isFeatured}
                     onClick={() => setFormData({ ...formData, isFeatured: !formData.isFeatured })}
-                    className={`relative inline-flex h-7 w-12 shrink-0 items-center rounded-full border-2 transition-colors duration-200 focus:outline-none ${
+                    className={`relative inline-flex h-7 w-12 shrink-0 items-center rounded-full border-2 transition-colors duration-200 focus:outline-none cursor-pointer ${
                       formData.isFeatured
                         ? 'bg-amber-500 border-amber-500'
-                        : 'bg-gray-700 border-gray-600'
+                        : 'bg-muted border-border'
                     }`}
                   >
                     <span className={`inline-block h-5 w-5 rounded-full bg-white shadow-md transform transition-transform duration-200 ${
@@ -434,11 +434,11 @@ export default function AdminServicesPage() {
               {/* Dynamic Technologies List input */}
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
-                  <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider">Technologies Used</label>
+                  <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider">Technologies Used</label>
                   <button
                     type="button"
                     onClick={addTechInput}
-                    className="text-xs font-bold text-indigo-400 hover:text-indigo-300 transition-colors"
+                    className="text-xs font-bold text-primary hover:text-primary/80 transition-colors cursor-pointer"
                   >
                     + Add
                   </button>
@@ -451,13 +451,13 @@ export default function AdminServicesPage() {
                         type="text"
                         value={tech}
                         onChange={(e) => handleTechChange(idx, e.target.value)}
-                        className="w-full px-4 py-2 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors"
+                        className="w-full px-4 py-2 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors"
                         placeholder={`E.g. React`}
                       />
                       <button
                         type="button"
                         onClick={() => removeTechInput(idx)}
-                        className="p-2 rounded-lg bg-gray-800 hover:bg-rose-500/10 text-rose-450 hover:text-rose-450 transition-colors shrink-0"
+                        className="p-2 rounded-lg bg-muted hover:bg-rose-500/10 text-rose-500 transition-colors shrink-0 cursor-pointer"
                       >
                         <X className="h-4 w-4" />
                       </button>
@@ -467,16 +467,16 @@ export default function AdminServicesPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Service Cover Image URL</label>
+                <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Service Cover Image URL</label>
                 <div className="flex gap-2">
                   <input
                     type="text"
                     value={formData.image || ''}
                     onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors"
+                    className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors"
                     placeholder="https://images.unsplash.com/... or upload local file"
                   />
-                  <label className="cursor-pointer px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold flex items-center justify-center shrink-0 transition-colors">
+                  <label className="cursor-pointer px-4 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-white text-xs font-bold flex items-center justify-center shrink-0 transition-colors">
                     {uploadingImage ? 'Uploading...' : 'Upload Local'}
                     <input
                       type="file"
@@ -490,25 +490,25 @@ export default function AdminServicesPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Short Description *</label>
+                <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Short Description *</label>
                 <input
                   type="text"
                   required
                   value={formData.shortDescription}
                   onChange={(e) => setFormData({ ...formData, shortDescription: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors"
+                  className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors"
                   placeholder="Summarized capability description for lists"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Full Detailed Overview *</label>
+                <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Full Detailed Overview *</label>
                 <textarea
                   required
                   rows={4}
                   value={formData.fullDescription}
                   onChange={(e) => setFormData({ ...formData, fullDescription: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors resize-none"
+                  className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors resize-none"
                   placeholder="Detailed breakdown layout..."
                 />
               </div>
@@ -516,11 +516,11 @@ export default function AdminServicesPage() {
               {/* Dynamic Features List input */}
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
-                  <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider">Features list</label>
+                  <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider">Features list</label>
                   <button
                     type="button"
                     onClick={addFeatureInput}
-                    className="text-xs font-bold text-indigo-400 hover:text-indigo-300 transition-colors"
+                    className="text-xs font-bold text-primary hover:text-primary/80 transition-colors cursor-pointer"
                   >
                     + Add Feature Line
                   </button>
@@ -533,14 +533,14 @@ export default function AdminServicesPage() {
                         type="text"
                         value={feat}
                         onChange={(e) => handleFeatureChange(idx, e.target.value)}
-                        className="w-full px-4 py-2 rounded-xl bg-gray-900 border border-gray-800 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors"
+                        className="w-full px-4 py-2 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors"
                         placeholder={`Feature capability ${idx + 1}`}
                       />
                       {formData.features && formData.features.length > 1 && (
                         <button
                           type="button"
                           onClick={() => removeFeatureInput(idx)}
-                          className="p-2 rounded-lg bg-gray-800 hover:bg-rose-500/10 text-rose-450 hover:text-rose-400 transition-colors"
+                          className="p-2 rounded-lg bg-muted hover:bg-rose-500/10 text-rose-500 transition-colors cursor-pointer"
                         >
                           <X className="h-4 w-4" />
                         </button>
@@ -551,18 +551,18 @@ export default function AdminServicesPage() {
               </div>
 
               {/* Modal Actions */}
-              <div className="flex justify-end gap-3 pt-6 border-t border-gray-800/80">
+              <div className="flex justify-end gap-3 pt-6 border-t border-border/40">
                 <button
                   type="button"
                   onClick={() => setModalOpen(false)}
-                  className="px-4 py-2.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-300 font-semibold text-sm transition-colors"
+                  className="px-4 py-2.5 rounded-xl bg-muted hover:bg-muted/80 text-muted-foreground font-semibold text-sm transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={formLoading}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm transition-colors disabled:opacity-50"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-white font-semibold text-sm transition-colors disabled:opacity-50 cursor-pointer"
                 >
                   {formLoading ? 'Saving...' : (
                     <>

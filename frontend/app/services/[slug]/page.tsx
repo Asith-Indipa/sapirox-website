@@ -58,22 +58,22 @@ export default async function ServiceDetailPage({ params }: PageProps) {
 
   const renderIcon = (iconName: string) => {
     switch (iconName?.toLowerCase()) {
-      case 'cpu': return <Cpu className="h-10 w-10 text-indigo-400" />;
-      case 'layers': return <Layers className="h-10 w-10 text-purple-400" />;
-      case 'globe': return <Globe className="h-10 w-10 text-pink-400" />;
-      case 'shield': return <Shield className="h-10 w-10 text-emerald-400" />;
-      case 'code': return <Code className="h-10 w-10 text-blue-400" />;
-      case 'zap': return <Zap className="h-10 w-10 text-amber-400" />;
-      default: return <Activity className="h-10 w-10 text-indigo-400" />;
+      case 'cpu': return <Cpu className="h-10 w-10 text-primary" />;
+      case 'layers': return <Layers className="h-10 w-10 text-cyan-500 dark:text-cyan-400" />;
+      case 'globe': return <Globe className="h-10 w-10 text-blue-500 dark:text-blue-400" />;
+      case 'shield': return <Shield className="h-10 w-10 text-emerald-500 dark:text-emerald-400" />;
+      case 'code': return <Code className="h-10 w-10 text-indigo-500 dark:text-indigo-400" />;
+      case 'zap': return <Zap className="h-10 w-10 text-amber-500 dark:text-amber-400" />;
+      default: return <Activity className="h-10 w-10 text-primary" />;
     }
   };
 
   if (error || !service) {
     return (
       <div className="max-w-xl mx-auto px-6 py-32 text-center">
-        <h2 className="text-3xl font-bold text-white mb-4">Service Not Found</h2>
-        <p className="text-gray-450 mb-8">The service you are looking for does not exist or has been unpublished.</p>
-        <Link href="/services" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gray-800 text-white font-semibold">
+        <h2 className="text-3xl font-bold text-foreground mb-4">Service Not Found</h2>
+        <p className="text-muted-foreground mb-8">The service you are looking for does not exist or has been unpublished.</p>
+        <Link href="/services" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-muted text-foreground border border-border font-semibold">
           <ArrowLeft className="h-4 w-4" /> Back to Services
         </Link>
       </div>
@@ -89,23 +89,23 @@ export default async function ServiceDetailPage({ params }: PageProps) {
       />
       
       {/* Background glow effects */}
-      <div className="absolute top-[10%] left-[20%] w-[300px] h-[300px] rounded-full bg-indigo-600/10 blur-[100px] pointer-events-none" />
+      <div className="absolute top-[10%] left-[20%] w-[300px] h-[300px] rounded-full bg-primary/5 blur-[100px] pointer-events-none" />
 
       {/* Back button */}
-      <Link href="/services" className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors mb-12">
+      <Link href="/services" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-12">
         <ArrowLeft className="h-4 w-4" /> All Services
       </Link>
 
       {/* Service Header Info */}
       <div className="flex flex-col md:flex-row items-start gap-8 mb-12">
-        <div className="h-20 w-20 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center shrink-0">
+        <div className="h-20 w-20 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
           {renderIcon(service.icon)}
         </div>
         <div>
-          <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-4 tracking-tight font-heading">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-foreground mb-4 tracking-tight font-heading">
             {service.title}
           </h1>
-          <p className="text-gray-400 text-lg leading-relaxed">{service.shortDescription}</p>
+          <p className="text-muted-foreground text-lg leading-relaxed">{service.shortDescription}</p>
         </div>
       </div>
 
@@ -115,7 +115,7 @@ export default async function ServiceDetailPage({ params }: PageProps) {
           <img 
             src={service.image} 
             alt={service.title} 
-            className="w-full h-auto rounded-3xl border border-gray-800/80 shadow-2xl shadow-indigo-950/20 block"
+            className="w-full h-auto rounded-3xl border border-border/80 shadow-2xl shadow-primary/5 block"
           />
         </div>
       )}
@@ -128,11 +128,11 @@ export default async function ServiceDetailPage({ params }: PageProps) {
           
           {/* Technologies section */}
           {service.technologies && service.technologies.length > 0 && (
-            <div className="p-6 rounded-2xl bg-indigo-500/[0.03] border border-indigo-500/10 backdrop-blur-md">
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-indigo-400 mb-4">Technologies Powered By</h3>
+            <div className="p-6 rounded-2xl bg-primary/[0.03] border border-primary/10 backdrop-blur-md">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-primary mb-4">Technologies Powered By</h3>
               <div className="flex flex-wrap gap-2.5">
                 {service.technologies.map((tech) => (
-                  <span key={tech} className="px-3.5 py-1.5 rounded-xl bg-gray-900 border border-gray-800 text-xs font-semibold text-gray-300 hover:text-white hover:border-indigo-500/40 transition-colors">
+                  <span key={tech} className="px-3.5 py-1.5 rounded-xl bg-muted border border-border text-xs font-semibold text-muted-foreground hover:text-foreground hover:border-primary/40 transition-colors">
                     {tech}
                   </span>
                 ))}
@@ -141,29 +141,29 @@ export default async function ServiceDetailPage({ params }: PageProps) {
           )}
 
           <div>
-            <h2 className="text-2xl font-bold text-white mb-4 border-b border-gray-800 pb-3">Service Overview</h2>
-            <div className="text-gray-300 leading-relaxed space-y-4 whitespace-pre-wrap text-sm md:text-base">
+            <h2 className="text-2xl font-bold text-foreground mb-4 border-b border-border pb-3">Service Overview</h2>
+            <div className="text-muted-foreground leading-relaxed space-y-4 whitespace-pre-wrap text-sm md:text-base">
               {service.fullDescription}
             </div>
           </div>
         </div>
 
         {/* Features Sidebar */}
-        <div className="premium-glass p-8 rounded-3xl border border-gray-800 h-fit space-y-6">
-          <h3 className="text-lg font-bold text-white">Included Features</h3>
+        <div className="premium-glass p-8 rounded-3xl border border-border h-fit space-y-6">
+          <h3 className="text-lg font-bold text-foreground">Included Features</h3>
           <ul className="space-y-4">
             {service.features.map((feature, idx) => (
-              <li key={idx} className="flex items-start gap-3 text-xs md:text-sm text-gray-300">
-                <CheckCircle className="h-5 w-5 text-indigo-400 shrink-0 mt-0.5" />
+              <li key={idx} className="flex items-start gap-3 text-xs md:text-sm text-muted-foreground">
+                <CheckCircle className="h-5 w-5 text-primary shrink-0 mt-0.5" />
                 <span>{feature}</span>
               </li>
             ))}
           </ul>
 
-          <div className="pt-6 border-t border-gray-800/80">
+          <div className="pt-6 border-t border-border/80">
             <Link 
               href="/contact" 
-              className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold flex items-center justify-center gap-2 hover:opacity-95 text-sm transition-all duration-300 shadow-md shadow-indigo-500/10"
+              className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold flex items-center justify-center gap-2 hover:opacity-95 text-sm transition-all duration-300 shadow-md shadow-cyan-500/10"
             >
               Get Started <MessageSquare className="h-4 w-4" />
             </Link>
@@ -174,17 +174,17 @@ export default async function ServiceDetailPage({ params }: PageProps) {
 
       {/* Related Projects section */}
       {service.projects && service.projects.length > 0 && (
-        <div className="mt-20 pt-12 border-t border-gray-900">
-          <h2 className="text-2xl md:text-3xl font-bold text-white mb-2 font-heading">
+        <div className="mt-20 pt-12 border-t border-border">
+          <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2 font-heading">
             Our Case Studies
           </h2>
-          <p className="text-gray-400 text-sm mb-8">
+          <p className="text-muted-foreground text-sm mb-8">
             Real-world solutions built using this capability.
           </p>
           
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
             {service.projects.map((project) => (
-              <div key={project.id} className="premium-glass rounded-2xl overflow-hidden border border-gray-800 group hover:border-indigo-500/30 transition-all duration-300 flex flex-col justify-between">
+              <div key={project.id} className="premium-glass rounded-2xl overflow-hidden border border-border group hover:border-primary/30 transition-all duration-300 flex flex-col justify-between">
                 <div>
                   {(project.coverImage || (project.gallery && project.gallery[0])) && (
                     <Link href={`/portfolio/${project.slug}`} className="relative h-48 w-full overflow-hidden block">
@@ -193,35 +193,35 @@ export default async function ServiceDetailPage({ params }: PageProps) {
                         alt={project.title} 
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-550 block"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-950/20 to-transparent" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
                     </Link>
                   )}
                   <div className="p-6">
-                    <span className="text-[10px] uppercase font-bold tracking-wider text-indigo-400 bg-indigo-500/10 px-2.5 py-1 rounded-md border border-indigo-500/20">
+                    <span className="text-[10px] uppercase font-bold tracking-wider text-primary bg-primary/10 px-2.5 py-1 rounded-md border border-primary/20">
                       {project.category}
                     </span>
-                    <h3 className="text-xl font-bold text-white mt-3 mb-2 hover:text-indigo-400 transition-colors">
+                    <h3 className="text-xl font-bold text-foreground mt-3 mb-2 hover:text-primary transition-colors">
                       <Link href={`/portfolio/${project.slug}`}>
                         {project.title}
                       </Link>
                     </h3>
-                    <p className="text-gray-400 text-xs leading-relaxed line-clamp-3">{project.description}</p>
+                    <p className="text-muted-foreground text-xs leading-relaxed line-clamp-3">{project.description}</p>
                   </div>
                 </div>
                 
                 <div className="px-6 pb-6">
                   <div className="flex flex-wrap gap-1.5 mb-4">
                     {project.technology.map((tech, idx) => (
-                      <span key={idx} className="text-[10px] font-medium px-2 py-0.5 rounded bg-gray-900 border border-gray-800 text-gray-400">
+                      <span key={idx} className="text-[10px] font-medium px-2 py-0.5 rounded bg-muted border border-border text-muted-foreground">
                         {tech}
                       </span>
                     ))}
                   </div>
 
-                  <div className="flex items-center justify-between pt-4 border-t border-gray-800/40 gap-3">
+                  <div className="flex items-center justify-between pt-4 border-t border-border/40 gap-3">
                     <Link 
                       href={`/portfolio/${project.slug}`}
-                      className="text-xs font-bold text-indigo-400 hover:text-indigo-300 transition-colors inline-flex items-center gap-1"
+                      className="text-xs font-bold text-primary hover:opacity-85 transition-opacity inline-flex items-center gap-1"
                     >
                       Read Case Study &rarr;
                     </Link>
@@ -232,7 +232,7 @@ export default async function ServiceDetailPage({ params }: PageProps) {
                           href={project.liveUrl} 
                           target="_blank" 
                           rel="noopener noreferrer" 
-                          className="text-gray-450 hover:text-indigo-400 transition-colors"
+                          className="text-muted-foreground hover:text-primary transition-colors"
                           title="Live Demo"
                         >
                           <ExternalLink className="h-4 w-4" />
@@ -243,7 +243,7 @@ export default async function ServiceDetailPage({ params }: PageProps) {
                           href={project.githubUrl} 
                           target="_blank" 
                           rel="noopener noreferrer" 
-                          className="text-gray-450 hover:text-white transition-colors"
+                          className="text-muted-foreground hover:text-foreground transition-colors"
                           title="GitHub Repository"
                         >
                           <svg 

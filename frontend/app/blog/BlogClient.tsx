@@ -39,31 +39,31 @@ export default function BlogClient({ initialBlogs }: BlogClientProps) {
   return (
     <div className="relative min-h-[85vh] py-20 px-6 max-w-7xl mx-auto">
       {/* Glow effect */}
-      <div className="absolute top-[10%] left-[20%] w-[300px] h-[300px] rounded-full bg-indigo-600/10 blur-[100px] pointer-events-none" />
+      <div className="absolute top-[10%] left-[20%] w-[300px] h-[300px] rounded-full bg-primary/5 blur-[100px] pointer-events-none" />
 
       {/* Header section */}
       <div className="max-w-3xl mb-16">
-        <span className="text-xs font-semibold uppercase tracking-wider text-indigo-400 bg-indigo-500/10 px-4 py-1.5 rounded-full border border-indigo-500/20">
+        <span className="text-xs font-semibold uppercase tracking-wider text-primary bg-primary/10 px-4 py-1.5 rounded-full border border-primary/20">
           Developer Insights
         </span>
-        <h1 className="text-4xl md:text-6xl font-extrabold text-white mt-6 mb-6 font-heading tracking-tight leading-tight">
+        <h1 className="text-4xl md:text-6xl font-extrabold text-foreground mt-6 mb-6 font-heading tracking-tight leading-tight">
           The Sapirox Engineering <br />
           <span className="premium-gradient-text">and Technology Blog</span>
         </h1>
-        <p className="text-gray-400 text-lg leading-relaxed">
+        <p className="text-muted-foreground text-lg leading-relaxed">
           Deep-dives into scalable software architectures, database performance optimization, security, and developer guidelines.
         </p>
       </div>
 
       {/* Search Input bar */}
       <div className="relative max-w-md mb-12">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-500" />
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
         <input 
           type="text" 
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search articles, categories or tags..."
-          className="w-full pl-12 pr-4 py-3 rounded-xl bg-gray-900 border border-gray-800 text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 text-sm transition-colors"
+          className="w-full pl-12 pr-4 py-3 rounded-xl bg-background border border-border text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary text-sm transition-colors"
         />
       </div>
 
@@ -72,15 +72,15 @@ export default function BlogClient({ initialBlogs }: BlogClientProps) {
           filteredBlogs.map((blog) => (
             <article 
               key={blog.id} 
-              className="premium-glass rounded-2xl overflow-hidden border border-gray-800 flex flex-col justify-between group hover:border-indigo-500/30 transition-all duration-300 relative"
+              className="premium-glass rounded-2xl overflow-hidden border border-border flex flex-col justify-between group hover:border-primary/30 transition-all duration-300 relative"
             >
               {blog.featured && (
-                <span className="absolute top-4 right-4 z-10 text-[10px] font-extrabold text-indigo-300 uppercase tracking-widest bg-indigo-900/80 backdrop-blur-md px-3 py-1 rounded-full border border-indigo-500/30 shadow-lg">
+                <span className="absolute top-4 right-4 z-10 text-[10px] font-extrabold text-primary-foreground uppercase tracking-widest bg-primary px-3 py-1 rounded-full border border-primary/30 shadow-lg">
                   ★ Featured
                 </span>
               )}
               
-              <div className="relative w-full aspect-video overflow-hidden border-b border-gray-800/40 bg-gray-950">
+              <div className="relative w-full aspect-video overflow-hidden border-b border-border/40 bg-muted">
                 <img 
                   src={getFullImageUrl(blog.coverImage) || 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80'} 
                   alt={blog.coverImageAlt || blog.title} 
@@ -93,39 +93,39 @@ export default function BlogClient({ initialBlogs }: BlogClientProps) {
 
               <div className="p-6 flex-1 flex flex-col">
                 <div className="flex items-center gap-2 mb-4">
-                  <span className="text-xs text-indigo-400 font-semibold uppercase tracking-wider">
+                  <span className="text-xs text-primary font-semibold uppercase tracking-wider">
                     {blog.category.name}
                   </span>
                 </div>
 
-                <h2 className="text-xl font-bold text-white mb-4 group-hover:text-indigo-300 transition-colors leading-snug font-heading">
+                <h2 className="text-xl font-bold text-foreground mb-4 group-hover:text-primary transition-colors leading-snug font-heading">
                   {blog.title}
                 </h2>
                 
-                <p className="text-gray-400 text-sm leading-relaxed line-clamp-3 mb-6 flex-1">
+                <p className="text-muted-foreground text-sm leading-relaxed line-clamp-3 mb-6 flex-1">
                   {blog.excerpt || (blog.content ? blog.content.substring(0, 160) + '...' : '')}
                 </p>
               </div>
 
-              <div className="p-6 bg-gray-900/40 border-t border-gray-850/40 flex flex-col gap-4">
-                <div className="grid grid-cols-3 gap-2 items-center text-[10px] text-gray-400 font-medium">
+              <div className="p-6 bg-muted/40 border-t border-border/40 flex flex-col gap-4">
+                <div className="grid grid-cols-3 gap-2 items-center text-[10px] text-muted-foreground font-medium">
                   <span className="flex items-center gap-1 truncate">
-                    <Calendar className="h-3.5 w-3.5 text-indigo-500/80 shrink-0" />
+                    <Calendar className="h-3.5 w-3.5 text-primary/80 shrink-0" />
                     {formatDate(blog.publishedDate, blog.createdAt)}
                   </span>
                   <span className="flex items-center gap-1 justify-center truncate">
-                    <Clock className="h-3.5 w-3.5 text-indigo-500/80 shrink-0" />
+                    <Clock className="h-3.5 w-3.5 text-primary/80 shrink-0" />
                     {blog.readingTime || 5} min read
                   </span>
                   <span className="flex items-center gap-1 justify-end truncate">
-                    <User className="h-3.5 w-3.5 text-indigo-500/80 shrink-0" />
+                    <User className="h-3.5 w-3.5 text-primary/80 shrink-0" />
                     {blog.author?.email ? blog.author.email.split('@')[0] : 'admin'}
                   </span>
                 </div>
 
                 <Link 
                   href={`/blog/${blog.slug}`}
-                  className="inline-flex items-center gap-1.5 text-xs font-bold text-white hover:text-indigo-455 transition-colors mt-2"
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-foreground hover:text-primary transition-colors mt-2"
                 >
                   Read Full Article <ArrowRight className="h-3.5 w-3.5" />
                 </Link>
@@ -141,29 +141,29 @@ export default function BlogClient({ initialBlogs }: BlogClientProps) {
           ].map((item, idx) => (
             <article 
               key={idx} 
-              className="premium-glass rounded-2xl overflow-hidden border border-gray-800 flex flex-col justify-between group"
+              className="premium-glass rounded-2xl overflow-hidden border border-border flex flex-col justify-between group hover:border-primary/20 transition-all duration-300"
             >
               <div className="p-6">
-                <span className="text-xs text-indigo-400 font-semibold uppercase tracking-wider">{item.cat}</span>
-                <h3 className="text-lg font-bold text-white mt-3 mb-3 group-hover:text-indigo-300 transition-colors">
+                <span className="text-xs text-primary font-semibold uppercase tracking-wider">{item.cat}</span>
+                <h3 className="text-lg font-bold text-foreground mt-3 mb-3 group-hover:text-primary transition-colors">
                   {item.title}
                 </h3>
-                <p className="text-gray-400 text-xs leading-relaxed">
+                <p className="text-muted-foreground text-xs leading-relaxed">
                   Technical deep dive outlining optimized structural guidelines to scale applications and resolve common infrastructure bottlenecks.
                 </p>
               </div>
 
-              <div className="p-6 bg-gray-900/40 border-t border-gray-855/40 flex flex-col gap-4">
-                <div className="flex items-center justify-between text-[11px] text-gray-400">
+              <div className="p-6 bg-muted/40 border-t border-border/40 flex flex-col gap-4">
+                <div className="flex items-center justify-between text-[11px] text-muted-foreground">
                   <span className="flex items-center gap-1">
-                    <Calendar className="h-3.5 w-3.5 text-indigo-500/80" /> {item.date}
+                    <Calendar className="h-3.5 w-3.5 text-primary/80" /> {item.date}
                   </span>
                   <span className="flex items-center gap-1">
-                    <User className="h-3.5 w-3.5 text-indigo-500/80" /> dev.team
+                    <User className="h-3.5 w-3.5 text-primary/80" /> dev.team
                   </span>
                 </div>
 
-                <Link href="/contact" className="inline-flex items-center gap-1.5 text-xs font-bold text-white hover:text-indigo-400 transition-colors">
+                <Link href="/contact" className="inline-flex items-center gap-1.5 text-xs font-bold text-foreground hover:text-primary transition-colors">
                   Request Info <ArrowRight className="h-3.5 w-3.5" />
                 </Link>
               </div>

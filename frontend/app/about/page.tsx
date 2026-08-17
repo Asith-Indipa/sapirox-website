@@ -101,20 +101,18 @@ const DEFAULTS = {
 
 // Team color presets
 const TEAM_COLORS = [
-  { color: 'from-indigo-600 to-indigo-400', accent: 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20', gradient: 'from-indigo-500/20 to-purple-500/20' },
-  { color: 'from-purple-600 to-purple-400', accent: 'bg-purple-500/10 text-purple-400 border-purple-500/20', gradient: 'from-purple-500/20 to-pink-500/20' },
-  { color: 'from-emerald-600 to-emerald-400', accent: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20', gradient: 'from-emerald-500/20 to-indigo-500/20' },
-  { color: 'from-pink-600 to-pink-400', accent: 'bg-pink-500/10 text-pink-400 border-pink-500/20', gradient: 'from-pink-500/20 to-rose-500/20' },
-  { color: 'from-amber-600 to-amber-400', accent: 'bg-amber-500/10 text-amber-400 border-amber-500/20', gradient: 'from-amber-500/20 to-yellow-500/20' },
+  { color: 'from-cyan-500 to-blue-600', accent: 'bg-primary/10 text-primary border-primary/20', gradient: 'from-cyan-500/10 to-blue-500/10' },
+  { color: 'from-blue-600 to-indigo-600', accent: 'bg-primary/10 text-primary border-primary/20', gradient: 'from-blue-500/10 to-indigo-500/10' },
+  { color: 'from-indigo-600 to-purple-600', accent: 'bg-primary/10 text-primary border-primary/20', gradient: 'from-indigo-500/10 to-purple-500/10' },
 ];
 
 // Trust point icons cycling
 const TRUST_ICONS = [
-  <Cpu key="cpu" className="h-6 w-6 text-indigo-400" />,
-  <MessageSquare key="msg" className="h-6 w-6 text-purple-400" />,
-  <Layers key="layers" className="h-6 w-6 text-emerald-400" />,
-  <HeartHandshake key="heart" className="h-6 w-6 text-pink-400" />,
-  <Shield key="shield" className="h-6 w-6 text-amber-400" />,
+  <Cpu key="cpu" className="h-6 w-6 text-primary" />,
+  <MessageSquare key="msg" className="h-6 w-6 text-cyan-500 dark:text-cyan-400" />,
+  <Layers key="layers" className="h-6 w-6 text-blue-500 dark:text-blue-400" />,
+  <HeartHandshake key="heart" className="h-6 w-6 text-emerald-500 dark:text-emerald-400" />,
+  <Shield key="shield" className="h-6 w-6 text-indigo-500 dark:text-indigo-400" />,
 ];
 
 export default async function AboutPage() {
@@ -142,19 +140,19 @@ export default async function AboutPage() {
       <CustomSchema path="/about" />
       
       {/* Background decorations */}
-      <div className="absolute top-[10%] left-[5%] w-[300px] h-[300px] rounded-full bg-indigo-600/10 blur-[100px] pointer-events-none" />
-      <div className="absolute bottom-[20%] right-[5%] w-[350px] h-[350px] rounded-full bg-purple-600/10 blur-[120px] pointer-events-none" />
+      <div className="absolute top-[10%] left-[5%] w-[300px] h-[300px] rounded-full bg-primary/5 blur-[100px] pointer-events-none" />
+      <div className="absolute bottom-[20%] right-[5%] w-[350px] h-[350px] rounded-full bg-primary/5 blur-[120px] pointer-events-none" />
 
       {/* Hero Header section */}
       <div className="max-w-3xl mb-24">
-        <span className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-indigo-400 bg-indigo-500/10 px-4 py-1.5 rounded-full border border-indigo-500/20">
+        <span className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-primary bg-primary/10 px-4 py-1.5 rounded-full border border-primary/20">
           <Sparkles className="h-3 w-3" /> About Sapirox
         </span>
-        <h1 className="text-4xl md:text-6xl font-extrabold text-white mt-6 mb-6 font-heading tracking-tight leading-tight">
+        <h1 className="text-4xl md:text-6xl font-extrabold text-foreground mt-6 mb-6 font-heading tracking-tight leading-tight">
           {content.hero.title} <br />
           <span className="premium-gradient-text">{content.hero.titleHighlight}</span>
         </h1>
-        <p className="text-gray-400 text-lg leading-relaxed">
+        <p className="text-muted-foreground text-lg leading-relaxed">
           {content.hero.subtitle}
         </p>
       </div>
@@ -162,18 +160,18 @@ export default async function AboutPage() {
       {/* Our Story Section */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-24">
         <div className="lg:col-span-4">
-          <span className="text-xs font-semibold uppercase tracking-widest text-indigo-400">
+          <span className="text-xs font-semibold uppercase tracking-widest text-primary">
             OUR STORY
           </span>
-          <h2 className="text-3xl font-bold text-white mt-2 font-heading">
+          <h2 className="text-3xl font-bold text-foreground mt-2 font-heading">
             Why We Started
           </h2>
         </div>
-        <div className="lg:col-span-8 premium-glass p-8 rounded-2xl border border-gray-800/40">
-          <p className="text-gray-300 leading-relaxed text-base mb-4">
+        <div className="lg:col-span-8 premium-glass p-8 rounded-2xl border border-border">
+          <p className="text-muted-foreground leading-relaxed text-base mb-4">
             {content.story.paragraph1}
           </p>
-          <p className="text-gray-300 leading-relaxed text-base">
+          <p className="text-muted-foreground leading-relaxed text-base">
             {content.story.paragraph2}
           </p>
         </div>
@@ -181,24 +179,24 @@ export default async function AboutPage() {
 
       {/* Mission & Vision Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-24">
-        <div className="premium-glass p-8 rounded-2xl border border-gray-800/40 relative overflow-hidden group hover:border-gray-700/60 transition-all duration-300">
-          <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-500/5 rounded-bl-full pointer-events-none" />
-          <div className="mb-6 inline-block p-4 rounded-xl bg-gray-900/60 border border-gray-800/60">
-            <Target className="h-8 w-8 text-indigo-400" />
+        <div className="premium-glass p-8 rounded-2xl border border-border relative overflow-hidden group hover:border-primary/20 transition-all duration-300">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-bl-full pointer-events-none" />
+          <div className="mb-6 inline-block p-4 rounded-xl bg-muted border border-border">
+            <Target className="h-8 w-8 text-primary" />
           </div>
-          <h3 className="text-2xl font-bold text-white mb-3 font-heading">Our Mission</h3>
-          <p className="text-gray-400 leading-relaxed text-base">
+          <h3 className="text-2xl font-bold text-foreground mb-3 font-heading">Our Mission</h3>
+          <p className="text-muted-foreground leading-relaxed text-base">
             {content.mission}
           </p>
         </div>
 
-        <div className="premium-glass p-8 rounded-2xl border border-gray-800/40 relative overflow-hidden group hover:border-gray-700/60 transition-all duration-300">
-          <div className="absolute top-0 right-0 w-24 h-24 bg-purple-500/5 rounded-bl-full pointer-events-none" />
-          <div className="mb-6 inline-block p-4 rounded-xl bg-gray-900/60 border border-gray-800/60">
-            <Eye className="h-8 w-8 text-purple-400" />
+        <div className="premium-glass p-8 rounded-2xl border border-border relative overflow-hidden group hover:border-primary/20 transition-all duration-300">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-bl-full pointer-events-none" />
+          <div className="mb-6 inline-block p-4 rounded-xl bg-muted border border-border">
+            <Eye className="h-8 w-8 text-cyan-500 dark:text-cyan-400" />
           </div>
-          <h3 className="text-2xl font-bold text-white mb-3 font-heading">Our Vision</h3>
-          <p className="text-gray-400 leading-relaxed text-base">
+          <h3 className="text-2xl font-bold text-foreground mb-3 font-heading">Our Vision</h3>
+          <p className="text-muted-foreground leading-relaxed text-base">
             {content.vision}
           </p>
         </div>
@@ -208,10 +206,10 @@ export default async function AboutPage() {
       {content.trustPoints && content.trustPoints.length > 0 && (
         <div className="mb-24">
           <div className="text-center mb-16">
-            <span className="text-xs font-semibold uppercase tracking-widest text-emerald-400">
+            <span className="text-xs font-semibold uppercase tracking-widest text-primary">
               WHY SAPIROX?
             </span>
-            <h2 className="text-3xl md:text-4xl font-bold text-white mt-3 font-heading">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mt-3 font-heading">
               Built on Trust & Integrity
             </h2>
           </div>
@@ -220,14 +218,14 @@ export default async function AboutPage() {
             {content.trustPoints.map((item: { title: string; desc: string }, idx: number) => (
               <div 
                 key={idx}
-                className="premium-glass p-8 rounded-2xl border border-gray-800/40 hover:border-gray-700/60 transition-all duration-300 flex flex-col justify-between"
+                className="premium-glass p-8 rounded-2xl border border-border hover:border-primary/20 transition-all duration-300 flex flex-col justify-between"
               >
                 <div>
-                  <div className="mb-6 inline-block p-3 rounded-xl bg-gray-900/60 border border-gray-800/60">
+                  <div className="mb-6 inline-block p-3 rounded-xl bg-muted border border-border">
                     {TRUST_ICONS[idx % TRUST_ICONS.length]}
                   </div>
-                  <h3 className="text-lg font-bold text-white mb-3 font-heading">{item.title}</h3>
-                  <p className="text-gray-400 leading-relaxed text-sm">{item.desc}</p>
+                  <h3 className="text-lg font-bold text-foreground mb-3 font-heading">{item.title}</h3>
+                  <p className="text-muted-foreground leading-relaxed text-sm">{item.desc}</p>
                 </div>
               </div>
             ))}
@@ -239,13 +237,13 @@ export default async function AboutPage() {
       {content.workflowSteps && content.workflowSteps.length > 0 && (
         <div className="mb-24">
           <div className="text-center mb-16">
-            <span className="text-xs font-semibold uppercase tracking-widest text-indigo-400">
+            <span className="text-xs font-semibold uppercase tracking-widest text-primary">
               OUR APPROACH
             </span>
-            <h2 className="text-3xl md:text-4xl font-bold text-white mt-3 font-heading">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mt-3 font-heading">
               How We Work
             </h2>
-            <p className="text-gray-400 text-sm max-w-xl mx-auto mt-2">
+            <p className="text-muted-foreground text-sm max-w-xl mx-auto mt-2">
               A structured, collaborative approach to take your software project from concept to launch.
             </p>
           </div>
@@ -254,13 +252,13 @@ export default async function AboutPage() {
             {content.workflowSteps.map((step: { number: string; title: string; desc: string }, idx: number) => (
               <div 
                 key={idx}
-                className="premium-glass p-8 rounded-2xl border border-gray-800/40 relative overflow-hidden group hover:border-gray-700/60 transition-all duration-300"
+                className="premium-glass p-8 rounded-2xl border border-border relative overflow-hidden group hover:border-primary/20 transition-all duration-300"
               >
-                <div className="absolute top-4 right-6 text-4xl font-black text-gray-800/20 group-hover:text-gray-700/30 transition-colors duration-300">
+                <div className="absolute top-4 right-6 text-4xl font-black text-muted-foreground/10 group-hover:text-muted-foreground/20 transition-colors duration-300">
                   {step.number}
                 </div>
-                <h3 className="text-xl font-bold text-white mb-3 font-heading">{step.title}</h3>
-                <p className="text-gray-400 leading-relaxed text-sm">{step.desc}</p>
+                <h3 className="text-xl font-bold text-foreground mb-3 font-heading">{step.title}</h3>
+                <p className="text-muted-foreground leading-relaxed text-sm">{step.desc}</p>
               </div>
             ))}
           </div>
@@ -271,10 +269,10 @@ export default async function AboutPage() {
       {content.team && content.team.length > 0 && (
         <div className="mb-24">
           <div className="text-center mb-16">
-            <span className="text-xs font-semibold uppercase tracking-widest text-purple-400">
+            <span className="text-xs font-semibold uppercase tracking-widest text-primary">
               THE BUILDERS
             </span>
-            <h2 className="text-3xl md:text-4xl font-bold text-white mt-3 font-heading">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mt-3 font-heading">
               Our Core Team
             </h2>
           </div>
@@ -285,11 +283,11 @@ export default async function AboutPage() {
               return (
                 <div 
                   key={idx}
-                  className="premium-glass rounded-2xl overflow-hidden border border-gray-800 group hover:border-indigo-500/30 transition-all duration-300 flex flex-col justify-between"
+                  className="premium-glass rounded-2xl overflow-hidden border border-border group hover:border-primary/30 transition-all duration-300 flex flex-col justify-between"
                 >
                   <div>
                     {/* Thumbnail area */}
-                    <div className="h-52 w-full bg-gray-900/80 flex items-center justify-center relative overflow-hidden">
+                    <div className="h-52 w-full bg-muted flex items-center justify-center relative overflow-hidden">
                       {member.image ? (
                         <img 
                           src={member.image} 
@@ -308,10 +306,10 @@ export default async function AboutPage() {
                     
                     <div className="p-6">
                       <div className="flex items-center gap-2 mb-2">
-                        <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">{member.role}</span>
+                        <span className="text-[10px] font-bold text-primary uppercase tracking-widest">{member.role}</span>
                       </div>
-                      <h3 className="text-xl font-bold text-white mb-3">{member.name}</h3>
-                      <p className="text-gray-400 text-sm leading-relaxed">
+                      <h3 className="text-xl font-bold text-foreground mb-3">{member.name}</h3>
+                      <p className="text-muted-foreground text-sm leading-relaxed">
                         {member.bio}
                       </p>
                     </div>
@@ -327,19 +325,19 @@ export default async function AboutPage() {
       {content.technologies && content.technologies.length > 0 && (
         <div className="mb-24">
           <div className="text-center mb-12">
-            <span className="text-xs font-semibold uppercase tracking-widest text-indigo-400">
+            <span className="text-xs font-semibold uppercase tracking-widest text-primary">
               OUR EXPERTISE
             </span>
-            <h2 className="text-2xl md:text-3xl font-bold text-white mt-3 font-heading">
+            <h2 className="text-2xl md:text-3xl font-bold text-foreground mt-3 font-heading">
               Technologies We Use
             </h2>
           </div>
 
-          <div className="premium-glass p-8 rounded-2xl border border-gray-800/40 max-w-4xl mx-auto flex flex-wrap gap-3 justify-center">
+          <div className="premium-glass p-8 rounded-2xl border border-border max-w-4xl mx-auto flex flex-wrap gap-3 justify-center">
             {content.technologies.map((tech: string, idx: number) => (
               <span 
                 key={idx}
-                className="px-4 py-2 text-sm font-medium bg-gray-900/60 text-gray-300 rounded-xl border border-gray-800/60 hover:border-gray-700 hover:text-white transition-all duration-300"
+                className="px-4 py-2 text-sm font-medium bg-muted text-muted-foreground rounded-xl border border-border/60 hover:border-primary hover:text-foreground transition-all duration-300"
               >
                 {tech}
               </span>
@@ -349,20 +347,20 @@ export default async function AboutPage() {
       )}
 
       {/* Call to Action Banner */}
-      <div className="premium-glass p-8 md:p-12 rounded-3xl border border-gray-800/40 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8">
-        <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/5 to-purple-500/5 pointer-events-none" />
+      <div className="premium-glass p-8 md:p-12 rounded-3xl border border-border relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8">
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-cyan-500/5 pointer-events-none" />
         <div className="max-w-xl z-10 text-center md:text-left">
-          <h3 className="text-2xl md:text-3xl font-extrabold text-white font-heading mb-3">
+          <h3 className="text-2xl md:text-3xl font-extrabold text-foreground font-heading mb-3">
             {content.cta.title}
           </h3>
-          <p className="text-gray-400 text-sm md:text-base leading-relaxed">
+          <p className="text-muted-foreground text-sm md:text-base leading-relaxed">
             {content.cta.subtitle}
           </p>
         </div>
         <div className="z-10 w-full md:w-auto">
           <Link 
             href="/contact"
-            className="inline-flex items-center justify-center gap-2 w-full md:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold hover:opacity-95 shadow-md shadow-indigo-600/10 hover:shadow-indigo-600/30 transition-all duration-300"
+            className="inline-flex items-center justify-center gap-2 w-full md:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold hover:opacity-95 shadow-md shadow-cyan-500/10 hover:shadow-cyan-500/30 transition-all duration-300"
           >
             Get in Touch <ArrowRight className="h-4 w-4" />
           </Link>
