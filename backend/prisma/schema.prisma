@@ -59,6 +59,7 @@ model Product {
   seoTitle         String?
   seoDescription   String?
   gallery          String[]
+  showOnHomepage   Boolean       @default(true)
   createdAt        DateTime      @default(now())
   updatedAt        DateTime      @updatedAt
 }
@@ -87,6 +88,7 @@ model Project {
   servicesDelivered String[]
   projectGallery    Json          @default("[]")
   projectOutcome    String[]
+  showOnHomepage    Boolean       @default(true)
   createdAt         DateTime      @default(now())
   updatedAt         DateTime      @updatedAt
 }
@@ -118,6 +120,7 @@ model Blog {
   publishedDate  DateTime?
   status         PublishStatus @default(DRAFT)
   featured       Boolean       @default(false)
+  showOnHomepage Boolean       @default(true)
   seoTitle       String?
   seoDescription String?
   ogImage        String?

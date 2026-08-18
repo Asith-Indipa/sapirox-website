@@ -67,19 +67,55 @@ export default async function Home() {
   let blogs: Blog[] = [];
   let testimonials: Testimonial[] = [];
 
+  let servicesError = false;
+  let productsError = false;
+  let projectsError = false;
+  let blogsError = false;
+  let testimonialsError = false;
+
   try {
-    const [servicesData, productsData, projectsData, blogsData, testimonialsData] = await Promise.all([
-      getServices().catch(() => []),
-      getProducts().catch(() => []),
-      getProjects().catch(() => []),
-      getBlogs(3).catch(() => []),
-      getTestimonials().catch(() => [])
+    const results = await Promise.allSettled([
+      getServices(),
+      getProducts(),
+      getProjects(),
+      getBlogs(3),
+      getTestimonials()
     ]);
-    services = servicesData;
-    products = productsData;
-    projects = projectsData;
-    blogs = blogsData;
-    testimonials = testimonialsData;
+
+    if (results[0].status === 'fulfilled') {
+      services = results[0].value;
+    } else {
+      servicesError = true;
+      console.error("Failed to fetch services on server side:", results[0].reason);
+    }
+
+    if (results[1].status === 'fulfilled') {
+      products = results[1].value;
+    } else {
+      productsError = true;
+      console.error("Failed to fetch products on server side:", results[1].reason);
+    }
+
+    if (results[2].status === 'fulfilled') {
+      projects = results[2].value;
+    } else {
+      projectsError = true;
+      console.error("Failed to fetch projects on server side:", results[2].reason);
+    }
+
+    if (results[3].status === 'fulfilled') {
+      blogs = results[3].value;
+    } else {
+      blogsError = true;
+      console.error("Failed to fetch blogs on server side:", results[3].reason);
+    }
+
+    if (results[4].status === 'fulfilled') {
+      testimonials = results[4].value;
+    } else {
+      testimonialsError = true;
+      console.error("Failed to fetch testimonials on server side:", results[4].reason);
+    }
   } catch (err) {
     console.error("Failed to fetch initial database collections on server side:", err);
   }
@@ -94,6 +130,11 @@ export default async function Home() {
         initialProjects={projects}
         initialBlogs={blogs}
         initialTestimonials={testimonials}
+        servicesError={servicesError}
+        productsError={productsError}
+        projectsError={projectsError}
+        blogsError={blogsError}
+        testimonialsError={testimonialsError}
       />
     </>
   );

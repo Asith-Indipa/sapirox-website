@@ -65,6 +65,8 @@ export interface Service {
   status?: 'DRAFT' | 'PUBLISHED' | 'HIDDEN';
   technologies?: string[];
   projects?: Project[];
+  seoTitle?: string;
+  seoDescription?: string;
 }
 
 export const getServices = async (): Promise<Service[]> => {
@@ -94,6 +96,7 @@ export interface Product {
   seoTitle?: string;
   seoDescription?: string;
   gallery: string[];
+  showOnHomepage?: boolean;
 }
 
 export const getProducts = async (): Promise<Product[]> => {
@@ -129,6 +132,9 @@ export interface Project {
   projectGallery: ProjectGalleryItem[];
   projectOutcome?: string[];
   status?: 'DRAFT' | 'PUBLISHED';
+  showOnHomepage?: boolean;
+  seoTitle?: string;
+  seoDescription?: string;
 }
 
 export const getProjects = async (): Promise<Project[]> => {
@@ -155,6 +161,7 @@ export interface Blog {
   seoDescription?: string;
   readingTime?: number;
   createdAt?: string;
+  showOnHomepage?: boolean;
 }
 
 export const getBlogs = async (limit = 3): Promise<Blog[]> => {
@@ -169,6 +176,7 @@ export interface Testimonial {
   role: string;
   avatar?: string;
   feedback: string;
+  order?: number;
 }
 
 export const getTestimonials = async (): Promise<Testimonial[]> => {
@@ -333,6 +341,29 @@ export const uploadImage = async (file: File): Promise<string> => {
     body: formData,
   });
   return res.url;
+};
+
+// ── Admin Testimonials CRUD ──────────────────────────────────────────────────
+export const createTestimonial = async (data: Partial<Testimonial>): Promise<Testimonial> => {
+  const res = await apiFetch<{ success: boolean; data: Testimonial }>('/admin/testimonials', {
+    method: 'POST',
+    body: data,
+  });
+  return res.data;
+};
+
+export const updateTestimonial = async (id: string, data: Partial<Testimonial>): Promise<Testimonial> => {
+  const res = await apiFetch<{ success: boolean; data: Testimonial }>(`/admin/testimonials/${id}`, {
+    method: 'PUT',
+    body: data,
+  });
+  return res.data;
+};
+
+export const deleteTestimonial = async (id: string): Promise<void> => {
+  await apiFetch<{ success: boolean }>(`/admin/testimonials/${id}`, {
+    method: 'DELETE',
+  });
 };
 
 // ── Page Content (Dynamic page sections) ─────────────────────────────────────

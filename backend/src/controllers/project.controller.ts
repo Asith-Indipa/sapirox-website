@@ -66,7 +66,7 @@ export const createProject = async (req: AuthRequest, res: Response): Promise<vo
       title, slug, description, coverImage, gallery, technology, category, status,
       seoTitle, seoDescription, serviceId, liveUrl, githubUrl,
       projectType, projectOverview, challenge, solution,
-      keyFeatures, servicesDelivered, projectGallery, projectOutcome
+      keyFeatures, servicesDelivered, projectGallery, projectOutcome, showOnHomepage
     } = req.body;
 
     if (!title || !slug || !description || !category) {
@@ -100,6 +100,7 @@ export const createProject = async (req: AuthRequest, res: Response): Promise<vo
         servicesDelivered: servicesDelivered || [],
         projectGallery: projectGallery || [],
         projectOutcome: projectOutcome || [],
+        showOnHomepage: showOnHomepage !== undefined ? Boolean(showOnHomepage) : true,
       },
     });
     res.status(201).json({ success: true, message: 'Project created.', data: project });

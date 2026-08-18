@@ -103,12 +103,12 @@ export default async function BlogDetailPage({ params }: PageProps) {
           {blog.category.name}
         </span>
         
-        <h1 className="text-3xl md:text-5xl font-extrabold text-foreground mt-6 mb-6 leading-tight tracking-tight font-heading">
+        <h1 className="text-3xl md:text-5xl font-extrabold text-foreground mt-6 mb-6 leading-tight tracking-tight font-heading break-words">
           {blog.title}
         </h1>
 
         {blog.excerpt && (
-          <p className="text-lg md:text-xl text-muted-foreground leading-relaxed mb-8 border-l-2 border-primary pl-4 font-medium italic">
+          <p className="text-lg md:text-xl text-muted-foreground leading-relaxed mb-8 border-l-2 border-primary pl-4 font-medium italic break-words">
             {blog.excerpt}
           </p>
         )}
@@ -142,7 +142,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
       )}
 
       {/* Article Content markup */}
-      <div className="text-muted-foreground leading-relaxed text-sm md:text-base whitespace-pre-wrap space-y-6">
+      <div className="text-muted-foreground leading-relaxed text-sm md:text-base whitespace-pre-wrap space-y-6 break-words">
         {blog.content}
       </div>
 

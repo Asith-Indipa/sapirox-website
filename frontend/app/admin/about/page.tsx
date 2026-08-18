@@ -159,7 +159,7 @@ export default function AdminAboutPage() {
       <div className="max-w-4xl mx-auto space-y-8">
 
         {/* Navigation */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <Link href="/admin/dashboard" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
             <ArrowLeft className="h-4 w-4" /> Back to Dashboard
           </Link>

@@ -46,10 +46,12 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function PortfolioPage() {
   let projects: Project[] = [];
+  let isError = false;
 
   try {
     projects = await getProjects();
   } catch (error) {
+    isError = true;
     console.error('Failed to load portfolio on server side:', error);
   }
 
@@ -63,7 +65,7 @@ export default async function PortfolioPage() {
         }))}
       />
       <CustomSchema path="/portfolio" />
-      <PortfolioClient initialProjects={projects} />
+      <PortfolioClient initialProjects={projects} isError={isError} />
     </>
   );
 }

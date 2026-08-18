@@ -24,7 +24,8 @@ import {
   Trash2,
   ChevronLeft,
   ChevronRight,
-  AlertCircle
+  AlertCircle,
+  Sparkles
 } from 'lucide-react';
 
 interface BackendStats {
@@ -42,6 +43,7 @@ interface Stats {
   projectsCount: number;
   blogsCount: number;
   contactsCount: number;
+  testimonialsCount: number;
 }
 
 interface ContactMessage {
@@ -67,7 +69,8 @@ export default function AdminDashboardPage() {
     productsCount: 0,
     projectsCount: 0,
     blogsCount: 0,
-    contactsCount: 0
+    contactsCount: 0,
+    testimonialsCount: 0
   });
   const [contacts, setContacts] = useState<ContactMessage[]>([]);
   const [loadStatsError, setLoadStatsError] = useState<string | null>(null);
@@ -83,7 +86,8 @@ export default function AdminDashboardPage() {
           productsCount: statsRes.data.products || 0,
           projectsCount: statsRes.data.projects || 0,
           blogsCount: statsRes.data.blogs || 0,
-          contactsCount: statsRes.data.unreadMessages || 0
+          contactsCount: statsRes.data.unreadMessages || 0,
+          testimonialsCount: statsRes.data.testimonials || 0
         });
       }
 
@@ -199,12 +203,13 @@ export default function AdminDashboardPage() {
       )}
 
       {/* ── METRICS COUNTERS ────────────────────────────────────────────────────── */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-4 mb-12">
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4 mb-12">
         {[
           { label: 'Services', count: stats.servicesCount, icon: <Layers className="h-5 w-5 text-indigo-500 dark:text-indigo-400" />, path: '/admin/services' },
           { label: 'Products', count: stats.productsCount, icon: <Briefcase className="h-5 w-5 text-purple-500 dark:text-purple-400" />, path: '/admin/products' },
           { label: 'Portfolio', count: stats.projectsCount, icon: <FolderKanban className="h-5 w-5 text-pink-500 dark:text-pink-400" />, path: '/admin/portfolio' },
           { label: 'Articles', count: stats.blogsCount, icon: <BookOpen className="h-5 w-5 text-amber-500 dark:text-amber-400" />, path: '/admin/blogs' },
+          { label: 'Reviews', count: stats.testimonialsCount, icon: <Sparkles className="h-5 w-5 text-cyan-500 dark:text-cyan-400" />, path: '/admin/testimonials' },
           { label: 'Leads', count: stats.contactsCount, icon: <MessageSquare className="h-5 w-5 text-emerald-500 dark:text-emerald-400" />, path: '/admin/dashboard' },
           { label: 'About Page', count: 'CMS', icon: <FileText className="h-5 w-5 text-indigo-500 dark:text-indigo-400" />, path: '/admin/about' },
           { label: 'Contact Page', count: 'CMS', icon: <Mail className="h-5 w-5 text-purple-500 dark:text-purple-400" />, path: '/admin/contact' }

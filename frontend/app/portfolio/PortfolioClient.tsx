@@ -2,14 +2,15 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Project } from '@/services/api';
+import { Project, getFullImageUrl } from '@/services/api';
 import { Code, ArrowRight, FolderKanban } from 'lucide-react';
 
 interface PortfolioClientProps {
   initialProjects: Project[];
+  isError?: boolean;
 }
 
-export default function PortfolioClient({ initialProjects }: PortfolioClientProps) {
+export default function PortfolioClient({ initialProjects, isError = false }: PortfolioClientProps) {
   const [projects] = useState<Project[]>(initialProjects);
   const [selectedCategory, setSelectedCategory] = useState('All');
 
@@ -60,20 +61,25 @@ export default function PortfolioClient({ initialProjects }: PortfolioClientProp
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {filteredProjects.length > 0 ? (
+        {isError ? (
+          <div className="col-span-full py-12 px-6 rounded-2xl border border-rose-500/10 bg-rose-500/5 text-center premium-glass">
+            <p className="text-rose-500 dark:text-rose-400 font-medium">
+              Something went wrong while loading our case studies. Please try again later.
+            </p>
+          </div>
+        ) : filteredProjects.length > 0 ? (
           filteredProjects.map((project) => (
             <div 
               key={project.id} 
               className="premium-glass rounded-2xl overflow-hidden border border-border group hover:border-primary/30 transition-all duration-300 flex flex-col justify-between"
             >
               <div>
-                {/* Thumbnail area */}
-                <div className="h-44 w-full bg-muted flex items-center justify-center relative overflow-hidden">
+                <div className="w-full aspect-video bg-muted/20 flex items-center justify-center relative overflow-hidden border-b border-border/40">
                   {project.coverImage ? (
                     <img 
-                      src={project.coverImage} 
+                      src={getFullImageUrl(project.coverImage)} 
                       alt={project.title}
-                      className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-550"
+                      className="h-full w-full object-contain group-hover:scale-[1.02] transition-transform duration-550"
                     />
                   ) : (
                     <>
@@ -99,8 +105,8 @@ export default function PortfolioClient({ initialProjects }: PortfolioClientProp
                       </>
                     )}
                   </div>
-                  <h3 className="text-xl font-bold text-foreground mb-3">{project.title}</h3>
-                  <p className="text-muted-foreground text-xs leading-relaxed line-clamp-3 mb-6">
+                  <h3 className="text-xl font-bold text-foreground mb-3 break-words">{project.title}</h3>
+                  <p className="text-muted-foreground text-xs leading-relaxed line-clamp-3 mb-6 break-words">
                     {project.projectOverview || project.description}
                   </p>
                 </div>
@@ -125,43 +131,11 @@ export default function PortfolioClient({ initialProjects }: PortfolioClientProp
             </div>
           ))
         ) : (
-          // Fallback grid
-          [
-            { title: 'Corporate Portal V2', cat: 'Web Portal', desc: 'Secure company management tool with active user directory mapping and roles restrictions.', tech: ['React', 'Next.js', 'Auth0'] },
-            { title: 'Global Retail Pipeline', cat: 'E-commerce', desc: 'Distributed database synchronization layer for global retail outlets and inventory maps.', tech: ['Node.js', 'Postgres', 'Redis'] },
-            { title: 'Finance Data Engine', cat: 'Fintech', desc: 'High-speed reporting dashboard with automated PDF and excel report generation setups.', tech: ['FastAPI', 'Pandas', 'AWS'] }
-          ].map((proj, idx) => (
-            <div 
-              key={idx} 
-              className="premium-glass rounded-2xl overflow-hidden border border-border group hover:border-primary/20 transition-all duration-300 flex flex-col justify-between"
-            >
-              <div>
-                <div className="h-44 w-full bg-muted flex items-center justify-center relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-indigo-500/15" />
-                  <FolderKanban className="h-10 w-10 text-primary/45" />
-                </div>
-                <div className="p-6">
-                  <span className="text-[10px] font-bold text-primary uppercase tracking-widest">{proj.cat}</span>
-                  <h3 className="text-xl font-bold text-foreground mt-2 mb-3">{proj.title}</h3>
-                  <p className="text-muted-foreground text-xs leading-relaxed mb-6">{proj.desc}</p>
-                </div>
-              </div>
-
-              <div className="px-6 pb-6 mt-auto">
-                <div className="flex flex-wrap gap-1.5 mb-6">
-                  {proj.tech.map((tech, tIdx) => (
-                    <span key={tIdx} className="text-[10px] px-2.5 py-0.5 rounded bg-muted text-muted-foreground border border-border/40 dark:border-muted-foreground/25 dark:bg-muted/30">
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-
-                <Link href="/contact" className="inline-flex items-center gap-2 text-xs font-bold text-primary hover:opacity-85 transition-opacity">
-                  Discuss Project <ArrowRight className="h-3.5 w-3.5" />
-                </Link>
-              </div>
-            </div>
-          ))
+          <div className="col-span-full py-12 px-6 rounded-2xl border border-border/40 bg-muted/10 text-center premium-glass">
+            <p className="text-muted-foreground font-medium">
+              No case studies available yet.
+            </p>
+          </div>
         )}
       </div>
     </div>

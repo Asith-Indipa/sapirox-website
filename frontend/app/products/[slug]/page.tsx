@@ -125,11 +125,11 @@ export default async function ProductDetailPage({ params }: PageProps) {
             </span>
           </div>
 
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-foreground tracking-tight leading-tight">
+          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-foreground tracking-tight leading-tight break-words">
             {product.name}
           </h1>
 
-          <p className="text-muted-foreground text-base sm:text-lg leading-relaxed">
+          <p className="text-muted-foreground text-base sm:text-lg leading-relaxed break-words">
             {product.shortDescription}
           </p>
 
@@ -175,7 +175,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
         {/* About description */}
         <div className={activeFeatures.length > 0 ? "lg:col-span-2 space-y-6" : "lg:col-span-3 space-y-6"}>
           <h2 className="text-xl md:text-2xl font-bold text-foreground border-b border-border pb-2">About the Product</h2>
-          <div className="text-muted-foreground leading-relaxed text-sm sm:text-base whitespace-pre-wrap">
+          <div className="text-muted-foreground leading-relaxed text-sm sm:text-base whitespace-pre-wrap break-words">
             {product.description}
           </div>
         </div>
@@ -190,7 +190,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
               {activeFeatures.map((feature, idx) => (
                 <li key={idx} className="flex items-start gap-2.5 text-xs sm:text-sm text-muted-foreground">
                   <ChevronRight className="h-4 w-4 text-primary shrink-0 mt-0.5" />
-                  <span>{feature}</span>
+                  <span className="break-words">{feature}</span>
                 </li>
               ))}
             </ul>
@@ -209,7 +209,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
             {activeBenefits.map((benefit, idx) => (
               <div key={idx} className="p-5 rounded-2xl bg-muted/40 border border-border/60 flex items-start gap-3.5 hover:border-primary/20 transition-all duration-300">
                 <CheckCircle2 className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                <span className="text-xs sm:text-sm text-muted-foreground leading-relaxed">{benefit}</span>
+                <span className="text-xs sm:text-sm text-muted-foreground leading-relaxed break-words">{benefit}</span>
               </div>
             ))}
           </div>
@@ -236,8 +236,8 @@ export default async function ProductDetailPage({ params }: PageProps) {
               .map((step, idx) => (
                 <div key={idx} className="relative p-6 rounded-2xl bg-muted/40 border border-border space-y-3 hover:border-primary/20 transition-all duration-300">
                   <div className="text-2xl font-black text-primary/20">0{step.order || idx + 1}</div>
-                  <h4 className="text-sm font-bold text-foreground">{step.title}</h4>
-                  <p className="text-xs text-muted-foreground leading-relaxed">{step.description}</p>
+                  <h4 className="text-sm font-bold text-foreground break-words">{step.title}</h4>
+                  <p className="text-xs text-muted-foreground leading-relaxed break-words">{step.description}</p>
                 </div>
               ))}
           </div>
@@ -255,7 +255,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
             {activeTargetUsers.map((user, idx) => (
               <div key={idx} className="p-4 rounded-xl bg-muted/40 border border-border flex items-center gap-3 hover:border-primary/20 transition-all duration-300">
                 <div className="h-2 w-2 rounded-full bg-primary shrink-0" />
-                <span className="text-xs sm:text-sm text-muted-foreground font-medium">{user}</span>
+                <span className="text-xs sm:text-sm text-muted-foreground font-medium break-words">{user}</span>
               </div>
             ))}
           </div>

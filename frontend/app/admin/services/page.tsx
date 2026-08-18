@@ -6,6 +6,13 @@ import Link from 'next/link';
 import { getCurrentUser, removeAuthToken, User } from '@/services/auth';
 import { getServices, createService, updateService, deleteService, uploadImage, Service } from '@/services/api';
 import { Plus, Edit2, Trash2, ArrowLeft, Loader2, Save, X, Star, Eye } from 'lucide-react';
+import CustomSelect from '@/components/ui/CustomSelect';
+
+const STATUS_OPTIONS = [
+  { value: 'PUBLISHED', label: 'PUBLISHED' },
+  { value: 'DRAFT', label: 'DRAFT' },
+  { value: 'HIDDEN', label: 'HIDDEN' },
+];
 
 
 
@@ -31,6 +38,8 @@ export default function AdminServicesPage() {
     status: 'PUBLISHED',
     technologies: [''],
     image: '',
+    seoTitle: '',
+    seoDescription: '',
   });
 
   const [formLoading, setFormLoading] = useState(false);
@@ -94,6 +103,8 @@ export default function AdminServicesPage() {
       status: 'PUBLISHED',
       technologies: [''],
       image: '',
+      seoTitle: '',
+      seoDescription: '',
     });
     setFormError(null);
     setModalOpen(true);
@@ -114,6 +125,8 @@ export default function AdminServicesPage() {
       status: service.status || 'PUBLISHED',
       technologies: service.technologies && service.technologies.length > 0 ? [...service.technologies] : [''],
       image: service.image || '',
+      seoTitle: service.seoTitle || '',
+      seoDescription: service.seoDescription || '',
     });
     setFormError(null);
     setModalOpen(true);
@@ -194,7 +207,7 @@ export default function AdminServicesPage() {
     <div className="relative min-h-[85vh] py-12 px-6 max-w-7xl mx-auto">
       
       {/* Header */}
-      <div className="flex justify-between items-center mb-8 border-b border-border/40 pb-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 border-b border-border/40 pb-6">
         <div>
           <Link href="/admin/dashboard" className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground mb-2 transition-colors">
             <ArrowLeft className="h-3.5 w-3.5" /> Back to Dashboard
@@ -300,7 +313,7 @@ export default function AdminServicesPage() {
       {/* ── CREATE / UPDATE MODAL FORM ────────────────────────────────────────── */}
       {modalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="relative w-full max-w-2xl premium-glass rounded-3xl border border-border overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+          <div className="relative w-full max-w-2xl max-h-[calc(100vh-2rem)] premium-glass rounded-3xl border border-border overflow-hidden shadow-2xl flex flex-col animate-in fade-in zoom-in-95 duration-200">
             
             {/* Modal Header */}
             <div className="flex items-center justify-between p-6 border-b border-border/40 bg-muted/40">
@@ -316,7 +329,7 @@ export default function AdminServicesPage() {
             </div>
 
             {/* Modal Form */}
-            <form onSubmit={handleFormSubmit} className="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
+            <form onSubmit={handleFormSubmit} className="p-6 space-y-6 overflow-y-auto flex-1">
               
               {formError && (
                 <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 text-xs">
@@ -372,15 +385,11 @@ export default function AdminServicesPage() {
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Publish Status</label>
-                  <select
-                    value={formData.status}
-                    onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors"
-                  >
-                    <option value="PUBLISHED">PUBLISHED</option>
-                    <option value="DRAFT">DRAFT</option>
-                    <option value="HIDDEN">HIDDEN</option>
-                  </select>
+                  <CustomSelect
+                    options={STATUS_OPTIONS}
+                    value={formData.status || 'PUBLISHED'}
+                    onChange={(val) => setFormData({ ...formData, status: val as any })}
+                  />
                 </div>
               </div>
 
@@ -468,15 +477,15 @@ export default function AdminServicesPage() {
 
               <div>
                 <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Service Cover Image URL</label>
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2">
                   <input
                     type="text"
                     value={formData.image || ''}
                     onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors"
+                    className="flex-1 px-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors w-full"
                     placeholder="https://images.unsplash.com/... or upload local file"
                   />
-                  <label className="cursor-pointer px-4 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-white text-xs font-bold flex items-center justify-center shrink-0 transition-colors">
+                  <label className="cursor-pointer px-4 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-white text-xs font-bold flex items-center justify-center shrink-0 transition-colors w-full sm:w-auto">
                     {uploadingImage ? 'Uploading...' : 'Upload Local'}
                     <input
                       type="file"
@@ -511,6 +520,29 @@ export default function AdminServicesPage() {
                   className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors resize-none"
                   placeholder="Detailed breakdown layout..."
                 />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 border-t border-border/40 pt-6">
+                <div>
+                  <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">SEO Page Title (Optional)</label>
+                  <input
+                    type="text"
+                    value={formData.seoTitle || ''}
+                    onChange={(e) => setFormData({ ...formData, seoTitle: e.target.value })}
+                    className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors"
+                    placeholder="Defaults to: [Service Title] | Sapirox"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">SEO Page Description (Optional)</label>
+                  <input
+                    type="text"
+                    value={formData.seoDescription || ''}
+                    onChange={(e) => setFormData({ ...formData, seoDescription: e.target.value })}
+                    className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors"
+                    placeholder="Defaults to short description"
+                  />
+                </div>
               </div>
 
               {/* Dynamic Features List input */}

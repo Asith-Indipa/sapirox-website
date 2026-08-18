@@ -6,6 +6,17 @@ import {
   Mail, Globe, Send, MessageSquare, Phone, Clock, 
   MessageCircle 
 } from 'lucide-react';
+import CustomSelect from '@/components/ui/CustomSelect';
+
+const PROJECT_TYPE_OPTIONS = [
+  { value: 'Web Application', label: 'Web Application' },
+  { value: 'Mobile Application', label: 'Mobile Application' },
+  { value: 'POS / Business System', label: 'POS / Business System' },
+  { value: 'SaaS Product', label: 'SaaS Product' },
+  { value: 'UI/UX Design', label: 'UI/UX Design' },
+  { value: 'Custom Software', label: 'Custom Software' },
+  { value: 'Other', label: 'Other' },
+];
 
 const DEFAULT_CONTACT_CONTENT = {
   hero: {
@@ -306,26 +317,11 @@ export default function ContactClient() {
               </div>
               <div className="space-y-2">
                 <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider">Project Type *</label>
-                <div className="relative">
-                  <select
-                    value={formData.projectType}
-                    onChange={(e) => setFormData({ ...formData, projectType: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-sm transition-all duration-300 appearance-none pr-10"
-                  >
-                    <option value="Web Application" className="bg-background text-foreground">Web Application</option>
-                    <option value="Mobile Application" className="bg-background text-foreground">Mobile Application</option>
-                    <option value="POS / Business System" className="bg-background text-foreground">POS / Business System</option>
-                    <option value="SaaS Product" className="bg-background text-foreground">SaaS Product</option>
-                    <option value="UI/UX Design" className="bg-background text-foreground">UI/UX Design</option>
-                    <option value="Custom Software" className="bg-background text-foreground">Custom Software</option>
-                    <option value="Other" className="bg-background text-foreground">Other</option>
-                  </select>
-                  <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-muted-foreground">
-                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </div>
-                </div>
+                <CustomSelect
+                  options={PROJECT_TYPE_OPTIONS}
+                  value={formData.projectType}
+                  onChange={(val) => setFormData({ ...formData, projectType: val })}
+                />
               </div>
             </div>
 

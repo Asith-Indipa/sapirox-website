@@ -118,7 +118,8 @@ export const createBlog = async (req: AuthRequest, res: Response): Promise<void>
       featured,
       seoTitle, 
       seoDescription, 
-      ogImage 
+      ogImage,
+      showOnHomepage
     } = req.body;
 
     // Resolve categoryId if category object is sent
@@ -187,6 +188,7 @@ export const createBlog = async (req: AuthRequest, res: Response): Promise<void>
         seoDescription: seoDescription || null,
         ogImage: ogImage || null,
         readingTime: computedReadingTime,
+        showOnHomepage: showOnHomepage !== undefined ? (showOnHomepage === true || showOnHomepage === 'true') : true,
       },
     });
     res.status(201).json({ success: true, data: blog });
@@ -249,6 +251,10 @@ export const updateBlog = async (req: AuthRequest, res: Response): Promise<void>
 
     if (rest.featured !== undefined) {
       updateData.featured = rest.featured === true || rest.featured === 'true';
+    }
+
+    if (rest.showOnHomepage !== undefined) {
+      updateData.showOnHomepage = rest.showOnHomepage === true || rest.showOnHomepage === 'true';
     }
 
     if (category) {

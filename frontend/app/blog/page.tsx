@@ -46,10 +46,12 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function BlogPage() {
   let blogs: Blog[] = [];
+  let isError = false;
 
   try {
     blogs = await getBlogs(12);
   } catch (error) {
+    isError = true;
     console.error('Failed to load blogs on server side:', error);
   }
 
@@ -63,7 +65,7 @@ export default async function BlogPage() {
         }))}
       />
       <CustomSchema path="/blog" />
-      <BlogClient initialBlogs={blogs} />
+      <BlogClient initialBlogs={blogs} isError={isError} />
     </>
   );
 }

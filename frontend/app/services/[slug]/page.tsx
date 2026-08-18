@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { ServiceSchema } from '@/components/seo';
-import { apiFetch, Service } from '@/services/api';
+import { apiFetch, Service, getFullImageUrl } from '@/services/api';
 import { Cpu, Layers, Globe, Shield, Code, Zap, Activity, CheckCircle, ArrowLeft, MessageSquare, ExternalLink } from 'lucide-react';
 
 interface PageProps {
@@ -23,12 +23,18 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       const json = await res.json();
       if (json.success && json.data) {
         const service = json.data;
+        const metaTitle = service.seoTitle && service.seoTitle.trim() !== '' 
+          ? service.seoTitle 
+          : `${service.title} | Sapirox`;
+        const metaDesc = service.seoDescription && service.seoDescription.trim() !== ''
+          ? service.seoDescription
+          : service.shortDescription;
         return {
-          title: `${service.title} | Sapirox`,
-          description: service.shortDescription,
+          title: metaTitle,
+          description: metaDesc,
           openGraph: {
-            title: `${service.title} | Sapirox Services`,
-            description: service.shortDescription,
+            title: metaTitle,
+            description: metaDesc,
           }
         };
       }
@@ -101,21 +107,21 @@ export default async function ServiceDetailPage({ params }: PageProps) {
         <div className="h-20 w-20 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
           {renderIcon(service.icon)}
         </div>
-        <div>
-          <h1 className="text-4xl md:text-5xl font-extrabold text-foreground mb-4 tracking-tight font-heading">
+        <div className="min-w-0 w-full">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-foreground mb-4 tracking-tight font-heading break-words">
             {service.title}
           </h1>
-          <p className="text-muted-foreground text-lg leading-relaxed">{service.shortDescription}</p>
+          <p className="text-muted-foreground text-lg leading-relaxed break-words">{service.shortDescription}</p>
         </div>
       </div>
 
       {/* Service Cover Image */}
       {service.image && service.image.trim() !== '' && (
-        <div className="relative w-full mb-12 max-w-4xl">
+        <div className="relative w-full max-w-2xl mb-12 overflow-hidden rounded-3xl border border-border/80 shadow-2xl shadow-primary/5">
           <img 
-            src={service.image} 
+            src={getFullImageUrl(service.image)} 
             alt={service.title} 
-            className="w-full h-auto rounded-3xl border border-border/80 shadow-2xl shadow-primary/5 block"
+            className="w-full h-auto block"
           />
         </div>
       )}
@@ -142,7 +148,7 @@ export default async function ServiceDetailPage({ params }: PageProps) {
 
           <div>
             <h2 className="text-2xl font-bold text-foreground mb-4 border-b border-border pb-3">Service Overview</h2>
-            <div className="text-muted-foreground leading-relaxed space-y-4 whitespace-pre-wrap text-sm md:text-base">
+            <div className="text-muted-foreground leading-relaxed space-y-4 whitespace-pre-wrap text-sm md:text-base break-words">
               {service.fullDescription}
             </div>
           </div>
@@ -155,7 +161,7 @@ export default async function ServiceDetailPage({ params }: PageProps) {
             {service.features.map((feature, idx) => (
               <li key={idx} className="flex items-start gap-3 text-xs md:text-sm text-muted-foreground">
                 <CheckCircle className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                <span>{feature}</span>
+                <span className="break-words">{feature}</span>
               </li>
             ))}
           </ul>
@@ -187,13 +193,12 @@ export default async function ServiceDetailPage({ params }: PageProps) {
               <div key={project.id} className="premium-glass rounded-2xl overflow-hidden border border-border group hover:border-primary/30 transition-all duration-300 flex flex-col justify-between">
                 <div>
                   {(project.coverImage || (project.gallery && project.gallery[0])) && (
-                    <Link href={`/portfolio/${project.slug}`} className="relative h-48 w-full overflow-hidden block">
+                    <Link href={`/portfolio/${project.slug}`} className="relative w-full aspect-video bg-muted/20 border-b border-border/40 overflow-hidden block">
                       <img 
-                        src={project.coverImage || project.gallery[0]} 
+                        src={getFullImageUrl(project.coverImage || project.gallery[0])} 
                         alt={project.title} 
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-550 block"
+                        className="w-full h-full object-contain group-hover:scale-[1.02] transition-transform duration-550 block"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
                     </Link>
                   )}
                   <div className="p-6">

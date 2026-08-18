@@ -118,6 +118,7 @@ const TRUST_ICONS = [
 export default async function AboutPage() {
   // Fetch dynamic content from backend
   let content = DEFAULTS;
+  let isError = false;
 
   try {
     const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
@@ -129,10 +130,28 @@ export default async function AboutPage() {
       const json = await res.json();
       if (json.success && json.data && json.data.content) {
         content = { ...DEFAULTS, ...json.data.content };
+      } else {
+        isError = true;
       }
+    } else {
+      isError = true;
     }
   } catch (err) {
+    isError = true;
     console.error("Failed to load About page content:", err);
+  }
+
+  if (isError) {
+    return (
+      <div className="relative min-h-[85vh] py-20 px-6 max-w-7xl mx-auto flex flex-col justify-center items-center">
+        <CustomSchema path="/about" />
+        <div className="max-w-md w-full py-12 px-6 rounded-2xl border border-rose-500/10 bg-rose-500/5 text-center premium-glass">
+          <p className="text-rose-500 dark:text-rose-400 font-medium">
+            Something went wrong while loading our content. Please try again later.
+          </p>
+        </div>
+      </div>
+    );
   }
 
   return (

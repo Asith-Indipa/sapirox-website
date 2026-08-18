@@ -30,13 +30,18 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       const json = await res.json();
       if (json.success && json.data) {
         const project = json.data;
-        const metaDesc = (project.projectOverview || project.description).substring(0, 160);
+        const metaTitle = project.seoTitle && project.seoTitle.trim() !== '' 
+          ? project.seoTitle 
+          : `${project.title} | Sapirox`;
+        const metaDesc = project.seoDescription && project.seoDescription.trim() !== ''
+          ? project.seoDescription
+          : (project.projectOverview || project.description).substring(0, 160);
         const imageUrl = project.coverImage ? getFullImageUrl(project.coverImage) : undefined;
         return {
-          title: `${project.title} | Sapirox`,
+          title: metaTitle,
           description: metaDesc,
           openGraph: {
-            title: `${project.title} | Sapirox Case Studies`,
+            title: metaTitle,
             description: metaDesc,
             images: imageUrl ? [imageUrl] : [],
           }
@@ -100,11 +105,11 @@ export default async function ProjectDetailPage({ params }: PageProps) {
             </span>
           )}
         </div>
-        <h1 className="text-4xl md:text-6xl font-extrabold text-foreground mb-6 tracking-tight font-heading">
+        <h1 className="text-4xl md:text-6xl font-extrabold text-foreground mb-6 tracking-tight font-heading break-words">
           {project.title}
         </h1>
         {project.projectOverview && (
-          <p className="text-lg md:text-xl text-muted-foreground font-light leading-relaxed max-w-3xl border-l-2 border-primary pl-4 py-1">
+          <p className="text-lg md:text-xl text-muted-foreground font-light leading-relaxed max-w-3xl border-l-2 border-primary pl-4 py-1 break-words">
             {project.projectOverview}
           </p>
         )}
@@ -129,7 +134,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
           
           <div className="space-y-4">
             <h2 className="text-2xl font-bold text-foreground border-b border-border pb-3">Project Summary</h2>
-            <div className="text-muted-foreground leading-relaxed text-sm md:text-base whitespace-pre-wrap">
+            <div className="text-muted-foreground leading-relaxed text-sm md:text-base whitespace-pre-wrap break-words">
               {project.description}
             </div>
           </div>
@@ -140,13 +145,13 @@ export default async function ProjectDetailPage({ params }: PageProps) {
               {project.challenge && (
                 <div className="p-6 rounded-2xl bg-rose-500/5 border border-rose-500/20 space-y-3">
                   <h3 className="text-base font-bold text-rose-600 dark:text-rose-400 uppercase tracking-wider">The Challenge</h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed whitespace-pre-wrap">{project.challenge}</p>
+                  <p className="text-muted-foreground text-sm leading-relaxed whitespace-pre-wrap break-words">{project.challenge}</p>
                 </div>
               )}
               {project.solution && (
                 <div className="p-6 rounded-2xl bg-primary/5 border border-primary/20 space-y-3">
                   <h3 className="text-base font-bold text-primary uppercase tracking-wider">Our Solution</h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed whitespace-pre-wrap">{project.solution}</p>
+                  <p className="text-muted-foreground text-sm leading-relaxed whitespace-pre-wrap break-words">{project.solution}</p>
                 </div>
               )}
             </div>
@@ -160,7 +165,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                 {project.keyFeatures.map((feature, idx) => (
                   <div key={idx} className="flex gap-3 items-start bg-muted/40 p-4 rounded-xl border border-border">
                     <span className="mt-1 flex items-center justify-center h-4 w-4 rounded bg-primary/20 text-primary text-[10px] font-bold shrink-0">✓</span>
-                    <span className="text-muted-foreground text-sm leading-relaxed">{feature}</span>
+                    <span className="text-muted-foreground text-sm leading-relaxed break-words">{feature}</span>
                   </div>
                 ))}
               </div>
@@ -175,7 +180,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                 {project.projectOutcome.map((outcome, idx) => (
                   <div key={idx} className="flex gap-3 items-start bg-emerald-500/5 p-4 rounded-xl border border-emerald-500/20">
                     <span className="mt-1 flex items-center justify-center h-4 w-4 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold shrink-0">★</span>
-                    <span className="text-muted-foreground text-sm leading-relaxed">{outcome}</span>
+                    <span className="text-muted-foreground text-sm leading-relaxed break-words">{outcome}</span>
                   </div>
                 ))}
               </div>
@@ -198,8 +203,8 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                     </div>
                     {(item.title || item.description) && (
                       <div className="p-4 bg-muted/90">
-                        {item.title && <h4 className="text-sm font-bold text-foreground mb-1">{item.title}</h4>}
-                        {item.description && <p className="text-xs text-muted-foreground leading-relaxed">{item.description}</p>}
+                        {item.title && <h4 className="text-sm font-bold text-foreground mb-1 break-words">{item.title}</h4>}
+                        {item.description && <p className="text-xs text-muted-foreground leading-relaxed break-words">{item.description}</p>}
                       </div>
                     )}
                   </div>

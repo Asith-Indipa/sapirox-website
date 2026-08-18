@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Save, Globe, Info, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { getSeoSettingsByPath, upsertSeoSetting, SEOSetting } from '@/services/api';
+import CustomSelect from '@/components/ui/CustomSelect';
 
 const AVAILABLE_PATHS = [
   { path: '/', label: 'Home Page' },
@@ -104,7 +105,7 @@ export default function SeoSettingsPage() {
       <div className="max-w-4xl mx-auto">
         
         {/* Navigation */}
-        <div className="flex items-center justify-between mb-10">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-10">
           <Link 
             href="/admin/dashboard" 
             className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
@@ -134,17 +135,14 @@ export default function SeoSettingsPage() {
           {/* Path Selector */}
           <div className="premium-glass p-8 rounded-3xl border border-border space-y-4">
             <label className="block text-sm font-bold text-foreground">Target Public Page Path</label>
-            <select
+            <CustomSelect
+              options={AVAILABLE_PATHS.map((item) => ({
+                value: item.path,
+                label: `${item.label} (${item.path})`,
+              }))}
               value={selectedPath}
-              onChange={(e) => setSelectedPath(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors"
-            >
-              {AVAILABLE_PATHS.map((item) => (
-                <option key={item.path} value={item.path}>
-                  {item.label} ({item.path})
-                </option>
-              ))}
-            </select>
+              onChange={(val) => setSelectedPath(val)}
+            />
             <div className="flex items-start gap-2 text-xs text-muted-foreground mt-2">
               <Info className="h-4 w-4 text-primary shrink-0 mt-0.5" />
               <span>Select the public route you want to update. System autofills values if metadata is already customized.</span>

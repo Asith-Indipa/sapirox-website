@@ -2,8 +2,8 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { ItemListSchema } from '@/components/seo';
 import CustomSchema from '@/components/CustomSchema';
-import { getServices, Service } from '@/services/api';
-import { Cpu, Layers, Globe, Shield, Code, Zap, Activity, CheckCircle, ArrowRight } from 'lucide-react';
+import { getServices, Service, getFullImageUrl } from '@/services/api';
+import { Cpu, Layers, Globe, Shield, Code, Zap, Activity, CheckCircle, ArrowRight, Star } from 'lucide-react';
 
 export const revalidate = 0;
 
@@ -47,22 +47,24 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function ServicesPage() {
   let services: Service[] = [];
+  let isError = false;
   
   try {
     services = await getServices();
   } catch (error) {
+    isError = true;
     console.error('Failed to load services on server side:', error);
   }
 
-  const renderIcon = (iconName: string) => {
+  const renderIcon = (iconName: string, sizeClass = "h-8 w-8") => {
     switch (iconName?.toLowerCase()) {
-      case 'cpu': return <Cpu className="h-8 w-8 text-primary animate-pulse" />;
-      case 'layers': return <Layers className="h-8 w-8 text-cyan-500 dark:text-cyan-400" />;
-      case 'globe': return <Globe className="h-8 w-8 text-blue-500 dark:text-blue-400" />;
-      case 'shield': return <Shield className="h-8 w-8 text-emerald-500 dark:text-emerald-400" />;
-      case 'code': return <Code className="h-8 w-8 text-indigo-500 dark:text-indigo-400" />;
-      case 'zap': return <Zap className="h-8 w-8 text-amber-500 dark:text-amber-400" />;
-      default: return <Activity className="h-8 w-8 text-primary" />;
+      case 'cpu': return <Cpu className={`${sizeClass} text-primary animate-pulse`} />;
+      case 'layers': return <Layers className={`${sizeClass} text-cyan-500 dark:text-cyan-400`} />;
+      case 'globe': return <Globe className={`${sizeClass} text-blue-500 dark:text-blue-400`} />;
+      case 'shield': return <Shield className={`${sizeClass} text-emerald-500 dark:text-emerald-400`} />;
+      case 'code': return <Code className={`${sizeClass} text-indigo-500 dark:text-indigo-400`} />;
+      case 'zap': return <Zap className={`${sizeClass} text-amber-500 dark:text-amber-400`} />;
+      default: return <Activity className={`${sizeClass} text-primary`} />;
     }
   };
 
@@ -96,77 +98,75 @@ export default async function ServicesPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {services.length > 0 ? (
+        {isError ? (
+          <div className="col-span-full py-12 px-6 rounded-2xl border border-rose-500/10 bg-rose-500/5 text-center premium-glass">
+            <p className="text-rose-500 dark:text-rose-400 font-medium">
+              Something went wrong while loading our services. Please try again later.
+            </p>
+          </div>
+        ) : services.length > 0 ? (
           services.map((service) => (
-            <div 
+            <Link 
               key={service.id} 
-              className="premium-glass p-8 rounded-2xl border border-border hover:border-primary/30 hover:shadow-2xl hover:shadow-primary/5 group transition-all duration-300 flex flex-col justify-between"
+              href={`/services/${service.slug}`}
+              className="premium-glass rounded-2xl border border-border hover:border-primary/30 hover:shadow-2xl hover:shadow-primary/5 hover:scale-[1.01] group transition-all duration-300 flex flex-col justify-between min-w-0 w-full overflow-hidden"
             >
               <div>
-                <div className="h-14 w-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                  {renderIcon(service.icon)}
+                {/* Thumbnail area with smaller floating icon overlay */}
+                <div className="aspect-video w-full bg-muted/20 flex items-center justify-center relative overflow-hidden border-b border-border/40">
+                  {service.image ? (
+                    <img 
+                      src={getFullImageUrl(service.image)} 
+                      alt={service.title}
+                      className="h-full w-full object-contain group-hover:scale-[1.02] transition-transform duration-500"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-blue-500/15" />
+                  )}
+
+                  {/* Small Icon container floating in bottom-left */}
+                  <div className="absolute bottom-3 left-3 h-10 w-10 rounded-lg bg-background/90 backdrop-blur-sm border border-border/40 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    {renderIcon(service.icon, "h-5 w-5")}
+                  </div>
+
+                  {/* Featured label overlay */}
+                  {service.isFeatured && (
+                    <span className="absolute top-3 right-3 inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-500/90 backdrop-blur-sm text-white text-[10px] font-bold uppercase tracking-wider shadow-md">
+                      <Star className="h-3 w-3 fill-white" /> Featured
+                    </span>
+                  )}
                 </div>
-                <h2 className="text-2xl font-bold text-foreground mb-4">{service.title}</h2>
-                <p className="text-muted-foreground text-sm leading-relaxed mb-6 line-clamp-4">{service.shortDescription}</p>
+
+                <div className="p-6">
+                  <h2 className="text-xl font-bold text-foreground mb-3 break-words">{service.title}</h2>
+                  <p className="text-muted-foreground text-xs leading-relaxed mb-4 line-clamp-4 break-words">{service.shortDescription}</p>
+
+                  <ul className="space-y-2 mb-2">
+                    {service.features.map((feature, idx) => (
+                      <li key={idx} className="flex items-start gap-2 text-[11px] text-muted-foreground">
+                        <CheckCircle className="h-3.5 w-3.5 text-primary shrink-0 mt-0.5" />
+                        <span className="break-words">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
               
-              <div>
-                <ul className="space-y-3 mb-8">
-                  {service.features.map((feature, idx) => (
-                    <li key={idx} className="flex items-center gap-2.5 text-xs text-muted-foreground">
-                      <CheckCircle className="h-4 w-4 text-primary shrink-0" />
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-
-                <Link 
-                  href={`/services/${service.slug}`}
-                  className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:opacity-85 transition-opacity group-hover:translate-x-1 duration-200"
+              <div className="px-6 pb-6 pt-2">
+                <div 
+                  className="inline-flex items-center gap-2 text-xs font-semibold text-primary hover:opacity-85 transition-opacity group-hover:translate-x-1 duration-200"
                 >
-                  View Service Details <ArrowRight className="h-4 w-4" />
-                </Link>
+                  View Service Details <ArrowRight className="h-3.5 w-3.5" />
+                </div>
               </div>
-            </div>
+            </Link>
           ))
         ) : (
-          // Custom premium placeholders
-          [
-            { title: 'Web Application Development', desc: 'Custom enterprise-grade web apps built using Next.js and secure APIs.', icon: 'cpu', feats: ['Real-time synchronization', 'SEO optimized structures', 'Scalable cloud deployment'] },
-            { title: 'CMS & Content Management', desc: 'Secure, modern content distribution setups with simple admin inputs.', icon: 'layers', feats: ['Bespoke administration dashboards', 'Role access rules', 'API ready head setups'] },
-            { title: 'E-commerce & SaaS Products', desc: 'Custom digital sales pipelines, billing platforms and business tools.', icon: 'globe', feats: ['Secure payments integrations', 'High speed server routing', 'Analytical reporting panels'] }
-          ].map((item, idx) => (
-            <div 
-              key={idx} 
-              className="premium-glass p-8 rounded-2xl border border-border hover:border-primary/20 group transition-all duration-300 flex flex-col justify-between"
-            >
-              <div>
-                <div className="h-14 w-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:scale-105 transition-transform duration-300">
-                  {renderIcon(item.icon)}
-                </div>
-                <h2 className="text-2xl font-bold text-foreground mb-4">{item.title}</h2>
-                <p className="text-muted-foreground text-sm leading-relaxed mb-6">{item.desc}</p>
-              </div>
-              
-              <div>
-                <ul className="space-y-3 mb-8">
-                  {item.feats.map((feat, fIdx) => (
-                    <li key={fIdx} className="flex items-center gap-2.5 text-xs text-muted-foreground">
-                      <CheckCircle className="h-4 w-4 text-primary shrink-0" />
-                      {feat}
-                    </li>
-                  ))}
-                </ul>
-
-                <Link 
-                  href="/contact"
-                  className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:opacity-85 transition-opacity"
-                >
-                  Discuss Requirement <ArrowRight className="h-4 w-4" />
-                </Link>
-              </div>
-            </div>
-          ))
+          <div className="col-span-full py-12 px-6 rounded-2xl border border-border/40 bg-muted/10 text-center premium-glass">
+            <p className="text-muted-foreground font-medium">
+              No services available yet.
+            </p>
+          </div>
         )}
       </div>
     </div>

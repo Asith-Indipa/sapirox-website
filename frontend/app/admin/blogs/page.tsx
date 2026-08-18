@@ -6,6 +6,12 @@ import Link from 'next/link';
 import { getCurrentUser, User } from '@/services/auth';
 import { getAdminBlogs, createBlog, updateBlog, deleteBlog, uploadImage, Blog } from '@/services/api';
 import { Plus, Edit2, Trash2, ArrowLeft, Loader2, Save, X } from 'lucide-react';
+import CustomSelect from '@/components/ui/CustomSelect';
+
+const STATUS_OPTIONS = [
+  { value: 'PUBLISHED', label: 'Published (Visible publicly)' },
+  { value: 'DRAFT', label: 'Draft (Hidden from public)' },
+];
 
 export default function AdminBlogsPage() {
   const router = useRouter();
@@ -28,6 +34,7 @@ export default function AdminBlogsPage() {
     tagsInput: 'IT, Startup, Software',
     status: 'PUBLISHED' as 'DRAFT' | 'PUBLISHED',
     featured: false,
+    showOnHomepage: true,
     seoTitle: '',
     seoDescription: '',
   });
@@ -94,6 +101,7 @@ export default function AdminBlogsPage() {
       tagsInput: 'IT, Startup, Software',
       status: 'PUBLISHED',
       featured: false,
+      showOnHomepage: true,
       seoTitle: '',
       seoDescription: '',
     });
@@ -116,6 +124,7 @@ export default function AdminBlogsPage() {
       tagsInput: tagsString,
       status: blog.status || 'PUBLISHED',
       featured: blog.featured || false,
+      showOnHomepage: blog.showOnHomepage !== false,
       seoTitle: blog.seoTitle || '',
       seoDescription: blog.seoDescription || '',
     });
@@ -154,6 +163,7 @@ export default function AdminBlogsPage() {
       tags: tagsArray,
       status: formData.status,
       featured: formData.featured,
+      showOnHomepage: formData.showOnHomepage,
       seoTitle: formData.seoTitle || undefined,
       seoDescription: formData.seoDescription || undefined,
     };
@@ -189,7 +199,7 @@ export default function AdminBlogsPage() {
     <div className="relative min-h-[85vh] py-12 px-6 max-w-7xl mx-auto">
       
       {/* Header */}
-      <div className="flex justify-between items-center mb-8 border-b border-border/40 pb-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 border-b border-border/40 pb-6">
         <div>
           <Link href="/admin/dashboard" className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground mb-2 transition-colors">
             <ArrowLeft className="h-3.5 w-3.5" /> Back to Dashboard
@@ -279,7 +289,7 @@ export default function AdminBlogsPage() {
       {/* ── CREATE / UPDATE MODAL FORM ────────────────────────────────────────── */}
       {modalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="relative w-full max-w-3xl premium-glass rounded-3xl border border-border overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+          <div className="relative w-full max-w-3xl max-h-[calc(100vh-2rem)] premium-glass rounded-3xl border border-border overflow-hidden shadow-2xl flex flex-col animate-in fade-in zoom-in-95 duration-200">
             
             {/* Modal Header */}
             <div className="flex items-center justify-between p-6 border-b border-border/40 bg-muted/40">
@@ -295,7 +305,7 @@ export default function AdminBlogsPage() {
             </div>
 
             {/* Modal Form */}
-            <form onSubmit={handleFormSubmit} className="p-6 space-y-6 max-h-[75vh] overflow-y-auto">
+            <form onSubmit={handleFormSubmit} className="p-6 space-y-6 overflow-y-auto flex-1">
               
               {formError && (
                 <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-650 text-xs">
@@ -352,29 +362,59 @@ export default function AdminBlogsPage() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Publish Status *</label>
-                  <select
-                    value={formData.status}
-                    onChange={(e) => setFormData({ ...formData, status: e.target.value as 'DRAFT' | 'PUBLISHED' })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors"
+              <div>
+                <CustomSelect
+                  options={STATUS_OPTIONS}
+                  value={formData.status}
+                  onChange={(val) => setFormData({ ...formData, status: val as any })}
+                />
+              </div>
+
+              {/* ── Visibility & Feature Toggles ─────────────────────────────────── */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 p-5 rounded-2xl bg-muted/40 border border-border/60">
+                <label className="flex items-center justify-between gap-4 cursor-pointer group">
+                  <div>
+                    <span className="block text-sm font-semibold text-foreground">Featured Article</span>
+                    <span className="block text-xs text-muted-foreground mt-0.5">Highlight this article on the main Blog/Insights listing page</span>
+                  </div>
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={formData.featured}
+                    onClick={() => setFormData({ ...formData, featured: !formData.featured })}
+                    className={`relative inline-flex h-7 w-12 shrink-0 items-center rounded-full border-2 transition-colors duration-200 focus:outline-none cursor-pointer ${
+                      formData.featured
+                        ? 'bg-primary border-primary'
+                        : 'bg-muted border-border'
+                    }`}
                   >
-                    <option value="PUBLISHED">Published (Visible publicly)</option>
-                    <option value="DRAFT">Draft (Hidden from public)</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Featured Article *</label>
-                  <select
-                    value={formData.featured ? 'true' : 'false'}
-                    onChange={(e) => setFormData({ ...formData, featured: e.target.value === 'true' })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors"
+                    <span className={`inline-block h-5 w-5 rounded-full bg-white shadow-md transform transition-transform duration-200 ${
+                      formData.featured ? 'translate-x-5' : 'translate-x-0.5'
+                    }`} />
+                  </button>
+                </label>
+
+                <label className="flex items-center justify-between gap-4 cursor-pointer group">
+                  <div>
+                    <span className="block text-sm font-semibold text-foreground">Show on Homepage</span>
+                    <span className="block text-xs text-muted-foreground mt-0.5">Display this article in the homepage insights/blog showcase section</span>
+                  </div>
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={formData.showOnHomepage}
+                    onClick={() => setFormData({ ...formData, showOnHomepage: !formData.showOnHomepage })}
+                    className={`relative inline-flex h-7 w-12 shrink-0 items-center rounded-full border-2 transition-colors duration-200 focus:outline-none cursor-pointer ${
+                      formData.showOnHomepage
+                        ? 'bg-primary border-primary'
+                        : 'bg-muted border-border'
+                    }`}
                   >
-                    <option value="false">No (Standard Article)</option>
-                    <option value="true">Yes (Highlight on Blog Page)</option>
-                  </select>
-                </div>
+                    <span className={`inline-block h-5 w-5 rounded-full bg-white shadow-md transform transition-transform duration-200 ${
+                      formData.showOnHomepage ? 'translate-x-5' : 'translate-x-0.5'
+                    }`} />
+                  </button>
+                </label>
               </div>
 
               <div>
@@ -392,15 +432,15 @@ export default function AdminBlogsPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Cover Image URL</label>
-                  <div className="flex gap-2">
+                  <div className="flex flex-col sm:flex-row gap-2">
                     <input
                       type="text"
                       value={formData.coverImage}
                       onChange={(e) => setFormData({ ...formData, coverImage: e.target.value })}
-                      className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors"
+                      className="flex-1 px-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors w-full"
                       placeholder="https://images.unsplash.com/... or upload local file"
                     />
-                    <label className="cursor-pointer px-4 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-white text-xs font-bold flex items-center justify-center shrink-0 transition-colors">
+                    <label className="cursor-pointer px-4 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-white text-xs font-bold flex items-center justify-center shrink-0 transition-colors w-full sm:w-auto">
                       {uploadingImage ? 'Uploading...' : 'Upload Local'}
                       <input
                         type="file"

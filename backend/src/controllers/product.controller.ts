@@ -60,7 +60,7 @@ export const createProduct = async (req: AuthRequest, res: Response): Promise<vo
     const {
       name, slug, category, shortDescription, description, productImage, gallery,
       screenshots, features, benefits, targetUsers, howItWorks, technology, integrations,
-      status, demoUrl, ctaText, seoTitle, seoDescription
+      status, demoUrl, ctaText, seoTitle, seoDescription, showOnHomepage
     } = req.body;
 
     if (!name || !slug || !shortDescription || !description || !productImage) {
@@ -92,6 +92,7 @@ export const createProduct = async (req: AuthRequest, res: Response): Promise<vo
         seoTitle: seoTitle || null,
         seoDescription: seoDescription || null,
         gallery: gallery || [],
+        showOnHomepage: showOnHomepage !== undefined ? Boolean(showOnHomepage) : true,
       },
     });
     res.status(201).json({ success: true, message: 'Product created.', data: product });
@@ -121,7 +122,7 @@ export const updateProduct = async (req: AuthRequest, res: Response): Promise<vo
     const {
       name, slug, category, shortDescription, description, productImage, gallery,
       screenshots, features, benefits, targetUsers, howItWorks, technology, integrations,
-      status, demoUrl, ctaText, seoTitle, seoDescription
+      status, demoUrl, ctaText, seoTitle, seoDescription, showOnHomepage
     } = req.body;
 
     // Clean up replaced images asynchronously
@@ -175,6 +176,7 @@ export const updateProduct = async (req: AuthRequest, res: Response): Promise<vo
         integrations: integrations !== undefined ? integrations : undefined,
         status, demoUrl, ctaText, seoTitle, seoDescription,
         gallery: gallery !== undefined ? gallery : undefined,
+        showOnHomepage: showOnHomepage !== undefined ? Boolean(showOnHomepage) : undefined,
       }
     });
     res.status(200).json({ success: true, message: 'Product updated.', data: product });

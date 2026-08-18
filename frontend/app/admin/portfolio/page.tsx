@@ -6,6 +6,20 @@ import Link from 'next/link';
 import { getCurrentUser, User } from '@/services/auth';
 import { getAdminProjects, createProject, updateProject, deleteProject, Project, getServices, Service, uploadImage } from '@/services/api';
 import { Plus, Edit2, Trash2, ArrowLeft, Loader2, Save, X } from 'lucide-react';
+import CustomSelect from '@/components/ui/CustomSelect';
+
+const PROJECT_TYPE_OPTIONS = [
+  { value: 'CLIENT_PROJECT', label: 'Client Project' },
+  { value: 'IN_HOUSE_PRODUCT', label: 'In-House Product' },
+  { value: 'INTERNAL_PROJECT', label: 'Internal Project' },
+  { value: 'PROTOTYPE', label: 'Prototype' },
+  { value: 'OPEN_SOURCE', label: 'Open Source' },
+];
+
+const STATUS_OPTIONS = [
+  { value: 'DRAFT', label: 'Draft' },
+  { value: 'PUBLISHED', label: 'Published' },
+];
 
 export default function AdminPortfolioPage() {
   const router = useRouter();
@@ -37,6 +51,9 @@ export default function AdminPortfolioPage() {
     projectGallery: [],
     projectOutcome: [''],
     status: 'DRAFT',
+    showOnHomepage: true,
+    seoTitle: '',
+    seoDescription: '',
   });
 
   const [formLoading, setFormLoading] = useState(false);
@@ -96,6 +113,9 @@ export default function AdminPortfolioPage() {
       projectGallery: [],
       projectOutcome: [''],
       status: 'DRAFT',
+      showOnHomepage: true,
+      seoTitle: '',
+      seoDescription: '',
     });
     setFormError(null);
     setModalOpen(true);
@@ -123,6 +143,9 @@ export default function AdminPortfolioPage() {
       projectGallery: project.projectGallery ? [...project.projectGallery] : [],
       projectOutcome: project.projectOutcome && project.projectOutcome.length > 0 ? [...project.projectOutcome] : [''],
       status: project.status || 'DRAFT',
+      showOnHomepage: project.showOnHomepage !== false,
+      seoTitle: project.seoTitle || '',
+      seoDescription: project.seoDescription || '',
     });
     setFormError(null);
     setModalOpen(true);
@@ -271,7 +294,7 @@ export default function AdminPortfolioPage() {
     <div className="relative min-h-[85vh] py-12 px-6 max-w-7xl mx-auto">
       
       {/* Header */}
-      <div className="flex justify-between items-center mb-8 border-b border-border/40 pb-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 border-b border-border/40 pb-6">
         <div>
           <Link href="/admin/dashboard" className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground mb-2 transition-colors">
             <ArrowLeft className="h-3.5 w-3.5" /> Back to Dashboard
@@ -370,7 +393,7 @@ export default function AdminPortfolioPage() {
       {/* ── CREATE / UPDATE MODAL FORM ────────────────────────────────────────── */}
       {modalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="relative w-full max-w-2xl premium-glass rounded-3xl border border-border overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+          <div className="relative w-full max-w-2xl max-h-[calc(100vh-2rem)] premium-glass rounded-3xl border border-border overflow-hidden shadow-2xl flex flex-col animate-in fade-in zoom-in-95 duration-200">
             
             {/* Modal Header */}
             <div className="flex items-center justify-between p-6 border-b border-border/40 bg-muted/40">
@@ -386,7 +409,7 @@ export default function AdminPortfolioPage() {
             </div>
 
             {/* Modal Form */}
-            <form onSubmit={handleFormSubmit} className="p-6 space-y-6 max-h-[75vh] overflow-y-auto">
+            <form onSubmit={handleFormSubmit} className="p-6 space-y-6 overflow-y-auto flex-1">
               
               {formError && (
                 <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-650 text-xs">
@@ -422,28 +445,19 @@ export default function AdminPortfolioPage() {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                 <div>
                   <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Project Type *</label>
-                  <select
+                  <CustomSelect
+                    options={PROJECT_TYPE_OPTIONS}
                     value={formData.projectType || 'CLIENT_PROJECT'}
-                    onChange={(e) => setFormData({ ...formData, projectType: e.target.value as any })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors"
-                  >
-                    <option value="CLIENT_PROJECT">Client Project</option>
-                    <option value="IN_HOUSE_PRODUCT">In-House Product</option>
-                    <option value="INTERNAL_PROJECT">Internal Project</option>
-                    <option value="PROTOTYPE">Prototype</option>
-                    <option value="OPEN_SOURCE">Open Source</option>
-                  </select>
+                    onChange={(val) => setFormData({ ...formData, projectType: val as any })}
+                  />
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Publish Status *</label>
-                  <select
+                  <CustomSelect
+                    options={STATUS_OPTIONS}
                     value={formData.status || 'DRAFT'}
-                    onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors"
-                  >
-                    <option value="DRAFT">Draft</option>
-                    <option value="PUBLISHED">Published</option>
-                  </select>
+                    onChange={(val) => setFormData({ ...formData, status: val as any })}
+                  />
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Project Overview</label>
@@ -471,19 +485,40 @@ export default function AdminPortfolioPage() {
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Link to Tech Service (Optional)</label>
-                  <select
+                  <CustomSelect
+                    options={[
+                      { value: '', label: '-- No linked Service --' },
+                      ...services.map((service) => ({ value: service.id, label: service.title })),
+                    ]}
                     value={formData.serviceId || ''}
-                    onChange={(e) => setFormData({ ...formData, serviceId: e.target.value || undefined })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors"
-                  >
-                    <option value="">-- No linked Service --</option>
-                    {services.map((service) => (
-                      <option key={service.id} value={service.id}>
-                        {service.title}
-                      </option>
-                    ))}
-                  </select>
+                    onChange={(val) => setFormData({ ...formData, serviceId: val || undefined })}
+                  />
                 </div>
+              </div>
+
+              {/* ── Homepage Visibility Toggles ─────────────────────────────────── */}
+              <div className="p-5 rounded-2xl bg-muted/40 border border-border/60">
+                <label className="flex items-center justify-between gap-4 cursor-pointer group">
+                  <div>
+                    <span className="block text-sm font-semibold text-foreground">Show on Homepage</span>
+                    <span className="block text-xs text-muted-foreground mt-0.5">Display this portfolio project in the homepage case studies showcase section</span>
+                  </div>
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={formData.showOnHomepage}
+                    onClick={() => setFormData({ ...formData, showOnHomepage: !formData.showOnHomepage })}
+                    className={`relative inline-flex h-7 w-12 shrink-0 items-center rounded-full border-2 transition-colors duration-200 focus:outline-none cursor-pointer ${
+                      formData.showOnHomepage
+                        ? 'bg-primary border-primary'
+                        : 'bg-muted border-border'
+                    }`}
+                  >
+                    <span className={`inline-block h-5 w-5 rounded-full bg-white shadow-md transform transition-transform duration-200 ${
+                      formData.showOnHomepage ? 'translate-x-5' : 'translate-x-0.5'
+                    }`} />
+                  </button>
+                </label>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -511,36 +546,38 @@ export default function AdminPortfolioPage() {
 
               <div>
                 <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Main Cover Image URL</label>
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2">
                   <input
                     type="text"
                     value={formData.coverImage || ''}
                     onChange={(e) => setFormData({ ...formData, coverImage: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors"
+                    className="flex-1 px-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors w-full"
                     placeholder="https://images.unsplash.com/... or upload local file"
                   />
-                  <label className="cursor-pointer px-4 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-white text-xs font-bold flex items-center justify-center shrink-0 transition-colors">
-                    {uploadingCover ? 'Uploading...' : 'Upload Local'}
-                    <input
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) handleCoverUpload(file);
-                      }}
-                      disabled={uploadingCover}
-                    />
-                  </label>
-                  {formData.coverImage && (
-                    <button
-                      type="button"
-                      onClick={() => setFormData({ ...formData, coverImage: '' })}
-                      className="px-3 py-2 rounded-xl bg-rose-900/40 hover:bg-rose-900/60 text-rose-200 border border-rose-800/50 transition-colors text-xs font-bold cursor-pointer"
-                    >
-                      Delete
-                    </button>
-                  )}
+                  <div className="flex gap-2 w-full sm:w-auto">
+                    <label className="cursor-pointer px-4 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-white text-xs font-bold flex items-center justify-center flex-1 sm:flex-initial shrink-0 transition-colors w-full sm:w-auto">
+                      {uploadingCover ? 'Uploading...' : 'Upload Local'}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) handleCoverUpload(file);
+                        }}
+                        disabled={uploadingCover}
+                      />
+                    </label>
+                    {formData.coverImage && (
+                      <button
+                        type="button"
+                        onClick={() => setFormData({ ...formData, coverImage: '' })}
+                        className="px-3 py-2.5 rounded-xl bg-rose-900/40 hover:bg-rose-900/60 text-rose-200 border border-rose-800/50 transition-colors text-xs font-bold flex items-center justify-center flex-1 sm:flex-initial cursor-pointer"
+                      >
+                        Delete
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -575,6 +612,29 @@ export default function AdminPortfolioPage() {
                     onChange={(e) => setFormData({ ...formData, solution: e.target.value })}
                     className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors resize-none"
                     placeholder="Describe how the project solved the identified problem..."
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 border-t border-border/40 pt-6">
+                <div>
+                  <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">SEO Page Title (Optional)</label>
+                  <input
+                    type="text"
+                    value={formData.seoTitle || ''}
+                    onChange={(e) => setFormData({ ...formData, seoTitle: e.target.value })}
+                    className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors"
+                    placeholder="Defaults to: [Project Title] | Sapirox"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">SEO Page Description (Optional)</label>
+                  <input
+                    type="text"
+                    value={formData.seoDescription || ''}
+                    onChange={(e) => setFormData({ ...formData, seoDescription: e.target.value })}
+                    className="w-full px-4 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors"
+                    placeholder="Defaults to case study description"
                   />
                 </div>
               </div>

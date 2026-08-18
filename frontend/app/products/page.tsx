@@ -2,8 +2,8 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { ItemListSchema } from '@/components/seo';
 import CustomSchema from '@/components/CustomSchema';
-import { getProducts, Product } from '@/services/api';
-import { ArrowRight, ExternalLink } from 'lucide-react';
+import { getProducts, Product, getFullImageUrl } from '@/services/api';
+import { ArrowRight, ExternalLink, Code } from 'lucide-react';
 
 export const revalidate = 0;
 
@@ -47,10 +47,12 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function ProductsPage() {
   let products: Product[] = [];
+  let isError = false;
 
   try {
     products = await getProducts();
   } catch (error) {
+    isError = true;
     console.error('Failed to load products on server side:', error);
   }
 
@@ -83,45 +85,69 @@ export default async function ProductsPage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {products.length > 0 ? (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {isError ? (
+          <div className="col-span-full py-12 px-6 rounded-2xl border border-rose-500/10 bg-rose-500/5 text-center premium-glass">
+            <p className="text-rose-500 dark:text-rose-400 font-medium">
+              Something went wrong while loading our products. Please try again later.
+            </p>
+          </div>
+        ) : products.length > 0 ? (
           products.map((product) => (
             <Link 
               key={product.id} 
               href={`/products/${product.slug}`}
-              className="premium-glass rounded-3xl overflow-hidden border border-border flex flex-col justify-between hover:border-primary/30 hover:scale-[1.01] transition-all duration-300 group"
+              className="premium-glass rounded-2xl overflow-hidden border border-border flex flex-col justify-between hover:border-primary/30 hover:scale-[1.01] transition-all duration-300 group"
             >
-              <div className="p-8">
-                <div className="flex items-center gap-2 mb-6">
-                  <span className={`inline-block px-3 py-1 rounded-full text-[10px] md:text-xs font-bold uppercase border ${
-                    product.status === 'AVAILABLE' 
-                      ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
-                      : product.status === 'BETA'
-                      ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20'
-                      : 'bg-primary/10 text-primary border-primary/20'
-                  }`}>
-                    {product.status.replace('_', ' ')}
-                  </span>
-                  {product.category && (
-                    <span className="inline-block px-3 py-1 rounded-full text-[10px] md:text-xs font-bold uppercase bg-primary/10 text-primary border border-primary/20">
-                      {product.category}
-                    </span>
+              <div>
+                {/* Thumbnail area */}
+                <div className="aspect-video w-full bg-muted/20 flex items-center justify-center relative overflow-hidden border-b border-border/40">
+                  {product.productImage ? (
+                    <img 
+                      src={getFullImageUrl(product.productImage)} 
+                      alt={product.name}
+                      className="h-full w-full object-contain group-hover:scale-[1.02] transition-transform duration-550"
+                    />
+                  ) : (
+                    <>
+                      <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-indigo-500/15" />
+                      <Code className="h-10 w-10 text-primary/45 group-hover:scale-105 transition-transform duration-300" />
+                    </>
                   )}
                 </div>
-                
-                <h2 className="text-2xl font-bold text-foreground mb-4 group-hover:text-primary transition-colors">{product.name}</h2>
-                <p className="text-muted-foreground text-sm leading-relaxed mb-6 line-clamp-3">{product.shortDescription}</p>
-                
-                <div className="flex flex-wrap gap-2 mb-6">
-                  {product.technology.map((tech, idx) => (
-                    <span key={idx} className="text-xs px-2.5 py-1 rounded-full bg-muted text-muted-foreground border border-border/40 dark:border-muted-foreground/25 dark:bg-muted/30">
-                      {tech}
+
+                <div className="p-6">
+                  <div className="flex items-center gap-2 mb-6">
+                    <span className={`inline-block px-3 py-1 rounded-full text-[10px] md:text-xs font-bold uppercase border ${
+                      product.status === 'AVAILABLE' 
+                        ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
+                        : product.status === 'BETA'
+                        ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20'
+                        : 'bg-primary/10 text-primary border-primary/20'
+                    }`}>
+                      {product.status.replace('_', ' ')}
                     </span>
-                  ))}
+                    {product.category && (
+                      <span className="inline-block px-3 py-1 rounded-full text-[10px] md:text-xs font-bold uppercase bg-primary/10 text-primary border border-primary/20">
+                        {product.category}
+                      </span>
+                    )}
+                  </div>
+                  
+                  <h2 className="text-2xl font-bold text-foreground mb-4 group-hover:text-primary transition-colors break-words">{product.name}</h2>
+                  <p className="text-muted-foreground text-sm leading-relaxed mb-6 line-clamp-3 break-words">{product.shortDescription}</p>
+                  
+                  <div className="flex flex-wrap gap-2 mb-6">
+                    {product.technology.map((tech, idx) => (
+                      <span key={idx} className="text-xs px-2.5 py-1 rounded-full bg-muted text-muted-foreground border border-border/40 dark:border-muted-foreground/25 dark:bg-muted/30">
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               </div>
 
-              <div className="p-8 bg-muted/40 border-t border-border/40 flex items-center justify-between">
+              <div className="p-6 bg-muted/40 border-t border-border/40 flex items-center justify-between">
                 <span className="text-sm font-medium text-muted-foreground group-hover:text-primary transition-colors">
                   Ready to learn more?
                 </span>
@@ -132,64 +158,11 @@ export default async function ProductsPage() {
             </Link>
           ))
         ) : (
-          // Static Premium Fallback Products
-          <>
-            <Link 
-              href="/contact" 
-              className="premium-glass rounded-3xl overflow-hidden border border-border flex flex-col justify-between hover:border-primary/30 hover:scale-[1.01] transition-all duration-300 group"
-            >
-              <div className="p-8">
-                <div className="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold mb-6">
-                  BETA TESTING
-                </div>
-                <h3 className="text-2xl font-bold text-foreground mb-4 group-hover:text-primary transition-colors">Sapirox Enterprise CMS</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed mb-6">
-                  An API-first modern content delivery framework built to provide super-fast static output generation and secure API interfaces.
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {['Next.js', 'Prisma', 'PostgreSQL', 'TailwindCSS'].map((tech, idx) => (
-                    <span key={idx} className="text-xs px-3 py-1 rounded-full bg-muted text-muted-foreground border border-border/40 dark:border-muted-foreground/25 dark:bg-muted/30">
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-              </div>
-              <div className="p-8 bg-muted/40 border-t border-border/40 flex items-center justify-between">
-                <span className="text-sm font-medium text-muted-foreground group-hover:text-primary transition-colors">Access beta panel</span>
-                <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-sm font-semibold shadow-md shadow-cyan-500/10">
-                  Request Access <ExternalLink className="h-4 w-4" />
-                </div>
-              </div>
-            </Link>
-
-            <Link 
-              href="/contact" 
-              className="premium-glass rounded-3xl overflow-hidden border border-border flex flex-col justify-between hover:border-primary/30 hover:scale-[1.01] transition-all duration-300 group"
-            >
-              <div className="p-8">
-                <div className="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold mb-6">
-                  COMING SOON
-                </div>
-                <h3 className="text-2xl font-bold text-foreground mb-4 group-hover:text-primary transition-colors">Pulse CRM & ERP</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed mb-6">
-                  Integrated administrative dashboard to help startups monitor sales channels, manage invoices, support requests, and user logs.
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {['Express.js', 'Postgres', 'WebSockets', 'Chart.js'].map((tech, idx) => (
-                    <span key={idx} className="text-xs px-3 py-1 rounded-full bg-muted text-muted-foreground border border-border/40 dark:border-muted-foreground/25 dark:bg-muted/30">
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-              </div>
-              <div className="p-8 bg-muted/40 border-t border-border/40 flex items-center justify-between">
-                <span className="text-sm font-medium text-muted-foreground group-hover:text-primary transition-colors">Join waiting list</span>
-                <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-muted hover:bg-muted/80 text-foreground text-sm font-semibold border border-border">
-                  Join waitlist <ArrowRight className="h-4 w-4" />
-                </div>
-              </div>
-            </Link>
-          </>
+          <div className="col-span-full py-12 px-6 rounded-2xl border border-border/40 bg-muted/10 text-center premium-glass">
+            <p className="text-muted-foreground font-medium">
+              No proprietary products available yet.
+            </p>
+          </div>
         )}
       </div>
     </div>
