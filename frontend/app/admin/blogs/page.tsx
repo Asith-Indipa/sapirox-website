@@ -244,7 +244,7 @@ export default function AdminBlogsPage() {
                           {blog.category?.name || 'Technology'}
                         </span>
                         {blog.status === 'DRAFT' && (
-                          <span className="ml-2 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                          <span className="ml-2 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20">
                             Draft
                           </span>
                         )}

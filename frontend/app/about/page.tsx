@@ -19,6 +19,7 @@ import {
   Server,
   HeartHandshake
 } from 'lucide-react';
+import ScrollReveal from '@/components/ScrollReveal';
 
 export const revalidate = 0;
 
@@ -163,90 +164,101 @@ export default async function AboutPage() {
       <div className="absolute bottom-[20%] right-[5%] w-[350px] h-[350px] rounded-full bg-primary/5 blur-[120px] pointer-events-none" />
 
       {/* Hero Header section */}
-      <div className="max-w-3xl mb-24">
-        <span className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-primary bg-primary/10 px-4 py-1.5 rounded-full border border-primary/20">
-          <Sparkles className="h-3 w-3" /> About Sapirox
-        </span>
-        <h1 className="text-4xl md:text-6xl font-extrabold text-foreground mt-6 mb-6 font-heading tracking-tight leading-tight">
-          {content.hero.title} <br />
-          <span className="premium-gradient-text">{content.hero.titleHighlight}</span>
-        </h1>
-        <p className="text-muted-foreground text-lg leading-relaxed">
-          {content.hero.subtitle}
-        </p>
-      </div>
+      <ScrollReveal className="max-w-3xl mb-24">
+        <div>
+          <span className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-primary bg-primary/10 px-4 py-1.5 rounded-full border border-primary/20">
+            <Sparkles className="h-3 w-3" /> About Sapirox
+          </span>
+          <h1 className="text-4xl md:text-6xl font-extrabold text-foreground mt-6 mb-6 font-heading tracking-tight leading-tight">
+            {content.hero.title} <br />
+            <span className="premium-gradient-text">{content.hero.titleHighlight}</span>
+          </h1>
+          <p className="text-muted-foreground text-lg leading-relaxed">
+            {content.hero.subtitle}
+          </p>
+        </div>
+      </ScrollReveal>
 
       {/* Our Story Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-24">
-        <div className="lg:col-span-4">
-          <span className="text-xs font-semibold uppercase tracking-widest text-primary">
-            OUR STORY
-          </span>
-          <h2 className="text-3xl font-bold text-foreground mt-2 font-heading">
-            Why We Started
-          </h2>
+      <ScrollReveal className="w-full mb-24">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          <div className="lg:col-span-4">
+            <span className="text-xs font-semibold uppercase tracking-widest text-primary">
+              OUR STORY
+            </span>
+            <h2 className="text-3xl font-bold text-foreground mt-2 font-heading">
+              Why We Started
+            </h2>
+          </div>
+          <div className="lg:col-span-8 premium-glass p-8 rounded-2xl border border-border">
+            <p className="text-muted-foreground leading-relaxed text-base mb-4">
+              {content.story.paragraph1}
+            </p>
+            <p className="text-muted-foreground leading-relaxed text-base">
+              {content.story.paragraph2}
+            </p>
+          </div>
         </div>
-        <div className="lg:col-span-8 premium-glass p-8 rounded-2xl border border-border">
-          <p className="text-muted-foreground leading-relaxed text-base mb-4">
-            {content.story.paragraph1}
-          </p>
-          <p className="text-muted-foreground leading-relaxed text-base">
-            {content.story.paragraph2}
-          </p>
-        </div>
-      </div>
+      </ScrollReveal>
 
       {/* Mission & Vision Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-24">
-        <div className="premium-glass p-8 rounded-2xl border border-border relative overflow-hidden group hover:border-primary/20 transition-all duration-300">
-          <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-bl-full pointer-events-none" />
-          <div className="mb-6 inline-block p-4 rounded-xl bg-muted border border-border">
-            <Target className="h-8 w-8 text-primary" />
+        <ScrollReveal className="w-full flex">
+          <div className="premium-glass p-8 rounded-2xl border border-border relative overflow-hidden group hover:border-primary/20 hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/5 transition-all duration-300 w-full">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-bl-full pointer-events-none" />
+            <div className="mb-6 inline-block p-4 rounded-xl bg-muted border border-border">
+              <Target className="h-8 w-8 text-primary" />
+            </div>
+            <h3 className="text-2xl font-bold text-foreground mb-3 font-heading">Our Mission</h3>
+            <p className="text-muted-foreground leading-relaxed text-base">
+              {content.mission}
+            </p>
           </div>
-          <h3 className="text-2xl font-bold text-foreground mb-3 font-heading">Our Mission</h3>
-          <p className="text-muted-foreground leading-relaxed text-base">
-            {content.mission}
-          </p>
-        </div>
+        </ScrollReveal>
 
-        <div className="premium-glass p-8 rounded-2xl border border-border relative overflow-hidden group hover:border-primary/20 transition-all duration-300">
-          <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-bl-full pointer-events-none" />
-          <div className="mb-6 inline-block p-4 rounded-xl bg-muted border border-border">
-            <Eye className="h-8 w-8 text-cyan-500 dark:text-cyan-400" />
+        <ScrollReveal className="w-full flex" delayClass="animation-delay-100">
+          <div className="premium-glass p-8 rounded-2xl border border-border relative overflow-hidden group hover:border-primary/20 hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/5 transition-all duration-300 w-full">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-bl-full pointer-events-none" />
+            <div className="mb-6 inline-block p-4 rounded-xl bg-muted border border-border">
+              <Eye className="h-8 w-8 text-cyan-500 dark:text-cyan-400" />
+            </div>
+            <h3 className="text-2xl font-bold text-foreground mb-3 font-heading">Our Vision</h3>
+            <p className="text-muted-foreground leading-relaxed text-base">
+              {content.vision}
+            </p>
           </div>
-          <h3 className="text-2xl font-bold text-foreground mb-3 font-heading">Our Vision</h3>
-          <p className="text-muted-foreground leading-relaxed text-base">
-            {content.vision}
-          </p>
-        </div>
+        </ScrollReveal>
       </div>
 
       {/* Trust / Why Sapirox Section */}
       {content.trustPoints && content.trustPoints.length > 0 && (
         <div className="mb-24">
-          <div className="text-center mb-16">
-            <span className="text-xs font-semibold uppercase tracking-widest text-primary">
-              WHY SAPIROX?
-            </span>
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mt-3 font-heading">
-              Built on Trust & Integrity
-            </h2>
-          </div>
+          <ScrollReveal className="w-full text-center mb-16">
+            <div>
+              <span className="text-xs font-semibold uppercase tracking-widest text-primary">
+                WHY SAPIROX?
+              </span>
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground mt-3 font-heading">
+                Built on Trust & Integrity
+              </h2>
+            </div>
+          </ScrollReveal>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {content.trustPoints.map((item: { title: string; desc: string }, idx: number) => (
-              <div 
-                key={idx}
-                className="premium-glass p-8 rounded-2xl border border-border hover:border-primary/20 transition-all duration-300 flex flex-col justify-between"
-              >
-                <div>
-                  <div className="mb-6 inline-block p-3 rounded-xl bg-muted border border-border">
-                    {TRUST_ICONS[idx % TRUST_ICONS.length]}
+              <ScrollReveal key={idx} delayClass={`animation-delay-${(idx % 4) * 100}`} className="w-full flex">
+                <div 
+                  className="premium-glass p-8 rounded-2xl border border-border hover:border-primary/20 hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/5 transition-all duration-300 flex flex-col justify-between w-full"
+                >
+                  <div>
+                    <div className="mb-6 inline-block p-3 rounded-xl bg-muted border border-border">
+                      {TRUST_ICONS[idx % TRUST_ICONS.length]}
+                    </div>
+                    <h3 className="text-lg font-bold text-foreground mb-3 font-heading">{item.title}</h3>
+                    <p className="text-muted-foreground leading-relaxed text-sm">{item.desc}</p>
                   </div>
-                  <h3 className="text-lg font-bold text-foreground mb-3 font-heading">{item.title}</h3>
-                  <p className="text-muted-foreground leading-relaxed text-sm">{item.desc}</p>
                 </div>
-              </div>
+              </ScrollReveal>
             ))}
           </div>
         </div>
@@ -255,30 +267,33 @@ export default async function AboutPage() {
       {/* How We Work Section */}
       {content.workflowSteps && content.workflowSteps.length > 0 && (
         <div className="mb-24">
-          <div className="text-center mb-16">
-            <span className="text-xs font-semibold uppercase tracking-widest text-primary">
-              OUR APPROACH
-            </span>
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mt-3 font-heading">
-              How We Work
-            </h2>
-            <p className="text-muted-foreground text-sm max-w-xl mx-auto mt-2">
-              A structured, collaborative approach to take your software project from concept to launch.
-            </p>
-          </div>
+          <ScrollReveal className="w-full text-center mb-16">
+            <div>
+              <span className="text-xs font-semibold uppercase tracking-widest text-primary">
+                OUR APPROACH
+              </span>
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground mt-3 font-heading">
+                How We Work
+              </h2>
+              <p className="text-muted-foreground text-sm max-w-xl mx-auto mt-2">
+                A structured, collaborative approach to take your software project from concept to launch.
+              </p>
+            </div>
+          </ScrollReveal>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {content.workflowSteps.map((step: { number: string; title: string; desc: string }, idx: number) => (
-              <div 
-                key={idx}
-                className="premium-glass p-8 rounded-2xl border border-border relative overflow-hidden group hover:border-primary/20 transition-all duration-300"
-              >
-                <div className="absolute top-4 right-6 text-4xl font-black text-muted-foreground/10 group-hover:text-muted-foreground/20 transition-colors duration-300">
-                  {step.number}
+              <ScrollReveal key={idx} delayClass={`animation-delay-${(idx % 3) * 100}`} className="w-full flex">
+                <div 
+                  className="premium-glass p-8 rounded-2xl border border-border relative overflow-hidden group hover:border-primary/20 hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/5 transition-all duration-300 w-full"
+                >
+                  <div className="absolute top-4 right-6 text-4xl font-black text-muted-foreground/10 group-hover:text-muted-foreground/20 transition-colors duration-300">
+                    {step.number}
+                  </div>
+                  <h3 className="text-xl font-bold text-foreground mb-3 font-heading">{step.title}</h3>
+                  <p className="text-muted-foreground leading-relaxed text-sm">{step.desc}</p>
                 </div>
-                <h3 className="text-xl font-bold text-foreground mb-3 font-heading">{step.title}</h3>
-                <p className="text-muted-foreground leading-relaxed text-sm">{step.desc}</p>
-              </div>
+              </ScrollReveal>
             ))}
           </div>
         </div>
@@ -287,53 +302,56 @@ export default async function AboutPage() {
       {/* Core Team Section */}
       {content.team && content.team.length > 0 && (
         <div className="mb-24">
-          <div className="text-center mb-16">
-            <span className="text-xs font-semibold uppercase tracking-widest text-primary">
-              THE BUILDERS
-            </span>
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mt-3 font-heading">
-              Our Core Team
-            </h2>
-          </div>
+          <ScrollReveal className="w-full text-center mb-16">
+            <div>
+              <span className="text-xs font-semibold uppercase tracking-widest text-primary">
+                THE BUILDERS
+              </span>
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground mt-3 font-heading">
+                Our Core Team
+              </h2>
+            </div>
+          </ScrollReveal>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {content.team.map((member: { name: string; role: string; bio: string; image?: string }, idx: number) => {
               const colors = TEAM_COLORS[idx % TEAM_COLORS.length];
               return (
-                <div 
-                  key={idx}
-                  className="premium-glass rounded-2xl overflow-hidden border border-border group hover:border-primary/30 transition-all duration-300 flex flex-col justify-between"
-                >
-                  <div>
-                    {/* Thumbnail area */}
-                    <div className="h-52 w-full bg-muted flex items-center justify-center relative overflow-hidden">
-                      {member.image ? (
-                        <img 
-                          src={member.image} 
-                          alt={member.name}
-                          className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-550"
-                        />
-                      ) : (
-                        <>
-                          <div className={`absolute inset-0 bg-gradient-to-br ${colors.gradient} opacity-40`} />
-                          <span className={`text-4xl font-black bg-gradient-to-r ${colors.color} bg-clip-text text-transparent z-10 group-hover:scale-105 transition-transform duration-300`}>
-                            {member.name.split(' ').map((n: string) => n[0]).join('')}
-                          </span>
-                        </>
-                      )}
-                    </div>
-                    
-                    <div className="p-6">
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="text-[10px] font-bold text-primary uppercase tracking-widest">{member.role}</span>
+                <ScrollReveal key={idx} delayClass={`animation-delay-${(idx % 3) * 100}`} className="w-full flex">
+                  <div 
+                    className="premium-glass rounded-2xl overflow-hidden border border-border group hover:border-primary/30 hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/5 transition-all duration-300 flex flex-col justify-between w-full"
+                  >
+                    <div>
+                      {/* Thumbnail area */}
+                      <div className="h-52 w-full bg-muted flex items-center justify-center relative overflow-hidden">
+                        {member.image ? (
+                          <img 
+                            src={member.image} 
+                            alt={member.name}
+                            className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-550"
+                          />
+                        ) : (
+                          <>
+                            <div className={`absolute inset-0 bg-gradient-to-br ${colors.gradient} opacity-40`} />
+                            <span className={`text-4xl font-black bg-gradient-to-r ${colors.color} bg-clip-text text-transparent z-10 group-hover:scale-105 transition-transform duration-300`}>
+                              {member.name.split(' ').map((n: string) => n[0]).join('')}
+                            </span>
+                          </>
+                        )}
                       </div>
-                      <h3 className="text-xl font-bold text-foreground mb-3">{member.name}</h3>
-                      <p className="text-muted-foreground text-sm leading-relaxed">
-                        {member.bio}
-                      </p>
+                      
+                      <div className="p-6">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="text-[10px] font-bold text-primary uppercase tracking-widest">{member.role}</span>
+                        </div>
+                        <h3 className="text-xl font-bold text-foreground mb-3">{member.name}</h3>
+                        <p className="text-muted-foreground text-sm leading-relaxed">
+                          {member.bio}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
+                </ScrollReveal>
               );
             })}
           </div>
@@ -342,49 +360,53 @@ export default async function AboutPage() {
 
       {/* Technologies Section */}
       {content.technologies && content.technologies.length > 0 && (
-        <div className="mb-24">
-          <div className="text-center mb-12">
-            <span className="text-xs font-semibold uppercase tracking-widest text-primary">
-              OUR EXPERTISE
-            </span>
-            <h2 className="text-2xl md:text-3xl font-bold text-foreground mt-3 font-heading">
-              Technologies We Use
-            </h2>
-          </div>
-
-          <div className="premium-glass p-8 rounded-2xl border border-border max-w-4xl mx-auto flex flex-wrap gap-3 justify-center">
-            {content.technologies.map((tech: string, idx: number) => (
-              <span 
-                key={idx}
-                className="px-4 py-2 text-sm font-medium bg-muted text-muted-foreground rounded-xl border border-border/60 hover:border-primary hover:text-foreground transition-all duration-300"
-              >
-                {tech}
+        <ScrollReveal className="w-full mb-24">
+          <div>
+            <div className="text-center mb-12">
+              <span className="text-xs font-semibold uppercase tracking-widest text-primary">
+                OUR EXPERTISE
               </span>
-            ))}
+              <h2 className="text-2xl md:text-3xl font-bold text-foreground mt-3 font-heading">
+                Technologies We Use
+              </h2>
+            </div>
+
+            <div className="premium-glass p-8 rounded-2xl border border-border max-w-4xl mx-auto flex flex-wrap gap-3 justify-center">
+              {content.technologies.map((tech: string, idx: number) => (
+                <span 
+                  key={idx}
+                  className="px-4 py-2 text-sm font-medium bg-muted text-muted-foreground rounded-xl border border-border/60 hover:border-primary hover:text-foreground hover:-translate-y-0.5 transition-all duration-300"
+                >
+                  {tech}
+                </span>
+              ))}
+            </div>
           </div>
-        </div>
+        </ScrollReveal>
       )}
 
       {/* Call to Action Banner */}
-      <div className="premium-glass p-8 md:p-12 rounded-3xl border border-border relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8">
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-cyan-500/5 pointer-events-none" />
-        <div className="max-w-xl z-10 text-center md:text-left">
-          <h3 className="text-2xl md:text-3xl font-extrabold text-foreground font-heading mb-3">
-            {content.cta.title}
-          </h3>
-          <p className="text-muted-foreground text-sm md:text-base leading-relaxed">
-            {content.cta.subtitle}
-          </p>
+      <ScrollReveal className="w-full">
+        <div className="premium-glass p-8 md:p-12 rounded-3xl border border-border relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8 group">
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-cyan-500/5 pointer-events-none" />
+          <div className="max-w-xl z-10 text-center md:text-left">
+            <h3 className="text-2xl md:text-3xl font-extrabold text-foreground font-heading mb-3">
+              {content.cta.title}
+            </h3>
+            <p className="text-muted-foreground text-sm md:text-base leading-relaxed">
+              {content.cta.subtitle}
+            </p>
+          </div>
+          <div className="z-10 w-full md:w-auto">
+            <Link 
+              href="/contact"
+              className="inline-flex items-center justify-center gap-2 w-full md:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold hover:opacity-95 shadow-md shadow-cyan-500/10 hover:shadow-cyan-500/30 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300"
+            >
+              Get in Touch <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+            </Link>
+          </div>
         </div>
-        <div className="z-10 w-full md:w-auto">
-          <Link 
-            href="/contact"
-            className="inline-flex items-center justify-center gap-2 w-full md:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold hover:opacity-95 shadow-md shadow-cyan-500/10 hover:shadow-cyan-500/30 transition-all duration-300"
-          >
-            Get in Touch <ArrowRight className="h-4 w-4" />
-          </Link>
-        </div>
-      </div>
+      </ScrollReveal>
     </div>
   );
 }

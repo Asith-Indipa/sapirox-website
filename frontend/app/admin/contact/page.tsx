@@ -29,7 +29,16 @@ const DEFAULT_CONTACT_CONTENT = {
     linkedin: 'https://linkedin.com/company/sapirox',
     facebook: 'https://facebook.com/sapirox',
     github: 'https://github.com/sapirox',
-  }
+  },
+  projectTypes: [
+    'Web Application',
+    'Mobile Application',
+    'POS / Business System',
+    'SaaS Product',
+    'UI/UX Design',
+    'Custom Software',
+    'Other'
+  ]
 };
 
 type ContactContent = typeof DEFAULT_CONTACT_CONTENT;
@@ -42,6 +51,28 @@ export default function AdminContactPage() {
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   const [content, setContent] = useState<ContactContent>(DEFAULT_CONTACT_CONTENT);
+  const [newProjectType, setNewProjectType] = useState('');
+
+  const handleAddProjectType = () => {
+    const trimmed = newProjectType.trim();
+    if (!trimmed) return;
+    if (content.projectTypes.includes(trimmed)) {
+      alert('This project type already exists.');
+      return;
+    }
+    setContent({
+      ...content,
+      projectTypes: [...content.projectTypes, trimmed]
+    });
+    setNewProjectType('');
+  };
+
+  const handleRemoveProjectType = (typeToRemove: string) => {
+    setContent({
+      ...content,
+      projectTypes: content.projectTypes.filter(t => t !== typeToRemove)
+    });
+  };
 
   useEffect(() => {
     async function init() {
@@ -59,6 +90,7 @@ export default function AdminContactPage() {
             hero: { ...DEFAULT_CONTACT_CONTENT.hero, ...(data.content.hero as any) },
             info: { ...DEFAULT_CONTACT_CONTENT.info, ...(data.content.info as any) },
             socials: { ...DEFAULT_CONTACT_CONTENT.socials, ...(data.content.socials as any) },
+            projectTypes: (data.content.projectTypes as string[]) || DEFAULT_CONTACT_CONTENT.projectTypes,
           });
         }
       } catch {
@@ -294,6 +326,59 @@ export default function AdminContactPage() {
                 className="w-full px-4 py-3 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors" 
               />
             </div>
+          </div>
+        </div>
+
+        {/* ═══ PROJECT TYPES ═══ */}
+        <div className="premium-glass p-8 rounded-3xl border border-border space-y-6">
+          <h2 className="text-xl font-bold text-foreground border-b border-border/40 pb-3 flex items-center gap-2">
+            <MessageSquare className="h-5 w-5 text-primary" /> Contact Inquiry Project Types
+          </h2>
+          <p className="text-xs text-muted-foreground">
+            Manage the list of project type choices available in the contact form dropdown on the public website.
+          </p>
+
+          <div className="space-y-4">
+            <div className="flex gap-2">
+              <input 
+                type="text" 
+                placeholder="e.g. Desktop Application"
+                value={newProjectType}
+                onChange={(e) => setNewProjectType(e.target.value)}
+                className="flex-1 px-4 py-3 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-primary text-sm transition-colors"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleAddProjectType();
+                  }
+                }}
+              />
+              <button
+                type="button"
+                onClick={handleAddProjectType}
+                className="px-5 py-3 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary/90 transition-colors cursor-pointer"
+              >
+                Add Type
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-2">
+              {(content.projectTypes || []).map((type, idx) => (
+                <div key={idx} className="flex items-center justify-between p-3 rounded-xl bg-muted/40 border border-border/60 hover:border-primary/20 transition-all duration-300">
+                  <span className="text-sm text-foreground font-medium">{type}</span>
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveProjectType(type)}
+                    className="text-xs font-bold text-rose-500 hover:text-rose-600 transition-colors px-2 py-1 rounded hover:bg-rose-500/10 cursor-pointer"
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
+            </div>
+            {(!content.projectTypes || content.projectTypes.length === 0) && (
+              <p className="text-sm text-muted-foreground italic">No project types added yet. A default fallback will be used on the site.</p>
+            )}
           </div>
         </div>
 

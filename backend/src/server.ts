@@ -29,5 +29,4 @@ async function bootstrap() {
 }
 
 bootstrap();
-// Trigger reload for connection pooler update
-
+// Trigger reload for direct database connection (port 5432) update

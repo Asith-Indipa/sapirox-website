@@ -4,6 +4,7 @@ import { ItemListSchema } from '@/components/seo';
 import CustomSchema from '@/components/CustomSchema';
 import { getServices, Service, getFullImageUrl } from '@/services/api';
 import { Cpu, Layers, Globe, Shield, Code, Zap, Activity, CheckCircle, ArrowRight, Star } from 'lucide-react';
+import ScrollReveal from '@/components/ScrollReveal';
 
 export const revalidate = 0;
 
@@ -84,18 +85,20 @@ export default async function ServicesPage() {
       <div className="absolute bottom-[10%] right-[5%] w-[350px] h-[350px] rounded-full bg-primary/5 blur-[120px] pointer-events-none" />
 
       {/* Header section */}
-      <div className="max-w-3xl mb-16">
-        <span className="text-xs font-semibold uppercase tracking-wider text-primary bg-primary/10 px-4 py-1.5 rounded-full border border-primary/20">
-          Our Capabilities
-        </span>
-        <h1 className="text-4xl md:text-6xl font-extrabold text-foreground mt-6 mb-6 font-heading tracking-tight leading-tight">
-          Bespoke Tech Services <br />
-          <span className="premium-gradient-text">Engineered for Scale</span>
-        </h1>
-        <p className="text-muted-foreground text-lg leading-relaxed">
-          We architect secure, high-concurrency systems, cloud-ready frameworks, and custom administration software targeted to improve business workflows.
-        </p>
-      </div>
+      <ScrollReveal className="max-w-3xl mb-16">
+        <div>
+          <span className="text-xs font-semibold uppercase tracking-wider text-primary bg-primary/10 px-4 py-1.5 rounded-full border border-primary/20">
+            Our Capabilities
+          </span>
+          <h1 className="text-4xl md:text-6xl font-extrabold text-foreground mt-6 mb-6 font-heading tracking-tight leading-tight">
+            Bespoke Tech Services <br />
+            <span className="premium-gradient-text">Engineered for Scale</span>
+          </h1>
+          <p className="text-muted-foreground text-lg leading-relaxed">
+            We architect secure, high-concurrency systems, cloud-ready frameworks, and custom administration software targeted to improve business workflows.
+          </p>
+        </div>
+      </ScrollReveal>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {isError ? (
@@ -105,61 +108,61 @@ export default async function ServicesPage() {
             </p>
           </div>
         ) : services.length > 0 ? (
-          services.map((service) => (
-            <Link 
-              key={service.id} 
-              href={`/services/${service.slug}`}
-              className="premium-glass rounded-2xl border border-border hover:border-primary/30 hover:shadow-2xl hover:shadow-primary/5 hover:scale-[1.01] group transition-all duration-300 flex flex-col justify-between min-w-0 w-full overflow-hidden"
-            >
-              <div>
-                {/* Thumbnail area with smaller floating icon overlay */}
-                <div className="aspect-video w-full bg-muted/20 flex items-center justify-center relative overflow-hidden border-b border-border/40">
-                  {service.image ? (
-                    <img 
-                      src={getFullImageUrl(service.image)} 
-                      alt={service.title}
-                      className="h-full w-full object-contain group-hover:scale-[1.02] transition-transform duration-500"
-                    />
-                  ) : (
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-blue-500/15" />
-                  )}
+          services.map((service, index) => (
+            <ScrollReveal key={service.id} delayClass={`animation-delay-${(index % 3) * 100}`} className="w-full flex">
+              <Link 
+                href={`/services/${service.slug}`}
+                className="premium-glass rounded-2xl border border-border hover:border-primary/30 hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/5 transition-all duration-300 flex flex-col justify-between min-w-0 w-full overflow-hidden"
+              >
+                <div>
+                  {/* Thumbnail area with smaller floating icon overlay */}
+                  <div className="aspect-video w-full bg-muted/20 flex items-center justify-center relative overflow-hidden border-b border-border/40">
+                    {service.image ? (
+                      <img 
+                        src={getFullImageUrl(service.image)} 
+                        alt={service.title}
+                        className="h-full w-full object-contain group-hover:scale-[1.02] transition-transform duration-500"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-blue-500/15" />
+                    )}
 
-                  {/* Small Icon container floating in bottom-left */}
-                  <div className="absolute bottom-3 left-3 h-10 w-10 rounded-lg bg-background/90 backdrop-blur-sm border border-border/40 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                    {renderIcon(service.icon, "h-5 w-5")}
+                    {/* Small Icon container floating in bottom-left */}
+                    <div className="absolute bottom-3 left-3 h-10 w-10 rounded-lg bg-background/90 backdrop-blur-sm border border-border/40 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                      {renderIcon(service.icon, "h-5 w-5")}
+                    </div>
+
+                    {service.isFeatured && (
+                      <span className="absolute top-3 right-3 inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary/90 backdrop-blur-sm text-white text-[10px] font-bold uppercase tracking-wider shadow-md">
+                        <Star className="h-3 w-3 fill-white" /> Featured
+                      </span>
+                    )}
                   </div>
 
-                  {/* Featured label overlay */}
-                  {service.isFeatured && (
-                    <span className="absolute top-3 right-3 inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-500/90 backdrop-blur-sm text-white text-[10px] font-bold uppercase tracking-wider shadow-md">
-                      <Star className="h-3 w-3 fill-white" /> Featured
-                    </span>
-                  )}
-                </div>
+                  <div className="p-6">
+                    <h2 className="text-xl font-bold text-foreground mb-3 break-words">{service.title}</h2>
+                    <p className="text-muted-foreground text-xs leading-relaxed mb-4 line-clamp-4 break-words">{service.shortDescription}</p>
 
-                <div className="p-6">
-                  <h2 className="text-xl font-bold text-foreground mb-3 break-words">{service.title}</h2>
-                  <p className="text-muted-foreground text-xs leading-relaxed mb-4 line-clamp-4 break-words">{service.shortDescription}</p>
-
-                  <ul className="space-y-2 mb-2">
-                    {service.features.map((feature, idx) => (
-                      <li key={idx} className="flex items-start gap-2 text-[11px] text-muted-foreground">
-                        <CheckCircle className="h-3.5 w-3.5 text-primary shrink-0 mt-0.5" />
-                        <span className="break-words">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
+                    <ul className="space-y-2 mb-2">
+                      {service.features.map((feature, idx) => (
+                        <li key={idx} className="flex items-start gap-2 text-[11px] text-muted-foreground">
+                          <CheckCircle className="h-3.5 w-3.5 text-primary shrink-0 mt-0.5" />
+                          <span className="break-words">{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
-              </div>
-              
-              <div className="px-6 pb-6 pt-2">
-                <div 
-                  className="inline-flex items-center gap-2 text-xs font-semibold text-primary hover:opacity-85 transition-opacity group-hover:translate-x-1 duration-200"
-                >
-                  View Service Details <ArrowRight className="h-3.5 w-3.5" />
+                
+                <div className="px-6 pb-6 pt-2">
+                  <div 
+                    className="inline-flex items-center gap-2 text-xs font-semibold text-primary hover:opacity-85 transition-opacity"
+                  >
+                    View Service Details <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+                  </div>
                 </div>
-              </div>
-            </Link>
+              </Link>
+            </ScrollReveal>
           ))
         ) : (
           <div className="col-span-full py-12 px-6 rounded-2xl border border-border/40 bg-muted/10 text-center premium-glass">

@@ -7,16 +7,8 @@ import {
   MessageCircle 
 } from 'lucide-react';
 import CustomSelect from '@/components/ui/CustomSelect';
+import ScrollReveal from '@/components/ScrollReveal';
 
-const PROJECT_TYPE_OPTIONS = [
-  { value: 'Web Application', label: 'Web Application' },
-  { value: 'Mobile Application', label: 'Mobile Application' },
-  { value: 'POS / Business System', label: 'POS / Business System' },
-  { value: 'SaaS Product', label: 'SaaS Product' },
-  { value: 'UI/UX Design', label: 'UI/UX Design' },
-  { value: 'Custom Software', label: 'Custom Software' },
-  { value: 'Other', label: 'Other' },
-];
 
 const DEFAULT_CONTACT_CONTENT = {
   hero: {
@@ -37,7 +29,16 @@ const DEFAULT_CONTACT_CONTENT = {
     linkedin: '',
     facebook: '',
     github: '',
-  }
+  },
+  projectTypes: [
+    'Web Application',
+    'Mobile Application',
+    'POS / Business System',
+    'SaaS Product',
+    'UI/UX Design',
+    'Custom Software',
+    'Other'
+  ]
 };
 
 type ContactContent = typeof DEFAULT_CONTACT_CONTENT;
@@ -61,11 +62,16 @@ export default function ContactClient() {
       try {
         const data = await getPageContentByName('contact');
         if (data && data.content) {
+          const loadedProjectTypes = (data.content.projectTypes as string[]) || DEFAULT_CONTACT_CONTENT.projectTypes;
           setContent({
             hero: { ...DEFAULT_CONTACT_CONTENT.hero, ...(data.content.hero as any) },
             info: { ...DEFAULT_CONTACT_CONTENT.info, ...(data.content.info as any) },
             socials: { ...DEFAULT_CONTACT_CONTENT.socials, ...(data.content.socials as any) },
+            projectTypes: loadedProjectTypes,
           });
+          if (loadedProjectTypes.length > 0) {
+            setFormData(prev => ({ ...prev, projectType: loadedProjectTypes[0] }));
+          }
         }
       } catch (err) {
         // Fall back silently
@@ -122,7 +128,8 @@ export default function ContactClient() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
         
         {/* Info panel - 5 Columns */}
-        <div className="lg:col-span-5 space-y-8">
+        <ScrollReveal className="lg:col-span-5 w-full">
+          <div className="space-y-8">
           <div>
             <span className="text-xs font-semibold uppercase tracking-wider text-primary bg-primary/10 px-4 py-1.5 rounded-full border border-primary/20">
               {content.hero.sectionTitle}
@@ -260,12 +267,14 @@ export default function ContactClient() {
             )}
           </div>
         </div>
+      </ScrollReveal>
 
         {/* Form Panel - 7 Columns */}
-        <div className="lg:col-span-7 premium-glass p-8 md:p-10 rounded-3xl border border-border shadow-xl">
-          <h2 className="text-2xl font-bold text-foreground mb-6 flex items-center gap-2">
-            <MessageSquare className="h-6 w-6 text-primary" /> Project Inquiry Form
-          </h2>
+        <ScrollReveal className="lg:col-span-7 w-full" delayClass="animation-delay-200">
+          <div className="premium-glass p-8 md:p-10 rounded-3xl border border-border shadow-xl">
+            <h2 className="text-2xl font-bold text-foreground mb-6 flex items-center gap-2">
+              <MessageSquare className="h-6 w-6 text-primary" /> Project Inquiry Form
+            </h2>
           
           {formStatus.type && (
             <div className={`p-4 rounded-xl mb-6 text-sm border ${
@@ -318,7 +327,7 @@ export default function ContactClient() {
               <div className="space-y-2">
                 <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider">Project Type *</label>
                 <CustomSelect
-                  options={PROJECT_TYPE_OPTIONS}
+                  options={(content.projectTypes || DEFAULT_CONTACT_CONTENT.projectTypes).map(t => ({ value: t, label: t }))}
                   value={formData.projectType}
                   onChange={(val) => setFormData({ ...formData, projectType: val })}
                 />
@@ -365,12 +374,13 @@ export default function ContactClient() {
             <button 
               type="submit" 
               disabled={isSubmitting || !agreed}
-              className="w-full py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold flex items-center justify-center gap-2 hover:opacity-95 disabled:opacity-30 transition-all duration-300 shadow-lg shadow-cyan-500/10 cursor-pointer"
+              className="w-full py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold flex items-center justify-center gap-2 hover:opacity-95 disabled:opacity-30 hover:scale-[1.01] active:scale-[0.99] transition-all duration-300 shadow-lg shadow-cyan-500/10 cursor-pointer group"
             >
-              {isSubmitting ? 'Submitting Message...' : 'Send Message'} <Send className="h-4 w-4" />
+              {isSubmitting ? 'Submitting Message...' : 'Send Message'} <Send className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
             </button>
           </form>
         </div>
+        </ScrollReveal>
 
       </div>
 

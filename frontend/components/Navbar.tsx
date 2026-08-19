@@ -10,6 +10,8 @@ export default function Navbar() {
   const [theme, setTheme] = useState<string | null>(null);
   const pathname = usePathname();
 
+  const [isScrolled, setIsScrolled] = useState(false);
+
   useEffect(() => {
     // Check initial theme from document class
     if (document.documentElement.classList.contains('dark')) {
@@ -17,6 +19,12 @@ export default function Navbar() {
     } else {
       setTheme('light');
     }
+
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const toggleTheme = () => {
@@ -43,8 +51,14 @@ export default function Navbar() {
   const isActive = (path: string) => pathname?.startsWith(path);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur-md transition-colors duration-300">
-      <div className="max-w-[1536px] mx-auto px-6 md:px-12 lg:px-20 h-20 flex items-center justify-between">
+    <header className={`sticky top-0 z-50 w-full border-b transition-all duration-300 ${
+      isScrolled 
+        ? 'border-border/60 bg-background/90 backdrop-blur-lg shadow-sm shadow-primary/5 py-1' 
+        : 'border-border/40 bg-background/95 backdrop-blur-md py-3'
+    }`}>
+      <div className={`max-w-[1536px] mx-auto px-6 md:px-12 lg:px-20 flex items-center justify-between transition-all duration-300 ${
+        isScrolled ? 'h-14' : 'h-20'
+      }`}>
         
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3">
@@ -64,9 +78,9 @@ export default function Navbar() {
             <Link 
               key={link.name} 
               href={link.href} 
-              className={`transition-colors py-2 ${
+              className={`transition-colors py-1 nav-link-underline ${
                 isActive(link.href) 
-                  ? 'text-primary font-semibold' 
+                  ? 'text-primary font-semibold active' 
                   : 'text-muted-foreground hover:text-foreground'
               }`}
             >

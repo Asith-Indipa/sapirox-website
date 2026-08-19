@@ -41,7 +41,8 @@ export const getPublicBlogs = async (req: Request, res: Response): Promise<void>
         totalPages: Math.ceil(total / Number(limit)),
       },
     });
-  } catch (error) {
+  } catch (error: any) {
+    console.error("Error in getPublicBlogs:", error);
     res.status(500).json({ success: false, message: 'Failed to fetch blogs.' });
   }
 };

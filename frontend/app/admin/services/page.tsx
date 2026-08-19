@@ -253,7 +253,7 @@ export default function AdminServicesPage() {
                         <span className="flex items-center gap-2">
                           {service.title}
                           {service.isFeatured && (
-                            <Star className="h-3.5 w-3.5 text-amber-400 fill-amber-400" />
+                            <Star className="h-3.5 w-3.5 text-primary fill-primary" />
                           )}
                         </span>
                       </td>
@@ -276,7 +276,7 @@ export default function AdminServicesPage() {
                         <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold border ${
                           service.status === 'PUBLISHED' 
                             ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20' 
-                            : 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20'
+                            : 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/20'
                         }`}>
                           {service.status || 'DRAFT'}
                         </span>
@@ -429,7 +429,7 @@ export default function AdminServicesPage() {
                     onClick={() => setFormData({ ...formData, isFeatured: !formData.isFeatured })}
                     className={`relative inline-flex h-7 w-12 shrink-0 items-center rounded-full border-2 transition-colors duration-200 focus:outline-none cursor-pointer ${
                       formData.isFeatured
-                        ? 'bg-amber-500 border-amber-500'
+                        ? 'bg-primary border-primary'
                         : 'bg-muted border-border'
                     }`}
                   >

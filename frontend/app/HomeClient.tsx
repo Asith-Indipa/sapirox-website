@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { 
   submitContact,
@@ -9,7 +9,8 @@ import {
   Project,
   Blog,
   Testimonial,
-  getFullImageUrl
+  getFullImageUrl,
+  getPageContentByName
 } from '../services/api';
 import { 
   ArrowRight, 
@@ -26,16 +27,10 @@ import {
   Star
 } from 'lucide-react';
 import CustomSelect from '@/components/ui/CustomSelect';
+import ScrollReveal from '@/components/ScrollReveal';
+import ParticleCanvas from '@/components/ParticleCanvas';
 
-const PROJECT_TYPE_OPTIONS = [
-  { value: 'Web Application', label: 'Web Application' },
-  { value: 'Mobile Application', label: 'Mobile Application' },
-  { value: 'POS / Business System', label: 'POS / Business System' },
-  { value: 'SaaS Product', label: 'SaaS Product' },
-  { value: 'UI/UX Design', label: 'UI/UX Design' },
-  { value: 'Custom Software', label: 'Custom Software' },
-  { value: 'Other', label: 'Other' },
-];
+
 
 interface HomeClientProps {
   initialServices: Service[];
@@ -71,6 +66,33 @@ export default function HomeClient({
   const [projects, setProjects] = useState<Project[]>(initialProjects);
   const [blogs, setBlogs] = useState<Blog[]>(initialBlogs);
   const [testimonials, setTestimonials] = useState<Testimonial[]>(initialTestimonials);
+  const [projectTypes, setProjectTypes] = useState<string[]>([
+    'Web Application',
+    'Mobile Application',
+    'POS / Business System',
+    'SaaS Product',
+    'UI/UX Design',
+    'Custom Software',
+    'Other'
+  ]);
+
+  useEffect(() => {
+    async function loadContactTypes() {
+      try {
+        const data = await getPageContentByName('contact');
+        if (data && data.content && Array.isArray(data.content.projectTypes)) {
+          const loaded = data.content.projectTypes as string[];
+          setProjectTypes(loaded);
+          if (loaded.length > 0) {
+            setFormData(prev => ({ ...prev, projectType: loaded[0] }));
+          }
+        }
+      } catch (err) {
+        // Fall back silently
+      }
+    }
+    loadContactTypes();
+  }, []);
 
   const visibleProducts = products.filter(p => p.showOnHomepage !== false);
   const visibleProjects = projects.filter(p => p.showOnHomepage !== false);
@@ -146,36 +168,41 @@ export default function HomeClient({
       
       {/* ── Background decoration / Glow grids ─────────────────────────────────── */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[600px] pointer-events-none overflow-hidden opacity-30">
-        <div className="absolute -top-[20%] left-[20%] w-[500px] h-[500px] rounded-full bg-blue-600/20 dark:bg-blue-600/30 blur-[130px]" />
-        <div className="absolute -top-[10%] right-[10%] w-[400px] h-[400px] rounded-full bg-cyan-500/15 dark:bg-cyan-500/20 blur-[120px]" />
+        <div className="absolute -top-[20%] left-[20%] w-[500px] h-[500px] rounded-full bg-blue-600/20 dark:bg-blue-600/30 blur-[130px] animate-orb-float" />
+        <div className="absolute -top-[10%] right-[10%] w-[400px] h-[400px] rounded-full bg-cyan-500/15 dark:bg-cyan-500/20 blur-[120px] animate-orb-float-reverse" />
         <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-20" />
+      </div>
+
+      {/* Interactive Mouse-Reactive Particle Canvas */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[600px] pointer-events-none overflow-hidden">
+        <ParticleCanvas />
       </div>
 
       {/* ── HERO SECTION ────────────────────────────────────────────────────────── */}
       <section className="relative pt-32 pb-24 px-6 max-w-7xl mx-auto flex flex-col items-center text-center">
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-semibold uppercase tracking-wider mb-8">
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-semibold uppercase tracking-wider mb-8 animate-fade-in-up">
           <Zap className="h-3 w-3" /> Enterprise Grade IT Solutions
         </div>
         
-        <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-foreground max-w-5xl leading-tight mb-8 font-heading">
+        <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-foreground max-w-5xl leading-tight mb-8 font-heading animate-fade-in-up animation-delay-100">
           Next-Gen Software for <br />
           <span className="premium-gradient-text">Modern Enterprise Growth</span>
         </h1>
         
-        <p className="text-lg md:text-xl text-muted-foreground max-w-3xl leading-relaxed mb-12">
+        <p className="text-lg md:text-xl text-muted-foreground max-w-3xl leading-relaxed mb-12 animate-fade-in-up animation-delay-200">
           At Sapirox, we engineer scalable web solutions, custom CMS platforms, internal administration software, and business-focused applications designed to accelerate productivity and technology adoption.
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
+        <div className="flex flex-col sm:flex-row gap-4 items-center justify-center animate-fade-in-up animation-delay-300">
           <a 
             href="#contact" 
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold hover:opacity-95 shadow-lg shadow-cyan-500/15 hover:scale-[1.02] transition-all duration-300"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold hover:opacity-95 shadow-lg shadow-cyan-500/15 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 group"
           >
-            Launch Project <ArrowRight className="h-5 w-5" />
+            Launch Project <ArrowRight className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
           </a>
           <a 
             href="#products" 
-            className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 rounded-xl bg-muted hover:bg-muted/80 border border-border text-foreground font-semibold hover:scale-[1.02] transition-all duration-300"
+            className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 rounded-xl bg-muted hover:bg-muted/80 border border-border text-foreground font-semibold hover:scale-[1.02] active:scale-[0.98] transition-all duration-300"
           >
             Explore Products
           </a>
@@ -204,65 +231,65 @@ export default function HomeClient({
               </p>
             </div>
           ) : services.filter(s => s.showOnHomepage !== false).length > 0 ? (
-            services.filter(s => s.showOnHomepage !== false).map((service) => (
-              <Link 
-                key={service.id} 
-                href={`/services/${service.slug}`}
-                className={`premium-glass rounded-2xl border hover:shadow-2xl hover:shadow-primary/5 hover:scale-[1.01] group transition-all duration-300 flex flex-col justify-between min-w-0 w-full overflow-hidden ${
-                  service.isFeatured 
-                    ? 'border-primary/45 ring-1 ring-primary/20' 
-                    : 'border-border hover:border-primary/30'
-                }`}
-              >
-                <div>
-                  {/* Thumbnail area with smaller floating icon overlay */}
-                  <div className="aspect-video w-full bg-muted/20 flex items-center justify-center relative overflow-hidden border-b border-border/40">
-                    {service.image ? (
-                      <img 
-                        src={getFullImageUrl(service.image)} 
-                        alt={service.title}
-                        className="h-full w-full object-contain group-hover:scale-[1.02] transition-transform duration-500"
-                      />
-                    ) : (
-                      <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-blue-500/15" />
-                    )}
+            services.filter(s => s.showOnHomepage !== false).map((service, index) => (
+              <ScrollReveal key={service.id} delayClass={`animation-delay-${(index % 3) * 100}`} className="w-full flex">
+                <Link 
+                  href={`/services/${service.slug}`}
+                  className={`premium-glass rounded-2xl border hover:shadow-2xl hover:shadow-primary/5 hover:-translate-y-1 group transition-all duration-300 flex flex-col justify-between min-w-0 w-full overflow-hidden ${
+                    service.isFeatured 
+                      ? 'border-primary/45 ring-1 ring-primary/20' 
+                      : 'border-border hover:border-primary/30'
+                  }`}
+                >
+                  <div>
+                    {/* Thumbnail area with smaller floating icon overlay */}
+                    <div className="aspect-video w-full bg-muted/20 flex items-center justify-center relative overflow-hidden border-b border-border/40">
+                      {service.image ? (
+                        <img 
+                          src={getFullImageUrl(service.image)} 
+                          alt={service.title}
+                          className="h-full w-full object-contain group-hover:scale-[1.02] transition-transform duration-500"
+                        />
+                      ) : (
+                        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-blue-500/15" />
+                      )}
 
-                    {/* Small Icon container floating in bottom-left */}
-                    <div className="absolute bottom-3 left-3 h-10 w-10 rounded-lg bg-background/90 backdrop-blur-sm border border-border/40 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                      {renderIcon(service.icon, "h-5 w-5")}
+                      {/* Small Icon container floating in bottom-left */}
+                      <div className="absolute bottom-3 left-3 h-10 w-10 rounded-lg bg-background/90 backdrop-blur-sm border border-border/40 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                        {renderIcon(service.icon, "h-5 w-5")}
+                      </div>
+
+                      {service.isFeatured && (
+                        <span className="absolute top-3 right-3 inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary/90 backdrop-blur-sm text-white text-[10px] font-bold uppercase tracking-wider shadow-md">
+                          <Star className="h-3 w-3 fill-white" /> Featured
+                        </span>
+                      )}
                     </div>
 
-                    {/* Featured label overlay */}
-                    {service.isFeatured && (
-                      <span className="absolute top-3 right-3 inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-500/90 backdrop-blur-sm text-white text-[10px] font-bold uppercase tracking-wider shadow-md">
-                        <Star className="h-3 w-3 fill-white" /> Featured
-                      </span>
-                    )}
+                    <div className="p-6">
+                      <h3 className="text-xl font-bold text-foreground mb-3 break-words">{service.title}</h3>
+                      <p className="text-muted-foreground leading-relaxed mb-4 text-xs break-words">{service.shortDescription}</p>
+
+                      <ul className="space-y-2 mb-2">
+                        {service.features.slice(0, 3).map((feature, idx) => (
+                          <li key={idx} className="flex items-start gap-2 text-[11px] text-muted-foreground">
+                            <CheckCircle className="h-3.5 w-3.5 text-primary shrink-0 mt-0.5" />
+                            <span className="break-words">{feature}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   </div>
 
-                  <div className="p-6">
-                    <h3 className="text-xl font-bold text-foreground mb-3 break-words">{service.title}</h3>
-                    <p className="text-muted-foreground leading-relaxed mb-4 text-xs break-words">{service.shortDescription}</p>
-
-                    <ul className="space-y-2 mb-2">
-                      {service.features.slice(0, 3).map((feature, idx) => (
-                        <li key={idx} className="flex items-start gap-2 text-[11px] text-muted-foreground">
-                          <CheckCircle className="h-3.5 w-3.5 text-primary shrink-0 mt-0.5" />
-                          <span className="break-words">{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
+                  <div className="px-6 pb-6 pt-2">
+                    <div 
+                      className="inline-flex items-center gap-2 text-xs font-semibold text-primary hover:opacity-85 transition-opacity"
+                    >
+                      View Service Details <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+                    </div>
                   </div>
-                </div>
-
-                <div className="px-6 pb-6 pt-2">
-                  <div 
-                    className="inline-flex items-center gap-2 text-xs font-semibold text-primary hover:opacity-85 transition-opacity group-hover:translate-x-1 duration-200"
-                  >
-                    View Service Details <ArrowRight className="h-3.5 w-3.5" />
-                  </div>
-                </div>
-              </Link>
+                </Link>
+              </ScrollReveal>
             ))
           ) : (
             <div className="col-span-full py-12 px-6 rounded-2xl border border-border/40 bg-muted/10 text-center premium-glass">
@@ -297,69 +324,70 @@ export default function HomeClient({
                 </p>
               </div>
             ) : visibleProducts.length > 0 ? (
-              visibleProducts.map((prod) => (
-                <Link 
-                  key={prod.id} 
-                  href={`/products/${prod.slug}`}
-                  className="premium-glass rounded-2xl overflow-hidden border border-border flex flex-col justify-between hover:border-primary/30 hover:scale-[1.01] transition-all duration-300 group"
-                >
-                  <div>
-                    {/* Thumbnail area */}
-                    <div className="aspect-video w-full bg-muted flex items-center justify-center relative overflow-hidden">
-                      {prod.productImage ? (
-                        <img 
-                          src={getFullImageUrl(prod.productImage)} 
-                          alt={prod.name}
-                          className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-550"
-                        />
-                      ) : (
-                        <>
-                          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-indigo-500/15" />
-                          <Code className="h-10 w-10 text-primary/45 group-hover:scale-105 transition-transform duration-300" />
-                        </>
-                      )}
-                    </div>
-
-                    <div className="p-6">
-                      <div className="flex items-center gap-2 mb-6">
-                        <span className={`inline-block px-3 py-1 rounded-full text-[10px] md:text-xs font-bold uppercase border ${
-                          prod.status === 'AVAILABLE' 
-                            ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
-                            : prod.status === 'BETA'
-                            ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20'
-                            : 'bg-primary/10 text-primary border-primary/20'
-                        }`}>
-                          {prod.status.replace('_', ' ')}
-                        </span>
-                        {prod.category && (
-                          <span className="inline-block px-3 py-1 rounded-full text-[10px] md:text-xs font-bold uppercase bg-primary/10 text-primary border border-primary/20">
-                            {prod.category}
-                          </span>
+              visibleProducts.map((prod, index) => (
+                <ScrollReveal key={prod.id} delayClass={`animation-delay-${(index % 3) * 100}`} className="w-full flex">
+                  <Link 
+                    href={`/products/${prod.slug}`}
+                    className="premium-glass rounded-2xl overflow-hidden border border-border flex flex-col justify-between hover:border-primary/30 hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/5 transition-all duration-300 group w-full"
+                  >
+                    <div>
+                      {/* Thumbnail area */}
+                      <div className="aspect-video w-full bg-muted flex items-center justify-center relative overflow-hidden">
+                        {prod.productImage ? (
+                          <img 
+                            src={getFullImageUrl(prod.productImage)} 
+                            alt={prod.name}
+                            className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-550"
+                          />
+                        ) : (
+                          <>
+                            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-indigo-500/15" />
+                            <Code className="h-10 w-10 text-primary/45 group-hover:scale-105 transition-transform duration-300" />
+                          </>
                         )}
                       </div>
-                      
-                      <h3 className="text-2xl font-bold text-foreground mb-4 group-hover:text-primary transition-colors">{prod.name}</h3>
-                      <p className="text-muted-foreground text-sm leading-relaxed mb-6 line-clamp-3">{prod.shortDescription}</p>
-                      
-                      <div className="flex flex-wrap gap-2 mb-6">
-                        {prod.technology.map((tech, idx) => (
-                          <span key={idx} className="text-xs px-2.5 py-1 rounded-full bg-muted text-muted-foreground border border-border/40 dark:border-muted-foreground/25 dark:bg-muted/30">
-                            {tech}
+
+                      <div className="p-6">
+                        <div className="flex items-center gap-2 mb-6">
+                          <span className={`inline-block px-3 py-1 rounded-full text-[10px] md:text-xs font-bold uppercase border ${
+                            prod.status === 'AVAILABLE' 
+                              ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
+                              : prod.status === 'BETA'
+                              ? 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border-cyan-500/20'
+                              : 'bg-primary/10 text-primary border-primary/20'
+                          }`}>
+                            {prod.status.replace('_', ' ')}
                           </span>
-                        ))}
+                          {prod.category && (
+                            <span className="inline-block px-3 py-1 rounded-full text-[10px] md:text-xs font-bold uppercase bg-primary/10 text-primary border border-primary/20">
+                              {prod.category}
+                            </span>
+                          )}
+                        </div>
+                        
+                        <h3 className="text-2xl font-bold text-foreground mb-4 group-hover:text-primary transition-colors">{prod.name}</h3>
+                        <p className="text-muted-foreground text-sm leading-relaxed mb-6 line-clamp-3">{prod.shortDescription}</p>
+                        
+                        <div className="flex flex-wrap gap-2 mb-6">
+                          {prod.technology.map((tech, idx) => (
+                            <span key={idx} className="text-xs px-2.5 py-1 rounded-full bg-muted text-muted-foreground border border-border/40 dark:border-muted-foreground/25 dark:bg-muted/30">
+                              {tech}
+                            </span>
+                          ))}
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div className="p-6 bg-muted/40 border-t border-border/40 flex items-center justify-between">
-                    <span className="text-sm font-medium text-muted-foreground group-hover:text-primary transition-colors">
-                      Ready to learn more?
-                    </span>
-                    <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-sm font-semibold transition-all duration-300 shadow-md shadow-cyan-500/10">
-                      {prod.ctaText || 'Learn More'} <ArrowRight className="h-4 w-4" />
+                    <div className="p-6 bg-muted/40 border-t border-border/40 flex items-center justify-between">
+                      <span className="text-sm font-medium text-muted-foreground group-hover:text-primary transition-colors">
+                        Ready to learn more?
+                      </span>
+                      <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-sm font-semibold transition-all duration-300 shadow-md shadow-cyan-500/10">
+                        {prod.ctaText || 'Learn More'} <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                      </div>
                     </div>
-                  </div>
-                </Link>
+                  </Link>
+                </ScrollReveal>
               ))
             ) : (
               <div className="col-span-full py-12 px-6 rounded-2xl border border-border/40 bg-muted/10 text-center premium-glass">
@@ -394,46 +422,47 @@ export default function HomeClient({
               </p>
             </div>
           ) : visibleProjects.length > 0 ? (
-            visibleProjects.map((proj) => (
-              <Link 
-                key={proj.id} 
-                href={`/portfolio/${proj.slug}`}
-                className="premium-glass rounded-2xl overflow-hidden border border-border flex flex-col justify-between group hover:border-primary/30 hover:scale-[1.01] transition-all duration-300"
-              >
-                <div>
-                  <div className="w-full aspect-video bg-muted/20 flex items-center justify-center relative overflow-hidden border-b border-border/40">
-                    {proj.coverImage ? (
-                      <img 
-                        src={getFullImageUrl(proj.coverImage)} 
-                        alt={proj.title}
-                        className="h-full w-full object-contain group-hover:scale-[1.02] transition-transform duration-550"
-                      />
-                    ) : (
-                      <>
-                        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-indigo-500/15" />
-                        <Code className="h-10 w-10 text-primary group-hover:scale-110 transition-transform duration-300" />
-                      </>
-                    )}
-                  </div>
-                  <div className="p-6">
-                    <span className="text-xs font-semibold text-primary uppercase tracking-widest">{proj.category}</span>
-                    <h3 className="text-xl font-bold text-foreground mt-2 mb-3 group-hover:text-primary transition-colors">{proj.title}</h3>
-                    <p className="text-muted-foreground text-xs leading-relaxed mb-4 line-clamp-3">{proj.description}</p>
-                    <div className="flex flex-wrap gap-1.5">
-                      {proj.technology.map((tech, idx) => (
-                        <span key={idx} className="text-[10px] px-2 py-0.5 rounded bg-muted text-muted-foreground border border-border/40 dark:border-muted-foreground/25 dark:bg-muted/30">
-                          {tech}
-                        </span>
-                      ))}
+            visibleProjects.map((proj, index) => (
+              <ScrollReveal key={proj.id} delayClass={`animation-delay-${(index % 3) * 100}`} className="w-full flex">
+                <Link 
+                  href={`/portfolio/${proj.slug}`}
+                  className="premium-glass rounded-2xl overflow-hidden border border-border flex flex-col justify-between hover:border-primary/30 hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/5 transition-all duration-300 group w-full"
+                >
+                  <div>
+                    <div className="w-full aspect-video bg-muted/20 flex items-center justify-center relative overflow-hidden border-b border-border/40">
+                      {proj.coverImage ? (
+                        <img 
+                          src={getFullImageUrl(proj.coverImage)} 
+                          alt={proj.title}
+                          className="h-full w-full object-contain group-hover:scale-[1.02] transition-transform duration-550"
+                        />
+                      ) : (
+                        <>
+                          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-indigo-500/15" />
+                          <Code className="h-10 w-10 text-primary group-hover:scale-110 transition-transform duration-300" />
+                        </>
+                      )}
+                    </div>
+                    <div className="p-6">
+                      <span className="text-xs font-semibold text-primary uppercase tracking-widest">{proj.category}</span>
+                      <h3 className="text-xl font-bold text-foreground mt-2 mb-3 group-hover:text-primary transition-colors">{proj.title}</h3>
+                      <p className="text-muted-foreground text-xs leading-relaxed mb-4 line-clamp-3">{proj.description}</p>
+                      <div className="flex flex-wrap gap-1.5">
+                        {proj.technology.map((tech, idx) => (
+                          <span key={idx} className="text-[10px] px-2 py-0.5 rounded bg-muted text-muted-foreground border border-border/40 dark:border-muted-foreground/25 dark:bg-muted/30">
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className="p-6 bg-muted/40 border-t border-border/40 flex items-center justify-between text-xs text-muted-foreground">
-                  <span className="font-semibold text-foreground group-hover:text-primary transition-colors flex items-center gap-1.5">
-                    Read More <ArrowRight className="h-3.5 w-3.5" />
-                  </span>
-                </div>
-              </Link>
+                  <div className="p-6 bg-muted/40 border-t border-border/40 flex items-center justify-between text-xs text-muted-foreground">
+                    <span className="font-semibold text-foreground group-hover:text-primary transition-colors flex items-center gap-1.5">
+                      Read More <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+                    </span>
+                  </div>
+                </Link>
+              </ScrollReveal>
             ))
           ) : (
             <div className="col-span-full py-12 px-6 rounded-2xl border border-border/40 bg-muted/10 text-center premium-glass">
@@ -468,40 +497,41 @@ export default function HomeClient({
                 </p>
               </div>
             ) : visibleBlogs.length > 0 ? (
-              visibleBlogs.map((blog) => (
-                <Link 
-                  key={blog.id} 
-                  href={`/blog/${blog.slug}`}
-                  className="premium-glass rounded-2xl overflow-hidden border border-border flex flex-col justify-between group hover:border-primary/30 hover:scale-[1.01] transition-all duration-300"
-                >
-                  <div>
-                    <div className="relative w-full aspect-video overflow-hidden border-b border-border/40 bg-muted/20 flex items-center justify-center">
-                      <img 
-                        src={getFullImageUrl(blog.coverImage) || 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80'} 
-                        alt={blog.coverImageAlt || blog.title} 
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80';
-                        }}
-                        className="w-full h-full object-contain group-hover:scale-[1.02] transition-transform duration-505 block"
-                      />
+              visibleBlogs.map((blog, index) => (
+                <ScrollReveal key={blog.id} delayClass={`animation-delay-${(index % 3) * 100}`} className="w-full flex">
+                  <Link 
+                    href={`/blog/${blog.slug}`}
+                    className="premium-glass rounded-2xl overflow-hidden border border-border flex flex-col justify-between hover:border-primary/30 hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/5 transition-all duration-300 group w-full"
+                  >
+                    <div>
+                      <div className="relative w-full aspect-video overflow-hidden border-b border-border/40 bg-muted/20 flex items-center justify-center">
+                        <img 
+                          src={getFullImageUrl(blog.coverImage) || 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80'} 
+                          alt={blog.coverImageAlt || blog.title} 
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80';
+                          }}
+                          className="w-full h-full object-contain group-hover:scale-[1.02] transition-transform duration-505 block"
+                        />
+                      </div>
+                      <div className="p-6">
+                        <span className="text-xs text-primary font-semibold uppercase tracking-wider">{blog.category?.name || 'Technology'}</span>
+                        <h3 className="text-lg font-bold text-foreground mt-3 mb-3 group-hover:text-primary transition-colors leading-snug break-words">
+                          {blog.title}
+                        </h3>
+                        <p className="text-muted-foreground text-xs leading-relaxed line-clamp-3 mb-4 break-words">
+                          {blog.excerpt || (blog.content ? blog.content.substring(0, 160) + '...' : '')}
+                        </p>
+                      </div>
                     </div>
-                    <div className="p-6">
-                      <span className="text-xs text-primary font-semibold uppercase tracking-wider">{blog.category?.name || 'Technology'}</span>
-                      <h3 className="text-lg font-bold text-foreground mt-3 mb-3 group-hover:text-primary transition-colors leading-snug break-words">
-                        {blog.title}
-                      </h3>
-                      <p className="text-muted-foreground text-xs leading-relaxed line-clamp-3 mb-4 break-words">
-                        {blog.excerpt || (blog.content ? blog.content.substring(0, 160) + '...' : '')}
-                      </p>
+                    <div className="p-6 bg-muted/40 border-t border-border/40 flex items-center justify-between text-xs text-muted-foreground">
+                      <span>{blog.publishedDate ? new Date(blog.publishedDate).toLocaleDateString() : 'Draft'}</span>
+                      <span className="font-semibold text-foreground group-hover:text-primary transition-colors flex items-center gap-1.5">
+                        Read Full <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+                      </span>
                     </div>
-                  </div>
-                  <div className="p-6 bg-muted/40 border-t border-border/40 flex items-center justify-between text-xs text-muted-foreground">
-                    <span>{blog.publishedDate ? new Date(blog.publishedDate).toLocaleDateString() : 'Draft'}</span>
-                    <span className="font-semibold text-foreground group-hover:text-primary transition-colors flex items-center gap-1.5">
-                      Read Full <ArrowRight className="h-3.5 w-3.5" />
-                    </span>
-                  </div>
-                </Link>
+                  </Link>
+                </ScrollReveal>
               ))
             ) : (
               <div className="col-span-full py-12 px-6 rounded-2xl border border-border/40 bg-muted/10 text-center premium-glass">
@@ -560,30 +590,33 @@ export default function HomeClient({
         <div className="absolute top-[10%] left-[10%] w-[300px] h-[300px] rounded-full bg-primary/5 blur-[90px] pointer-events-none" />
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
           
-          <div>
-            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6 font-heading">
-              Ready to engineer your <br />
-              <span className="premium-gradient-text">next business application?</span>
-            </h2>
-            <p className="text-muted-foreground leading-relaxed mb-8">
-              Send us a direct message outlining your target deliverables, key system modules, and schedule. One of our lead software engineers will reply with a detailed system architecture proposal within 24 hours.
-            </p>
-            <div className="space-y-4">
-              <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                <MessageSquare className="h-5 w-5 text-primary" />
-                <span>support@sapirox.com</span>
-              </div>
-              <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                <Globe className="h-5 w-5 text-primary" />
-                <span>Colombo, Sri Lanka (Remote Worldwide Support)</span>
+          <ScrollReveal>
+            <div>
+              <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6 font-heading">
+                Ready to engineer your <br />
+                <span className="premium-gradient-text">next business application?</span>
+              </h2>
+              <p className="text-muted-foreground leading-relaxed mb-8">
+                Send us a direct message outlining your target deliverables, key system modules, and schedule. One of our lead software engineers will reply with a detailed system architecture proposal within 24 hours.
+              </p>
+              <div className="space-y-4">
+                <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                  <MessageSquare className="h-5 w-5 text-primary" />
+                  <span>support@sapirox.com</span>
+                </div>
+                <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                  <Globe className="h-5 w-5 text-primary" />
+                  <span>Colombo, Sri Lanka (Remote Worldwide Support)</span>
+                </div>
               </div>
             </div>
-          </div>
+          </ScrollReveal>
 
-          <div className="premium-glass p-8 md:p-10 rounded-3xl border border-border shadow-xl">
-            <h3 className="text-xl font-bold text-foreground mb-6 flex items-center gap-2">
-              <MessageSquare className="h-6 w-6 text-primary" /> Project Inquiry Form
-            </h3>
+          <ScrollReveal delayClass="animation-delay-200" className="w-full">
+            <div className="premium-glass p-8 md:p-10 rounded-3xl border border-border shadow-xl">
+              <h3 className="text-xl font-bold text-foreground mb-6 flex items-center gap-2">
+                <MessageSquare className="h-6 w-6 text-primary" /> Project Inquiry Form
+              </h3>
             
             {formStatus.type && (
               <div className={`p-4 rounded-xl mb-6 text-sm border ${
@@ -636,7 +669,7 @@ export default function HomeClient({
                 <div className="space-y-2">
                   <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider">Project Type *</label>
                   <CustomSelect
-                    options={PROJECT_TYPE_OPTIONS}
+                    options={projectTypes.map(t => ({ value: t, label: t }))}
                     value={formData.projectType}
                     onChange={(val) => setFormData({ ...formData, projectType: val })}
                   />
@@ -683,12 +716,13 @@ export default function HomeClient({
               <button 
                 type="submit" 
                 disabled={isSubmitting || !agreed}
-                className="w-full py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold flex items-center justify-center gap-2 hover:opacity-95 disabled:opacity-30 transition-all duration-300 shadow-lg shadow-cyan-500/10 cursor-pointer"
+                className="w-full py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold flex items-center justify-center gap-2 hover:opacity-95 disabled:opacity-30 hover:scale-[1.01] active:scale-[0.99] transition-all duration-300 shadow-lg shadow-cyan-500/10 cursor-pointer group"
               >
-                {isSubmitting ? 'Submitting Message...' : 'Send Message'} <Send className="h-4 w-4" />
+                {isSubmitting ? 'Submitting Message...' : 'Send Message'} <Send className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
               </button>
             </form>
           </div>
+          </ScrollReveal>
 
         </div>
       </section>

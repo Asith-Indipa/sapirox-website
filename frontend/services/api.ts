@@ -35,6 +35,7 @@ export async function apiFetch<T>(endpoint: string, options: ApiRequestInit = {}
   }
 
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    cache: 'no-store',
     ...options,
     body: bodyInit,
     headers,

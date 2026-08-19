@@ -339,7 +339,7 @@ export default function AdminPortfolioPage() {
                             <span className={`inline-block w-fit mt-1.5 text-[9px] px-2 py-0.5 rounded font-bold uppercase tracking-wider ${
                               proj.status === 'PUBLISHED'
                                 ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
-                                : 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20'
+                                : 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20'
                             }`}>
                               {proj.status}
                             </span>
