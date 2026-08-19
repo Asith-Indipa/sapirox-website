@@ -3,6 +3,7 @@ import { Outfit, Geist } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import FloatingWhatsApp from "@/components/FloatingWhatsApp";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import Script from "next/script";
 import "./globals.css";
 
@@ -24,7 +25,11 @@ export const metadata: Metadata = {
   authors: [{ name: "Sapirox Dev Team" }],
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html
       lang="en"
@@ -49,12 +54,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         />
       </head>
       <body className="min-h-full flex flex-col bg-background text-foreground selection:bg-primary/20 selection:text-primary overflow-x-hidden transition-colors duration-300">
-        <Navbar />
-        <main className="flex-1 flex flex-col">
-          {children}
-        </main>
-        <Footer />
-        <FloatingWhatsApp />
+        <TooltipProvider>
+          <Navbar />
+          <main className="flex-1 flex flex-col pt-20 md:pt-10">
+            {children}
+          </main>
+          <Footer />
+          <FloatingWhatsApp />
+        </TooltipProvider>
       </body>
     </html>
   );

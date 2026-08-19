@@ -1,163 +1,189 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { Menu, X, Sun, Moon } from 'lucide-react';
+import React, { useCallback, useEffect, useState } from "react";
+import Link from "next/link";
+import Logo from "@/assets/logo/logo";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+} from "@/components/ui/navigation-menu";
+import { cn } from "@/lib/utils";
+import { ArrowUpRight, TextAlignJustify, Sun, Moon } from "lucide-react";
 
-export default function Navbar() {
+export type NavigationSection = {
+  title: string;
+  href: string;
+};
+
+const navigationData: NavigationSection[] = [
+  {
+    title: "About us",
+    href: "/about",
+  },
+  {
+    title: "Services",
+    href: "/services",
+  },
+  {
+    title: "Products",
+    href: "/products",
+  },
+  {
+    title: "Portfolio",
+    href: "/portfolio",
+  },
+  {
+    title: "Insights",
+    href: "/blog",
+  },
+  {
+    title: "Contact",
+    href: "/contact",
+  },
+];
+
+const CollaborateButton = ({ className }: { className?: string }) => (
+  <Link href="/contact">
+    <Button className={cn("relative text-sm font-medium rounded-full h-10 p-1 ps-4 pe-12 group transition-all duration-500 hover:ps-12 hover:pe-4 w-fit overflow-hidden hover:bg-primary/80 cursor-pointer", className)}>
+      <span className="relative z-10 transition-all duration-500 hover:cursor-pointer">
+        Let's Collaborate
+      </span>
+      <div className="absolute right-1 w-8 h-8 bg-background text-foreground rounded-full flex items-center justify-center transition-all duration-500 group-hover:right-[calc(100%-36px)] group-hover:rotate-45">
+        <ArrowUpRight size={16} />
+      </div>
+    </Button>
+  </Link>
+);
+
+const Navbar = () => {
+  const [sticky, setSticky] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [theme, setTheme] = useState<string | null>(null);
-  const pathname = usePathname();
-
-  const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
-    // Check initial theme from document class
-    if (document.documentElement.classList.contains('dark')) {
-      setTheme('dark');
+    if (document.documentElement.classList.contains("dark")) {
+      setTheme("dark");
     } else {
-      setTheme('light');
+      setTheme("light");
     }
-
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const toggleTheme = () => {
-    if (theme === 'dark') {
-      document.documentElement.classList.remove('dark');
-      localStorage.theme = 'light';
-      setTheme('light');
+    if (theme === "dark") {
+      document.documentElement.classList.remove("dark");
+      localStorage.theme = "light";
+      setTheme("light");
     } else {
-      document.documentElement.classList.add('dark');
-      localStorage.theme = 'dark';
-      setTheme('dark');
+      document.documentElement.classList.add("dark");
+      localStorage.theme = "dark";
+      setTheme("dark");
     }
   };
 
-  const navLinks = [
-    { name: 'Services', href: '/services' },
-    { name: 'Products', href: '/products' },
-    { name: 'Portfolio', href: '/portfolio' },
-    { name: 'Insights', href: '/blog' },
-    { name: 'About', href: '/about' },
-    { name: 'Contact', href: '/contact' },
-  ];
+  const handleScroll = useCallback(() => {
+    setSticky(window.scrollY >= 50);
+  }, []);
 
-  const isActive = (path: string) => pathname?.startsWith(path);
+  const handleResize = useCallback(() => {
+    if (window.innerWidth >= 768) setIsOpen(false);
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [handleScroll, handleResize]);
 
   return (
-    <header className={`sticky top-0 z-50 w-full border-b transition-all duration-300 ${
-      isScrolled 
-        ? 'border-border/60 bg-background/90 backdrop-blur-lg shadow-sm shadow-primary/5 py-1' 
-        : 'border-border/40 bg-background/95 backdrop-blur-md py-3'
-    }`}>
-      <div className={`max-w-[1536px] mx-auto px-6 md:px-12 lg:px-20 flex items-center justify-between transition-all duration-300 ${
-        isScrolled ? 'h-14' : 'h-20'
-      }`}>
-        
-        {/* Logo */}
-        <Link href="/" className="flex items-center gap-3">
-          <img 
-            src="/logo.png" 
-            alt="Sapirox Logo" 
-            className="h-10 w-auto object-contain max-h-10 dark:bg-white dark:px-2.5 dark:py-1 dark:rounded-xl" 
-          />
-          <span className="text-2xl font-bold tracking-tight text-foreground font-heading">
-            Sapirox
-          </span>
-        </Link>
-
-        {/* Desktop Nav */}
-        <nav className="hidden md:flex items-center gap-8 text-sm font-medium">
-          {navLinks.map((link) => (
-            <Link 
-              key={link.name} 
-              href={link.href} 
-              className={`transition-colors py-1 nav-link-underline ${
-                isActive(link.href) 
-                  ? 'text-primary font-semibold active' 
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              {link.name}
-            </Link>
-          ))}
-        </nav>
-
-        {/* CTA Button & Theme Toggle */}
-        <div className="hidden md:flex items-center gap-4">
-          <button
-            onClick={toggleTheme}
-            className="p-2.5 rounded-xl border border-border/60 hover:bg-muted/50 text-muted-foreground hover:text-foreground transition-all duration-200 cursor-pointer"
-            aria-label="Toggle Theme"
-          >
-            {theme === 'dark' ? <Sun className="h-5 w-5 text-amber-500" /> : <Moon className="h-5 w-5 text-slate-700" />}
-          </button>
-          <Link 
-            href="/contact" 
-            className="inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-medium hover:opacity-95 shadow-md shadow-cyan-500/10 hover:shadow-cyan-500/30 transition-all duration-300"
-          >
-            Get Started
-          </Link>
-        </div>
-
-        {/* Mobile Menu Button */}
-        <button 
-          className="md:hidden p-2 text-muted-foreground hover:text-foreground" 
-          onClick={() => setIsOpen(!isOpen)}
+    <header className="fixed top-4 left-0 right-0 z-50 w-full bg-transparent pointer-events-none">
+      <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 pointer-events-auto">
+        <nav
+          className={cn(
+            "w-full flex items-center h-fit justify-between gap-3.5 lg:gap-6 transition-all duration-500 rounded-full px-5 py-2.5 bg-background/80 backdrop-blur-2xl border border-border/60 shadow-[0_10px_38px_-10px_rgba(0,0,0,0.25)] dark:shadow-[0_10px_38px_-10px_rgba(0,0,0,0.85)] shadow-primary/10",
+            sticky
+              ? "bg-background/95 border-border shadow-[0_15px_50px_-10px_rgba(0,0,0,0.4)] dark:shadow-[0_15px_50px_-10px_rgba(6,182,212,0.2)] py-2"
+              : "bg-background/75"
+          )}
         >
-          {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-        </button>
-      </div>
+          <Link href="/">
+            <Logo />
+          </Link>
+          <div>
+            <NavigationMenu className="max-lg:hidden bg-muted p-0.5 rounded-full">
+              <NavigationMenuList className="flex gap-0">
+                {navigationData.map((navItem) => (
+                  <NavigationMenuItem key={navItem.title}>
+                    <NavigationMenuLink
+                      href={navItem.href}
+                      className="px-2 lg:px-4 py-2 text-sm font-medium rounded-full text-muted-foreground hover:text-foreground hover:bg-background outline outline-transparent hover:outline-border hover:shadow-xs transition tracking-normal"
+                    >
+                      {navItem.title}
+                    </NavigationMenuLink>
+                  </NavigationMenuItem>
+                ))}
+              </NavigationMenuList>
+            </NavigationMenu>
+          </div>
 
-      {/* Mobile Menu Panel */}
-      {isOpen && (
-        <div className="md:hidden absolute top-20 left-0 w-full bg-background border-b border-border p-6 flex flex-col gap-4 animate-in fade-in slide-in-from-top-5 duration-200">
-          {navLinks.map((link) => (
-            <Link 
-              key={link.name} 
-              href={link.href} 
-              className={`text-muted-foreground hover:text-foreground py-2 text-lg ${
-                isActive(link.href) ? 'text-primary font-semibold' : ''
-              }`}
-              onClick={() => setIsOpen(false)}
-            >
-              {link.name}
-            </Link>
-          ))}
-          <div className="flex items-center justify-between gap-4 mt-2">
-            <button
+          <div className="hidden lg:flex items-center gap-3">
+            <Button
+              variant="outline"
+              size="icon"
               onClick={toggleTheme}
-              className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border border-border/60 text-muted-foreground bg-muted/20 cursor-pointer"
+              className="rounded-full h-9 w-9 border-border/60 text-muted-foreground hover:text-foreground cursor-pointer"
               aria-label="Toggle Theme"
             >
-              {theme === 'dark' ? (
-                <>
-                  <Sun className="h-5 w-5 text-amber-500" />
-                  <span>Light Mode</span>
-                </>
-              ) : (
-                <>
-                  <Moon className="h-5 w-5 text-slate-700" />
-                  <span>Dark Mode</span>
-                </>
-              )}
-            </button>
-            <Link 
-              href="/contact" 
-              className="flex-2 text-center py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-medium"
-              onClick={() => setIsOpen(false)}
-            >
-              Get Started
-            </Link>
+              {theme === "dark" ? <Sun className="h-4.5 w-4.5 text-amber-500" /> : <Moon className="h-4.5 w-4.5 text-slate-700" />}
+            </Button>
+            <CollaborateButton />
           </div>
-        </div>
-      )}
+
+          <div className="lg:hidden flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={toggleTheme}
+              className="rounded-full h-9 w-9 border-border/60 text-muted-foreground hover:text-foreground cursor-pointer"
+              aria-label="Toggle Theme"
+            >
+              {theme === "dark" ? <Sun className="h-4.5 w-4.5 text-amber-500" /> : <Moon className="h-4.5 w-4.5 text-slate-700" />}
+            </Button>
+
+            <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
+              <DropdownMenuTrigger className="rounded-full bg-background border border-border p-2 outline-none flex items-center justify-center cursor-pointer transition-colors">
+                <TextAlignJustify size={20} />
+                <span className="sr-only">Menu</span>
+              </DropdownMenuTrigger>
+
+              <DropdownMenuContent
+                align="end"
+                className="w-56 mt-2"
+              >
+                {navigationData.map((item) => (
+                  <DropdownMenuItem key={item.title}>
+                    <Link href={item.href} className="w-full cursor-pointer text-sm font-medium">{item.title}</Link>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </nav>
+      </div>
     </header>
   );
-}
+};
+
+export default Navbar;

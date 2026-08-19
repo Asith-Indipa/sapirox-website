@@ -6,6 +6,8 @@ import { Project, getFullImageUrl } from '@/services/api';
 import { Code, ArrowRight, FolderKanban } from 'lucide-react';
 import ScrollReveal from '@/components/ScrollReveal';
 
+import { Button } from '@/components/ui/button';
+
 interface PortfolioClientProps {
   initialProjects: Project[];
   isError?: boolean;
@@ -23,7 +25,7 @@ export default function PortfolioClient({ initialProjects, isError = false }: Po
     : projects.filter((p) => p.category === selectedCategory);
 
   return (
-    <div className="relative min-h-[70vh] py-20 px-6 max-w-7xl mx-auto flex flex-col justify-center">
+    <div className="relative min-h-[70vh] py-8 md:py-12 px-6 max-w-7xl mx-auto flex flex-col justify-center">
       
       {/* Background decorations */}
       <div className="absolute top-[10%] left-[5%] w-[300px] h-[300px] rounded-full bg-primary/5 blur-[100px] pointer-events-none" />
@@ -49,17 +51,18 @@ export default function PortfolioClient({ initialProjects, isError = false }: Po
         <ScrollReveal delayClass="animation-delay-100" className="w-full flex">
           <div className="flex flex-wrap items-center gap-3 mb-12">
             {categories.map((cat) => (
-              <button
+              <Button
                 key={cat}
+                variant={selectedCategory === cat ? 'default' : 'outline'}
                 onClick={() => setSelectedCategory(cat)}
-                className={`px-5 py-2 rounded-xl text-xs md:text-sm font-semibold border transition-all duration-350 ${
+                className={`rounded-xl text-xs md:text-sm font-semibold transition-all duration-350 cursor-pointer ${
                   selectedCategory === cat
-                    ? 'bg-primary border-primary text-white shadow-lg shadow-primary/20 cursor-pointer'
-                    : 'bg-muted border-border text-muted-foreground hover:text-foreground hover:border-border cursor-pointer'
+                    ? 'shadow-lg shadow-primary/20'
+                    : ''
                 }`}
               >
                 {cat}
-              </button>
+              </Button>
             ))}
           </div>
         </ScrollReveal>

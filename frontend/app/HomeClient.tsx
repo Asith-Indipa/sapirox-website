@@ -29,6 +29,8 @@ import {
 import CustomSelect from '@/components/ui/CustomSelect';
 import ScrollReveal from '@/components/ScrollReveal';
 import ParticleCanvas from '@/components/ParticleCanvas';
+import HeroSection from '@/components/shadcn-space/blocks/hero-01/hero';
+import { Button } from '@/components/ui/button';
 
 
 
@@ -179,35 +181,7 @@ export default function HomeClient({
       </div>
 
       {/* ── HERO SECTION ────────────────────────────────────────────────────────── */}
-      <section className="relative pt-32 pb-24 px-6 max-w-7xl mx-auto flex flex-col items-center text-center">
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-semibold uppercase tracking-wider mb-8 animate-fade-in-up">
-          <Zap className="h-3 w-3" /> Enterprise Grade IT Solutions
-        </div>
-        
-        <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-foreground max-w-5xl leading-tight mb-8 font-heading animate-fade-in-up animation-delay-100">
-          Next-Gen Software for <br />
-          <span className="premium-gradient-text">Modern Enterprise Growth</span>
-        </h1>
-        
-        <p className="text-lg md:text-xl text-muted-foreground max-w-3xl leading-relaxed mb-12 animate-fade-in-up animation-delay-200">
-          At Sapirox, we engineer scalable web solutions, custom CMS platforms, internal administration software, and business-focused applications designed to accelerate productivity and technology adoption.
-        </p>
-
-        <div className="flex flex-col sm:flex-row gap-4 items-center justify-center animate-fade-in-up animation-delay-300">
-          <a 
-            href="#contact" 
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold hover:opacity-95 shadow-lg shadow-cyan-500/15 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 group"
-          >
-            Launch Project <ArrowRight className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
-          </a>
-          <a 
-            href="#products" 
-            className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 rounded-xl bg-muted hover:bg-muted/80 border border-border text-foreground font-semibold hover:scale-[1.02] active:scale-[0.98] transition-all duration-300"
-          >
-            Explore Products
-          </a>
-        </div>
-      </section>
+      <HeroSection />
 
       {/* ── SERVICES SECTION ────────────────────────────────────────────────────── */}
       <section id="services" className="py-24 px-6 max-w-7xl mx-auto border-t border-border/40">
@@ -713,13 +687,13 @@ export default function HomeClient({
                 </label>
               </div>
 
-              <button 
+              <Button 
                 type="submit" 
                 disabled={isSubmitting || !agreed}
-                className="w-full py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold flex items-center justify-center gap-2 hover:opacity-95 disabled:opacity-30 hover:scale-[1.01] active:scale-[0.99] transition-all duration-300 shadow-lg shadow-cyan-500/10 cursor-pointer group"
+                className="w-full py-6 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold flex items-center justify-center gap-2 hover:opacity-95 disabled:opacity-30 hover:scale-[1.01] active:scale-[0.99] transition-all duration-300 shadow-lg shadow-cyan-500/10 cursor-pointer group text-base"
               >
                 {isSubmitting ? 'Submitting Message...' : 'Send Message'} <Send className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-              </button>
+              </Button>
             </form>
           </div>
           </ScrollReveal>

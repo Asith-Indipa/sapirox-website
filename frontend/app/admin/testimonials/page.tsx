@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { getCurrentUser, removeAuthToken, User } from '@/services/auth';
 import { getTestimonials, createTestimonial, updateTestimonial, deleteTestimonial, uploadImage, getFullImageUrl, Testimonial } from '@/services/api';
 import { Plus, Edit2, Trash2, ArrowLeft, Loader2, Save, X, Eye, FileText, Sparkles } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export default function AdminTestimonialsPage() {
   const router = useRouter();
@@ -164,12 +165,12 @@ export default function AdminTestimonialsPage() {
             Manage partner integrations and client reviews displayed on the homepage.
           </p>
         </div>
-        <button
+        <Button
           onClick={handleOpenCreateModal}
           className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:opacity-95 text-white text-sm font-semibold transition-all shadow-md shadow-cyan-500/10 cursor-pointer"
         >
           <Plus className="h-4 w-4" /> Add Testimonial
-        </button>
+        </Button>
       </div>
 
       {/* Testimonials list */}
@@ -376,17 +377,18 @@ export default function AdminTestimonialsPage() {
               )}
 
               <div className="pt-4 border-t border-border/40 flex justify-end gap-3">
-                <button
+                <Button
                   type="button"
+                  variant="outline"
                   onClick={() => setModalOpen(false)}
-                  className="px-5 py-2.5 rounded-xl bg-muted hover:bg-muted/80 border border-border text-foreground text-xs font-semibold transition-colors cursor-pointer"
+                  className="rounded-xl text-xs font-semibold cursor-pointer"
                 >
                   Cancel
-                </button>
-                <button
+                </Button>
+                <Button
                   type="submit"
                   disabled={formLoading || uploadingImage}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-xs font-semibold hover:opacity-95 disabled:opacity-50 transition-all shadow-md shadow-cyan-500/10 cursor-pointer"
+                  className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-xs font-semibold hover:opacity-95 disabled:opacity-50 transition-all shadow-md shadow-cyan-500/10 cursor-pointer"
                 >
                   {formLoading ? (
                     <>
@@ -397,7 +399,7 @@ export default function AdminTestimonialsPage() {
                       <Save className="h-3.5 w-3.5" /> Save Changes
                     </>
                   )}
-                </button>
+                </Button>
               </div>
             </form>
           </div>

@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import CustomSelect from '@/components/ui/CustomSelect';
 import ScrollReveal from '@/components/ScrollReveal';
+import { Button } from '@/components/ui/button';
 
 
 const DEFAULT_CONTACT_CONTENT = {
@@ -120,7 +121,7 @@ export default function ContactClient() {
   };
 
   return (
-    <div className="relative min-h-[90vh] pt-32 pb-20 px-6 max-w-7xl mx-auto flex flex-col justify-center">
+    <div className="relative min-h-[80vh] pt-8 md:pt-12 pb-20 px-6 max-w-7xl mx-auto flex flex-col justify-center">
       
       {/* Background decorations */}
       <div className="absolute top-[15%] left-[10%] w-[300px] h-[300px] rounded-full bg-primary/5 blur-[100px] pointer-events-none" />
@@ -371,13 +372,13 @@ export default function ContactClient() {
               </label>
             </div>
 
-            <button 
+            <Button 
               type="submit" 
               disabled={isSubmitting || !agreed}
-              className="w-full py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold flex items-center justify-center gap-2 hover:opacity-95 disabled:opacity-30 hover:scale-[1.01] active:scale-[0.99] transition-all duration-300 shadow-lg shadow-cyan-500/10 cursor-pointer group"
+              className="w-full py-6 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold flex items-center justify-center gap-2 hover:opacity-95 disabled:opacity-30 hover:scale-[1.01] active:scale-[0.99] transition-all duration-300 shadow-lg shadow-cyan-500/10 cursor-pointer group text-base"
             >
               {isSubmitting ? 'Submitting Message...' : 'Send Message'} <Send className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-            </button>
+            </Button>
           </form>
         </div>
         </ScrollReveal>

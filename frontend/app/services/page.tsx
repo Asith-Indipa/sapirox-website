@@ -70,7 +70,7 @@ export default async function ServicesPage() {
   };
 
   return (
-    <div className="relative min-h-[85vh] py-20 px-6 md:px-12 lg:px-20 max-w-[1536px] mx-auto w-full overflow-hidden">
+    <div className="relative min-h-[85vh] py-20 px-6 max-w-7xl mx-auto">
       <ItemListSchema 
         items={services.map((s, idx) => ({
           name: s.title,
